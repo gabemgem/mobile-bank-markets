@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <model version="NetLogo 7.0.3" snapToGrid="true">
-  <code>breed [kiosks kiosk]
+  <code><![CDATA[breed [kiosks kiosk]
 
 globals [
   requested-values served-values   ; [deposit withdrawal], in illustrative money units
@@ -30,10 +30,10 @@ to setup
   ]
   ; Local randomness keeps topology and participation from changing the demand stream.
   with-local-randomness [
-    ask kiosks [ set participating? random-float 100 &lt; participation-percent ]
+    ask kiosks [ set participating? random-float 100 < participation-percent ]
     ask kiosks [
-      create-links-with other kiosks with [who &gt; [who] of myself]
-        with [random-float 1 &lt; network-density]
+      create-links-with other kiosks with [who > [who] of myself]
+        with [random-float 1 < network-density]
     ]
   ]
   layout-circle sort kiosks (max-pxcor - 3)
@@ -53,7 +53,7 @@ to go
     ; Generate all demand outside the sharing procedure's local random stream.
     let outlet one-of kiosks
     let amount 1 + random maximum-request
-    let withdrawal? random-float 1 &lt; [withdrawal-probability] of outlet
+    let withdrawal? random-float 1 < [withdrawal-probability] of outlet
     ask outlet [ serve-request amount withdrawal? ]
   ]
   check-accounting
@@ -66,9 +66,9 @@ to serve-request [amount withdrawal?]
   set requested-count requested-count + 1
   set requested-values replace-item kind requested-values
     (item kind requested-values + amount)
-  let was-short? resource withdrawal? &lt; amount
+  let was-short? resource withdrawal? < amount
   if was-short? [ with-local-randomness [ seek-liquidity amount withdrawal? ] ]
-  ifelse resource withdrawal? &gt;= amount [
+  ifelse resource withdrawal? >= amount [
     let cash-change ifelse-value withdrawal? [(- amount)] [amount]
     shift-balances cash-change
     set net-customer-cash net-customer-cash + cash-change
@@ -91,11 +91,11 @@ to seek-liquidity [amount cash-needed?]
   let shortfall amount - resource cash-needed?
   ; Both sides protect the resource they give up. No swaps occur unless the
   ; complete customer request can be funded, possibly by several partners.
-  if resource (not cash-needed?) - minimum-reserve &lt; shortfall [ stop ]
-  set partners partners with [resource cash-needed? &gt; minimum-reserve]
-  if sum [resource cash-needed? - minimum-reserve] of partners &lt; shortfall [ stop ]
-  foreach shuffle sort partners [partner -&gt;
-    if shortfall &gt; 0 [
+  if resource (not cash-needed?) - minimum-reserve < shortfall [ stop ]
+  set partners partners with [resource cash-needed? > minimum-reserve]
+  if sum [resource cash-needed? - minimum-reserve] of partners < shortfall [ stop ]
+  foreach shuffle sort partners [partner ->
+    if shortfall > 0 [
       let quantity min list shortfall
         ([resource cash-needed?] of partner - minimum-reserve)
       let cash-change ifelse-value cash-needed? [quantity] [(- quantity)]
@@ -140,8 +140,8 @@ to refresh-view
     ]
     ask kiosks [
       let cash-share cash / (cash + efloat)
-      set color ifelse-value (cash-share &lt; 0.25) [[235 132 76]]
-        [ifelse-value (cash-share &gt; 0.75) [[78 153 232]] [[65 210 185]]]
+      set color ifelse-value (cash-share < 0.25) [[235 132 76]]
+        [ifelse-value (cash-share > 0.75) [[78 153 232]] [[65 210 185]]]
       set size ifelse-value participating? [1.6] [1.0]
       set label ifelse-value show-balances?
         [(word (round cash) "/" (round efloat))] [""]
@@ -150,15 +150,15 @@ to refresh-view
 end
 
 to check-accounting
-  if any? kiosks with [cash &lt; 0 or efloat &lt; 0] [ error "Negative kiosk balance." ]
-  if abs (sum [cash] of kiosks - initial-cash - net-customer-cash) &gt; 0.000001 [
+  if any? kiosks with [cash < 0 or efloat < 0] [ error "Negative kiosk balance." ]
+  if abs (sum [cash] of kiosks - initial-cash - net-customer-cash) > 0.000001 [
     error "Cash accounting does not reconcile."
   ]
-  if abs (sum [efloat] of kiosks - initial-efloat + net-customer-cash) &gt; 0.000001 [
+  if abs (sum [efloat] of kiosks - initial-efloat + net-customer-cash) > 0.000001 [
     error "E-float accounting does not reconcile."
   ]
 end
-</code>
+]]></code>
   <widgets>
     <note x="10" y="5" width="1200" height="35" fontSize="22" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">MOBILE MONEY | Liquidity exchange laboratory</note>
     <button x="10" y="47" width="75" height="35" display="Setup" kind="Observer" forever="false" disableUntilTicks="false">setup</button>
