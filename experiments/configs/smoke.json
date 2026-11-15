@@ -1,0 +1,10 @@
+{
+  "mode": "grid",
+  "ticks": 8,
+  "seeds": [11, 22],
+  "parameters": {
+    "network-source": ["Synthetic random"],
+    "sharing-mode": ["No sharing", "Network sharing"],
+    "settlement-delay": [0, 2]
+  }
+}

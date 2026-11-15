@@ -1,0 +1,73 @@
+{
+  "ticks": 500,
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55,
+    66,
+    77,
+    88,
+    99,
+    110
+  ],
+  "warmup_runs": 2,
+  "base": {
+    "network-source": "Synthetic random",
+    "sharing-mode": "Network sharing",
+    "number-of-kiosks": 20,
+    "starting-balance": 500,
+    "network-density": 0.3,
+    "participation-percent": 100,
+    "requests-per-tick": 40,
+    "maximum-request": 100,
+    "withdrawal-share": 0.5,
+    "demand-polarization": 0.35,
+    "minimum-reserve": 100,
+    "low-balance-percent": 25,
+    "target-balance-percent": 50,
+    "settlement-delay": 1
+  },
+  "mode": "oat",
+  "parameters": {
+    "network-density": [
+      0.05,
+      0.1,
+      0.3,
+      0.6
+    ],
+    "participation-percent": [
+      0,
+      25,
+      50,
+      75,
+      100
+    ],
+    "settlement-delay": [
+      0,
+      1,
+      2
+    ],
+    "low-balance-percent": [
+      15,
+      25,
+      35
+    ],
+    "target-balance-percent": [
+      40,
+      50,
+      60
+    ],
+    "minimum-reserve": [
+      0,
+      100,
+      200
+    ],
+    "requests-per-tick": [
+      20,
+      40,
+      80
+    ]
+  }
+}

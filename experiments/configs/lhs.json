@@ -1,0 +1,76 @@
+{
+  "ticks": 500,
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55,
+    66,
+    77,
+    88,
+    99,
+    110
+  ],
+  "warmup_runs": 2,
+  "base": {
+    "network-source": "Synthetic random",
+    "sharing-mode": "Network sharing",
+    "number-of-kiosks": 20,
+    "starting-balance": 500,
+    "network-density": 0.3,
+    "participation-percent": 100,
+    "requests-per-tick": 40,
+    "maximum-request": 100,
+    "withdrawal-share": 0.5,
+    "demand-polarization": 0.35,
+    "minimum-reserve": 100,
+    "low-balance-percent": 25,
+    "target-balance-percent": 50,
+    "settlement-delay": 1
+  },
+  "mode": "lhs",
+  "samples": 200,
+  "design_seed": 20261114,
+  "parameters": {
+    "number-of-kiosks": {
+      "min": 10,
+      "max": 40
+    },
+    "network-density": {
+      "min": 0.1,
+      "max": 0.6
+    },
+    "participation-percent": {
+      "min": 0,
+      "max": 100
+    },
+    "low-balance-percent": {
+      "min": 10,
+      "max": 35
+    },
+    "target-balance-percent": {
+      "min": 40,
+      "max": 65
+    },
+    "minimum-reserve": {
+      "min": 0,
+      "max": 250
+    },
+    "settlement-delay": {
+      "values": [
+        0,
+        1,
+        2
+      ]
+    },
+    "requests-per-tick": {
+      "min": 20,
+      "max": 80
+    },
+    "demand-polarization": {
+      "min": 0,
+      "max": 0.45
+    }
+  }
+}
