@@ -1,0 +1,6 @@
+/results/
+__pycache__/
+*.class
+# Private survey exports and local working files.
+/data/
+/local-*/

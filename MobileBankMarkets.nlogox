@@ -1,64 +1,325 @@
 <?xml version='1.0' encoding='utf-8'?>
 <model version="NetLogo 7.0.3" snapToGrid="true">
-  <code><![CDATA[breed [kiosks kiosk]
+  <code><![CDATA[extensions [csv]
+
+breed [kiosks kiosk]
+breed [transfers transfer]
+undirected-link-breed [relationships relationship]
+directed-link-breed [trade-routes trade-route]
 
 globals [
-  requested-values served-values   ; [deposit withdrawal], in illustrative money units
-  requested-count served-count rescued-count
-  swap-count swap-value
-  tick-served tick-failed tick-swaps
+  controls-initialized?
+  sharing-mode number-of-kiosks starting-balance network-density participation-percent requests-per-tick maximum-request withdrawal-share demand-polarization minimum-reserve model-seed show-balances? low-balance-percent target-balance-percent settlement-delay
+  network-source selected-market
+  network-description active-market
+  requested-values served-values  ; [deposit withdrawal], in illustrative units
+  requested-count served-count tick-served tick-failed
+  initiated-count settled-count settled-value tick-settled-value
+  trade-attempts unmet-attempts
+  cash-low-ticks efloat-low-ticks  ; sums of end-of-tick kiosk observations
   initial-cash initial-efloat net-customer-cash
 ]
 
-kiosks-own [cash efloat withdrawal-probability participating?]
+kiosks-own [
+  agent-id
+  cash efloat reserved-cash reserved-efloat
+  withdrawal-probability participating? pending-transfer traded-this-tick?
+]
+
+transfers-own [requester partner quantity cash-needed? due-tick]
+
+to startup
+  initialize-controls
+end
+
+to initialize-controls
+  set network-source "Synthetic random"
+  set selected-market ""
+  set sharing-mode "Network sharing"
+  set number-of-kiosks 20
+  set starting-balance 500
+  set network-density 0.2
+  set participation-percent 100
+  set requests-per-tick 40
+  set maximum-request 100
+  set withdrawal-share 0.5
+  set demand-polarization 0.35
+  set minimum-reserve 100
+  set model-seed 42
+  set show-balances? false
+  set low-balance-percent 25
+  set target-balance-percent 50
+  set settlement-delay 1
+  set controls-initialized? true
+end
+
+to-report parameter-names
+  report ["network-source" "selected-market" "sharing-mode" "number-of-kiosks" "starting-balance" "network-density" "participation-percent" "requests-per-tick" "maximum-request" "withdrawal-share" "demand-polarization" "minimum-reserve" "model-seed" "show-balances?" "low-balance-percent" "target-balance-percent" "settlement-delay"]
+end
+
+to interface-setup
+  if controls-initialized? != true [ initialize-controls ]
+  ; UI bindings are evaluated only here, so core code compiles without widgets.
+  set sharing-mode runresult "ui-sharing-mode"
+  set number-of-kiosks runresult "ui-number-of-kiosks"
+  set starting-balance runresult "ui-starting-balance"
+  set network-density runresult "ui-network-density"
+  set participation-percent runresult "ui-participation-percent"
+  set requests-per-tick runresult "ui-requests-per-tick"
+  set maximum-request runresult "ui-maximum-request"
+  set withdrawal-share runresult "ui-withdrawal-share"
+  set demand-polarization runresult "ui-demand-polarization"
+  set minimum-reserve runresult "ui-minimum-reserve"
+  set model-seed runresult "ui-model-seed"
+  set show-balances? runresult "ui-show-balances?"
+  set low-balance-percent runresult "ui-low-balance-percent"
+  set target-balance-percent runresult "ui-target-balance-percent"
+  set settlement-delay runresult "ui-settlement-delay"
+  setup
+end
+
+to interface-go
+  set show-balances? runresult "ui-show-balances?"
+  go
+end
+
+to choose-network-source
+  let selection user-one-of "Network source" network-sources
+  if selection != false [
+    set network-source selection
+    set selected-market ""
+  ]
+end
+
+to-report network-sources
+  report ["Synthetic random" "Observed mutual willingness" "Imported synthetic"]
+end
+
+to-report import-directory
+  report ifelse-value (network-source = "Observed mutual willingness")
+    ["data"] ["synthetic-networks"]
+end
+
+to-report local-catalog
+  let path word import-directory "/networks.csv"
+  if not file-exists? path [
+    error (word "Local network catalog not found: " path
+      ". Choose Synthetic random to run without data files.")
+  ]
+  report but-first csv:from-file path
+end
+
+to choose-local-network
+  if network-source = "Synthetic random" [
+    user-message "Synthetic random needs no files. Select an imported source first to choose a local network."
+    stop
+  ]
+  let ids map [row -> item 0 row] local-catalog
+  let selection user-one-of "Local network (private; not saved in model code)" ids
+  if selection != false [ set selected-market selection ]
+end
 
 to setup
+  if controls-initialized? != true [ initialize-controls ]
+  if not member? network-source network-sources [ set network-source "Synthetic random" ]
+  if not is-string? selected-market [ set selected-market "" ]
+  validate-controls
+  let saved-controls map [name -> runresult name] parameter-names
   clear-all
+  set network-source item 0 saved-controls
+  set selected-market item 1 saved-controls
+  set sharing-mode item 2 saved-controls
+  set number-of-kiosks item 3 saved-controls
+  set starting-balance item 4 saved-controls
+  set network-density item 5 saved-controls
+  set participation-percent item 6 saved-controls
+  set requests-per-tick item 7 saved-controls
+  set maximum-request item 8 saved-controls
+  set withdrawal-share item 9 saved-controls
+  set demand-polarization item 10 saved-controls
+  set minimum-reserve item 11 saved-controls
+  set model-seed item 12 saved-controls
+  set show-balances? item 13 saved-controls
+  set low-balance-percent item 14 saved-controls
+  set target-balance-percent item 15 saved-controls
+  set settlement-delay item 16 saved-controls
+  set controls-initialized? true
   random-seed model-seed
   set requested-values [0 0]
   set served-values [0 0]
   ask patches [ set pcolor [22 29 40] ]
-  create-kiosks number-of-kiosks [
+  ifelse network-source != "Synthetic random" [
+    load-market-network
+  ] [
+    create-kiosks number-of-kiosks [ set agent-id word "synthetic-" who ]
+    set active-market ""
+    set network-description "Synthetic: undirected Erdos-Renyi"
+  ]
+  ask kiosks [
     set cash starting-balance
     set efloat starting-balance
+    set pending-transfer nobody
+    set traded-this-tick? false
     set withdrawal-probability max list 0 (min list 1
       (withdrawal-share + ifelse-value (who mod 2 = 0)
         [demand-polarization] [(- demand-polarization)]))
     set shape "circle"
-    set size 1.6
     set label-color white
   ]
-  ; Local randomness keeps topology and participation from changing the demand stream.
   with-local-randomness [
     ask kiosks [ set participating? random-float 100 < participation-percent ]
-    ask kiosks [
-      create-links-with other kiosks with [who > [who] of myself]
-        with [random-float 1 < network-density]
+    if network-source = "Synthetic random" [
+      ask kiosks [
+        create-relationships-with other kiosks with [who > [who] of myself]
+          with [random-float 1 < network-density]
+      ]
     ]
+    ask relationships [ set color [58 70 86] set thickness 0.08 ]
   ]
   layout-circle sort kiosks (max-pxcor - 3)
   set initial-cash sum [cash] of kiosks
   set initial-efloat sum [efloat] of kiosks
-  with-local-randomness [ ask links [ set color [58 70 86] set thickness 0.08 ] ]
   refresh-view
   reset-ticks
 end
 
+to load-market-network
+  let catalog local-catalog
+  if empty? catalog [ error "Local network catalog is empty." ]
+  if selected-market = "" [ set selected-market item 0 first catalog ]
+  let entries filter [row -> item 0 row = selected-market] catalog
+  if length entries != 1 [ error "Choose a network ID that occurs once in the local catalog." ]
+  let folder import-directory
+  foreach ["nodes.csv" "edges.csv"] [filename ->
+    if not file-exists? (word folder "/" filename) [
+      error (word "Missing local network file: " folder "/" filename
+        ". Choose Synthetic random to run without data.")
+    ]
+  ]
+  let nodes filter [row -> item 0 row = selected-market]
+    (but-first csv:from-file (word folder "/nodes.csv"))
+  if empty? nodes [ error "Selected network has no exported nodes." ]
+  foreach nodes [row ->
+    if any? kiosks with [agent-id = item 1 row] [ error "Duplicate imported node ID." ]
+    create-kiosks 1 [ set agent-id item 1 row ]
+  ]
+  let edges filter [row -> item 0 row = selected-market]
+    (but-first csv:from-file (word folder "/edges.csv"))
+  foreach edges [row ->
+    let source one-of kiosks with [agent-id = item 1 row]
+    let target one-of kiosks with [agent-id = item 2 row]
+    if source = nobody or target = nobody [ error "Network edge refers to a missing node." ]
+    if source = target [ error "Imported networks cannot contain self-links." ]
+    ask source [
+      if relationship-neighbor? target [ error "Duplicate undirected network edge." ]
+      create-relationship-with target
+    ]
+  ]
+  set active-market selected-market
+  set network-description (word (item 1 first entries) ": " selected-market)
+end
+
 to go
+  validate-controls
   set tick-served 0
   set tick-failed 0
-  set tick-swaps 0
-  with-local-randomness [ ask links [ set color [58 70 86] set thickness 0.08 ] ]
-  repeat requests-per-tick [
-    ; Generate all demand outside the sharing procedure's local random stream.
-    let outlet one-of kiosks
-    let amount 1 + random maximum-request
-    let withdrawal? random-float 1 < [withdrawal-probability] of outlet
-    ask outlet [ serve-request amount withdrawal? ]
+  set tick-settled-value 0
+  ; Keep matching, hidden transfer agents, and display work off the demand stream.
+  with-local-randomness [
+    ask kiosks [ set traded-this-tick? false ]
+    ask relationships [ set color [58 70 86] set thickness 0.08 ]
+    ask transfers with [due-tick <= ticks] [ settle-transfer ]
+    ask kiosks [ rebalance ]
   ]
+  foreach customer-requests [request ->
+    ask item 0 request [ serve-request (item 1 request) (item 2 request) ]
+  ]
+  set cash-low-ticks cash-low-ticks + count kiosks with [low-balance? true]
+  set efloat-low-ticks efloat-low-ticks + count kiosks with [low-balance? false]
   check-accounting
   refresh-view
   tick
+end
+
+to-report customer-requests
+  let outlets sort kiosks
+  let batch []
+  ; A tick-specific demand stream is independent of matching and pending agents.
+  with-local-randomness [
+    random-seed ((model-seed + 104729 * ticks) mod 2147483647)
+    repeat requests-per-tick [
+      let outlet item (random length outlets) outlets
+      let amount 1 + random maximum-request
+      let withdrawal? random-float 1 < [withdrawal-probability] of outlet
+      set batch lput (list outlet amount withdrawal?) batch
+    ]
+  ]
+  report batch
+end
+
+to rebalance
+  if sharing-mode = "No sharing" or not free-to-trade? [ stop ]
+  if not low-balance? true and not low-balance? false [ stop ]
+  let needs-cash? low-balance? true
+  set trade-attempts trade-attempts + 1
+  let desired (balance-level target-balance-percent) - (available needs-cash?)
+  let budget max list 0 ((available (not needs-cash?)) - minimum-reserve)
+  let partners other kiosks with [free-to-trade? and available needs-cash? > minimum-reserve]
+  if sharing-mode = "Network sharing" [
+    set partners partners with [relationship-neighbor? myself]
+  ]
+  if budget <= 0 or not any? partners [
+    set unmet-attempts unmet-attempts + 1
+    stop
+  ]
+  let counterparty one-of partners
+  let amount min (list desired budget
+    ([available needs-cash?] of counterparty - minimum-reserve))
+  book-transfer counterparty amount needs-cash?
+end
+
+to book-transfer [counterparty amount needs-cash?]
+  let outlet self
+  reserve-resource (not needs-cash?) amount
+  ask counterparty [ reserve-resource needs-cash? amount ]
+  hatch-transfers 1 [
+    set hidden? true
+    set requester outlet
+    set partner counterparty
+    set quantity amount
+    set cash-needed? needs-cash?
+    set due-tick ticks + settlement-delay
+    ask (turtle-set requester partner) [
+      set pending-transfer myself
+      set traded-this-tick? true
+    ]
+    set initiated-count initiated-count + 1
+    if due-tick = ticks [ settle-transfer ]
+  ]
+end
+
+to settle-transfer
+  let amount quantity
+  let needs-cash? cash-needed?
+  let cash-change ifelse-value needs-cash? [amount] [(- amount)]
+  ask requester [
+    reserve-resource (not needs-cash?) (- amount)
+    shift-balances cash-change
+    set pending-transfer nobody
+    let connection relationship-with [partner] of myself
+    if connection != nobody [
+      ask connection [ set color [65 210 185] set thickness 0.3 ]
+    ]
+  ]
+  ask partner [
+    reserve-resource needs-cash? (- amount)
+    shift-balances (- cash-change)
+    set pending-transfer nobody
+  ]
+  set settled-count settled-count + 1
+  set settled-value settled-value + amount
+  set tick-settled-value tick-settled-value + amount
+  die
 end
 
 to serve-request [amount withdrawal?]
@@ -66,9 +327,7 @@ to serve-request [amount withdrawal?]
   set requested-count requested-count + 1
   set requested-values replace-item kind requested-values
     (item kind requested-values + amount)
-  let was-short? resource withdrawal? < amount
-  if was-short? [ with-local-randomness [ seek-liquidity amount withdrawal? ] ]
-  ifelse resource withdrawal? >= amount [
+  ifelse available withdrawal? >= amount [
     let cash-change ifelse-value withdrawal? [(- amount)] [amount]
     shift-balances cash-change
     set net-customer-cash net-customer-cash + cash-change
@@ -76,45 +335,30 @@ to serve-request [amount withdrawal?]
     set served-values replace-item kind served-values
       (item kind served-values + amount)
     set tick-served tick-served + amount
-    if was-short? [ set rescued-count rescued-count + 1 ]
   ] [
     set tick-failed tick-failed + amount
   ]
 end
 
-to seek-liquidity [amount cash-needed?]
-  if sharing-mode = "No sharing" or not participating? [ stop ]
-  let partners other kiosks with [participating?]
-  if sharing-mode = "Network sharing" [
-    set partners partners with [link-neighbor? myself]
-  ]
-  let shortfall amount - resource cash-needed?
-  ; Both sides protect the resource they give up. No swaps occur unless the
-  ; complete customer request can be funded, possibly by several partners.
-  if resource (not cash-needed?) - minimum-reserve < shortfall [ stop ]
-  set partners partners with [resource cash-needed? > minimum-reserve]
-  if sum [resource cash-needed? - minimum-reserve] of partners < shortfall [ stop ]
-  foreach shuffle sort partners [partner ->
-    if shortfall > 0 [
-      let quantity min list shortfall
-        ([resource cash-needed?] of partner - minimum-reserve)
-      let cash-change ifelse-value cash-needed? [quantity] [(- quantity)]
-      shift-balances cash-change
-      ask partner [ shift-balances (- cash-change) ]
-      set shortfall shortfall - quantity
-      set swap-count swap-count + 1
-      set swap-value swap-value + quantity
-      set tick-swaps tick-swaps + quantity
-      let connection link-with partner
-      if connection != nobody [
-        ask connection [ set color [65 210 185] set thickness 0.3 ]
-      ]
-    ]
-  ]
+to-report available [cash?]
+  report ifelse-value cash? [cash - reserved-cash] [efloat - reserved-efloat]
 end
 
-to-report resource [cash?]
-  report ifelse-value cash? [cash] [efloat]
+to-report balance-level [percent]
+  report (cash + efloat) * percent / 100
+end
+
+to-report low-balance? [cash?]
+  report available cash? < balance-level low-balance-percent
+end
+
+to-report free-to-trade?
+  report participating? and pending-transfer = nobody and not traded-this-tick?
+end
+
+to reserve-resource [cash? amount]
+  ifelse cash? [ set reserved-cash reserved-cash + amount ]
+    [ set reserved-efloat reserved-efloat + amount ]
 end
 
 to shift-balances [cash-change]
@@ -131,67 +375,102 @@ to-report percent-served [kind]
   report 100 * completed / demand
 end
 
+to validate-controls
+  if target-balance-percent <= low-balance-percent [
+    error "Target balance (%) must exceed low balance (%)."
+  ]
+  if settlement-delay < 0 or settlement-delay > 2 or settlement-delay != floor settlement-delay [
+    error "Settlement delay must be 0, 1, or 2 ticks."
+  ]
+end
+
 to refresh-view
-  ; Rendering must not consume randomness used to generate customer demand.
   with-local-randomness [
-    ask links [
+    ask trade-routes [ die ]
+    ask relationships [
       set hidden? sharing-mode != "Network sharing" or
         not ([participating?] of end1 and [participating?] of end2)
     ]
     ask kiosks [
-      let cash-share cash / (cash + efloat)
-      set color ifelse-value (cash-share < 0.25) [[235 132 76]]
-        [ifelse-value (cash-share > 0.75) [[78 153 232]] [[65 210 185]]]
+      set color ifelse-value (low-balance? true) [[235 132 76]]
+        [ifelse-value (low-balance? false) [[78 153 232]] [[65 210 185]]]
       set size ifelse-value participating? [1.6] [1.0]
+      set shape ifelse-value (pending-transfer != nobody) ["circle 2"] ["circle"]
       set label ifelse-value show-balances?
-        [(word (round cash) "/" (round efloat))] [""]
+        [(word (precision (available true) 1) "/" (precision (available false) 1))] [""]
+    ]
+    ask transfers [
+      let counterparty partner
+      let caption (word (precision quantity 1) " @" due-tick)
+      ask requester [
+        create-trade-route-to counterparty [
+          set color [245 190 65]
+          set thickness 0.25
+          set label caption
+          set label-color white
+        ]
+      ]
     ]
   ]
 end
 
 to check-accounting
-  if any? kiosks with [cash < 0 or efloat < 0] [ error "Negative kiosk balance." ]
-  if abs (sum [cash] of kiosks - initial-cash - net-customer-cash) > 0.000001 [
-    error "Cash accounting does not reconcile."
+  if any? kiosks with [reserved-cash < -0.000001 or reserved-efloat < -0.000001 or
+    available true < -0.000001 or available false < -0.000001] [
+    error "Negative or overcommitted kiosk balance."
   ]
-  if abs (sum [efloat] of kiosks - initial-efloat + net-customer-cash) > 0.000001 [
-    error "E-float accounting does not reconcile."
+  if abs (sum [cash] of kiosks - initial-cash - net-customer-cash) > 0.000001 or
+    abs (sum [efloat] of kiosks - initial-efloat + net-customer-cash) > 0.000001 [
+    error "Market balances do not reconcile."
+  ]
+  if initiated-count - settled-count != count transfers or
+    abs (sum [reserved-cash] of kiosks - sum [quantity] of transfers) > 0.000001 or
+    abs (sum [reserved-efloat] of kiosks - sum [quantity] of transfers) > 0.000001 [
+    error "Pending trades and reservations do not reconcile."
   ]
 end
 ]]></code>
   <widgets>
     <note x="10" y="5" width="1200" height="35" fontSize="22" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">MOBILE MONEY | Liquidity exchange laboratory</note>
-    <button x="10" y="47" width="75" height="35" display="Setup" kind="Observer" forever="false" disableUntilTicks="false">setup</button>
-    <button x="90" y="47" width="75" height="35" display="Go / stop" kind="Observer" forever="true" disableUntilTicks="true">go</button>
-    <button x="170" y="47" width="80" height="35" display="+100 ticks" kind="Observer" forever="false" disableUntilTicks="true">repeat 100 [ go ]</button>
-    <note x="270" y="48" width="470" height="35" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Orange: cash-poor    Teal: balanced    Blue: e-float-poor</note>
-    <note x="760" y="48" width="450" height="35" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Illustrative units and demand. Not calibrated to survey data.</note>
-    <chooser x="10" y="90" width="240" height="55" display="sharing-mode" variable="sharing-mode" current="1">
+    <button x="10" y="47" width="75" height="35" display="Setup" kind="Observer" forever="false" disableUntilTicks="false">interface-setup</button>
+    <button x="90" y="47" width="75" height="35" display="Go / stop" kind="Observer" forever="true" disableUntilTicks="true">interface-go</button>
+    <button x="170" y="47" width="80" height="35" display="+100 ticks" kind="Observer" forever="false" disableUntilTicks="true">repeat 100 [ interface-go ]</button>
+    <note x="340" y="48" width="400" height="35" fontSize="11" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Orange: cash low   Blue: e-float low   Ring: pending trade</note>
+    <note x="760" y="48" width="450" height="35" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Amber arrows: pending trades (amount @ due tick). Synthetic data.</note>
+    <chooser x="10" y="151" width="240" height="55" display="ui-sharing-mode" variable="ui-sharing-mode" current="1">
       <choice type="string" value="No sharing" />
       <choice type="string" value="Network sharing" />
       <choice type="string" value="All-to-all sharing" />
     </chooser>
-    <slider x="10" y="151" width="240" height="45" display="number-of-kiosks" variable="number-of-kiosks" min="4" max="60" default="20" step="2" direction="Horizontal" />
-    <slider x="10" y="199" width="240" height="45" display="starting-balance" variable="starting-balance" min="100" max="2000" default="500" step="50" direction="Horizontal" />
-    <slider x="10" y="247" width="240" height="45" display="network-density" variable="network-density" min="0" max="1" default="0.2" step="0.05" direction="Horizontal" />
-    <slider x="10" y="295" width="240" height="45" display="participation-percent" variable="participation-percent" min="0" max="100" default="100" step="10" direction="Horizontal" />
-    <slider x="10" y="343" width="240" height="45" display="requests-per-tick" variable="requests-per-tick" min="0" max="100" default="40" step="5" direction="Horizontal" />
-    <slider x="10" y="391" width="240" height="45" display="maximum-request" variable="maximum-request" min="1" max="250" default="100" step="1" direction="Horizontal" />
-    <slider x="10" y="439" width="240" height="45" display="withdrawal-share" variable="withdrawal-share" min="0" max="1" default="0.5" step="0.05" direction="Horizontal" />
-    <slider x="10" y="487" width="240" height="45" display="demand-polarization" variable="demand-polarization" min="0" max="0.45" default="0.35" step="0.05" direction="Horizontal" />
-    <slider x="10" y="535" width="240" height="45" display="minimum-reserve" variable="minimum-reserve" min="0" max="500" default="100" step="25" direction="Horizontal" />
-    <slider x="10" y="583" width="240" height="45" display="model-seed" variable="model-seed" min="1" max="1000" default="42" step="1" direction="Horizontal" />
-    <switch x="10" y="640" width="240" height="35" display="show-balances?" variable="show-balances?" on="false" />
-    <note x="10" y="685" width="240" height="105" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Compare: choose a mode, click Setup, then +100 ticks.
-Keep the same seed and settings.
-Labels show cash / e-float.
+    <slider x="10" y="212" width="240" height="40" display="ui-number-of-kiosks" variable="ui-number-of-kiosks" min="4" max="60" default="20" step="2" direction="Horizontal" />
+    <slider x="10" y="254" width="240" height="40" display="ui-starting-balance" variable="ui-starting-balance" min="100" max="2000" default="500" step="50" direction="Horizontal" />
+    <slider x="10" y="296" width="240" height="40" display="ui-network-density" variable="ui-network-density" min="0" max="1" default="0.2" step="0.05" direction="Horizontal" />
+    <slider x="10" y="338" width="240" height="40" display="ui-participation-percent" variable="ui-participation-percent" min="0" max="100" default="100" step="10" direction="Horizontal" />
+    <slider x="10" y="380" width="240" height="40" display="ui-requests-per-tick" variable="ui-requests-per-tick" min="0" max="100" default="40" step="5" direction="Horizontal" />
+    <slider x="10" y="422" width="240" height="40" display="ui-maximum-request" variable="ui-maximum-request" min="1" max="250" default="100" step="1" direction="Horizontal" />
+    <slider x="10" y="464" width="240" height="40" display="ui-withdrawal-share" variable="ui-withdrawal-share" min="0" max="1" default="0.5" step="0.05" direction="Horizontal" />
+    <slider x="10" y="506" width="240" height="40" display="ui-demand-polarization" variable="ui-demand-polarization" min="0" max="0.45" default="0.35" step="0.05" direction="Horizontal" />
+    <slider x="10" y="548" width="240" height="40" display="ui-minimum-reserve" variable="ui-minimum-reserve" min="0" max="500" default="100" step="25" direction="Horizontal" />
+    <slider x="10" y="590" width="240" height="40" display="ui-model-seed" variable="ui-model-seed" min="1" max="1000" default="42" step="1" direction="Horizontal" />
+    <switch x="10" y="764" width="240" height="35" display="ui-show-balances?" variable="ui-show-balances?" on="false" />
+    <note x="10" y="809" width="240" height="100" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">No data? Synthetic random works by itself.
+Imported sources use private local files.
+Choose a source, then Setup.
 Full assumptions: Info tab.</note>
-    <view x="270" y="90" width="466" height="466" patchSize="14" minPxcor="-16" maxPxcor="16" minPycor="-16" maxPycor="16" wrappingAllowedX="false" wrappingAllowedY="false" updateMode="1" frameRate="15" showTickCounter="true" tickCounterLabel="ticks" fontSize="11" />
-    <monitor x="270" y="566" width="112" height="55" display="Value served (%)" precision="1" fontSize="11">percent-served -1</monitor>
-    <monitor x="388" y="566" width="112" height="55" display="Requests rescued" precision="0" fontSize="11">rescued-count</monitor>
-    <monitor x="506" y="566" width="112" height="55" display="Partner swaps" precision="0" fontSize="11">swap-count</monitor>
-    <monitor x="624" y="566" width="112" height="55" display="Requests failed" precision="0" fontSize="11">requested-count - served-count</monitor>
-    <plot x="760" y="90" width="445" height="220" display="Customer value served (cumulative)" xAxis="ticks" yAxis="% of requested value" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="false" legend="true">
+    <view x="270" y="155" width="466" height="466" patchSize="14" minPxcor="-16" maxPxcor="16" minPycor="-16" maxPycor="16" wrappingAllowedX="false" wrappingAllowedY="false" updateMode="1" frameRate="15" showTickCounter="true" tickCounterLabel="ticks" fontSize="11" />
+    <button x="270" y="47" width="60" height="35" display="Step" kind="Observer" forever="false" disableUntilTicks="true">interface-go</button>
+    <slider x="10" y="632" width="240" height="40" display="ui-low-balance-percent" variable="ui-low-balance-percent" min="0" max="45" default="25" step="5" direction="Horizontal" />
+    <slider x="10" y="674" width="240" height="40" display="ui-target-balance-percent" variable="ui-target-balance-percent" min="5" max="75" default="50" step="5" direction="Horizontal" />
+    <slider x="10" y="716" width="240" height="40" display="ui-settlement-delay" variable="ui-settlement-delay" min="0" max="2" default="1" step="1" direction="Horizontal" />
+    <monitor x="270" y="631" width="112" height="55" display="Value served (%)" precision="1" fontSize="11">percent-served -1</monitor>
+    <monitor x="388" y="631" width="112" height="55" display="Pending trades" precision="0" fontSize="11">count transfers</monitor>
+    <monitor x="506" y="631" width="112" height="55" display="Trades settled" precision="0" fontSize="11">settled-count</monitor>
+    <monitor x="624" y="631" width="112" height="55" display="Requests failed" precision="0" fontSize="11">requested-count - served-count</monitor>
+    <monitor x="270" y="694" width="112" height="55" display="Reserved cash" precision="1" fontSize="11">sum [reserved-cash] of kiosks</monitor>
+    <monitor x="388" y="694" width="112" height="55" display="Reserved e-float" precision="1" fontSize="11">sum [reserved-efloat] of kiosks</monitor>
+    <monitor x="506" y="694" width="112" height="55" display="Trades started" precision="0" fontSize="11">initiated-count</monitor>
+    <monitor x="624" y="694" width="112" height="55" display="Unmet attempts" precision="0" fontSize="11">unmet-attempts</monitor>
+    <plot x="760" y="90" width="445" height="230" display="Customer value served (cumulative)" xAxis="completed ticks" yAxis="% requested value" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="false" legend="true">
       <setup />
       <update />
       <pen display="All" color="-16777216" interval="1.0" mode="0" legend="true">
@@ -207,7 +486,31 @@ Full assumptions: Info tab.</note>
         <update>plot percent-served 1</update>
       </pen>
     </plot>
-    <plot x="760" y="320" width="445" height="220" display="Customer demand this tick" xAxis="ticks" yAxis="money units" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="true" legend="true">
+    <plot x="760" y="330" width="445" height="230" display="Kiosks below low-balance threshold" xAxis="completed ticks" yAxis="kiosks" xMin="0" xMax="100" yMin="0" yMax="20" autoPlotX="true" autoPlotY="true" legend="true">
+      <setup />
+      <update />
+      <pen display="Cash low" color="-955883" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot count kiosks with [low-balance? true]</update>
+      </pen>
+      <pen display="E-float low" color="-13345367" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot count kiosks with [low-balance? false]</update>
+      </pen>
+    </plot>
+    <plot x="760" y="570" width="445" height="270" display="Trade pipeline (cumulative)" xAxis="completed ticks" yAxis="bilateral trades" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="true" legend="true">
+      <setup />
+      <update />
+      <pen display="Started" color="-955883" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot initiated-count</update>
+      </pen>
+      <pen display="Settled" color="-10899396" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot settled-count</update>
+      </pen>
+    </plot>
+    <plot x="270" y="765" width="466" height="140" display="Customer demand this tick" xAxis="completed ticks" yAxis="money units" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="true" legend="true">
       <setup />
       <update />
       <pen display="Served" color="-10899396" interval="1.0" mode="0" legend="true">
@@ -218,130 +521,226 @@ Full assumptions: Info tab.</note>
         <setup />
         <update>plot tick-failed</update>
       </pen>
-      <pen display="Swapped" color="-13345367" interval="1.0" mode="0" legend="true">
-        <setup />
-        <update>plot tick-swaps</update>
-      </pen>
     </plot>
-    <plot x="760" y="550" width="445" height="240" display="Market liquidity" xAxis="ticks" yAxis="money units" xMin="0" xMax="100" yMin="0" yMax="20000" autoPlotX="true" autoPlotY="true" legend="true">
-      <setup />
-      <update />
-      <pen display="Cash" color="-955883" interval="1.0" mode="0" legend="true">
-        <setup />
-        <update>plot sum [cash] of kiosks</update>
-      </pen>
-      <pen display="E-float" color="-13345367" interval="1.0" mode="0" legend="true">
-        <setup />
-        <update>plot sum [efloat] of kiosks</update>
-      </pen>
-    </plot>
-    <plot x="270" y="635" width="466" height="155" display="Cash share across kiosks" xAxis="cash / (cash + e-float)" yAxis="kiosks" xMin="0" xMax="1.01" yMin="0" yMax="20" autoPlotX="false" autoPlotY="true" legend="false">
-      <setup />
-      <update />
-      <pen display="kiosks" color="-10899396" interval="0.1" mode="1" legend="false">
-        <setup>set-histogram-num-bars 10</setup>
-        <update>histogram [cash / (cash + efloat)] of kiosks</update>
-      </pen>
-    </plot>
+    <monitor x="760" y="850" width="445" height="55" display="Network loaded at Setup" precision="0" fontSize="11">network-description</monitor>
+    <button x="10" y="90" width="110" height="55" display="Network source" kind="Observer" forever="false" disableUntilTicks="false">choose-network-source</button>
+    <button x="270" y="90" width="170" height="55" display="Choose local network" kind="Observer" forever="false" disableUntilTicks="false">choose-local-network</button>
+    <monitor x="125" y="90" width="125" height="55" display="Selected source" precision="0" fontSize="11">ifelse-value (network-source = "Synthetic random") ["Random"] [ifelse-value (network-source = "Imported synthetic") ["Synthetic file"] ["Observed"]]</monitor>
+    <monitor x="450" y="90" width="286" height="55" display="Selected local ID (runtime only)" precision="0" fontSize="11">selected-market</monitor>
   </widgets>
-  <info>## PURPOSE AND STATUS
+  <info><![CDATA[## PURPOSE AND STATUS
 
-An abstract experiment: can immediate cash-for-e-float exchanges reduce failed
-customer transactions? All values are illustrative, not fitted to the Tanzania
-survey. The network is synthetic, undirected, and fixed during a run. Survey
-"trade" responses represent conditional willingness, not observed exchanges.
+An abstract model of low-balance-triggered cash-for-e-float rebalancing among
+kiosk operators. Customer transactions and operator trades are separate processes.
+All money units, thresholds, demand, and delays are illustrative, not calibrated.
+The selected network is undirected and fixed during a run. Balances, demand,
+participation, thresholds, and settlement rules remain illustrative in both modes.
+No sharing means no peer swaps; it is not an estimate of current practice.
 
-## QUICK START
+## NETWORK SOURCES AND PRIVATE LOCAL FILES
 
-Choose a sharing-mode, press Setup, then Go / stop or +100 ticks. Repeat with
-another mode and the same seed and parameters. Setup clears all previous output.
-Do not change model controls during a comparison run. Only show-balances? is
-intended as a live display control; its labels update on the next tick.
+The code explicitly declares network-source and selected-market as globals.
+Startup and Setup default to Synthetic random. These variables do not depend
+on chooser widgets. The Network source button offers three modes:
 
-## AGENTS, BALANCES, AND DEMAND
+Synthetic random: generates an undirected Erdos-Renyi network using the kiosk
+count and density sliders. This mode reads NO local network files and works
+when neither data/ nor synthetic-networks/ exists.
 
-Each kiosk starts with starting-balance cash AND starting-balance e-float. Units
-are arbitrary; one tick is an abstract batch of requests, not a day or minute.
-Each tick contains requests-per-tick independent requests. Each selects a kiosk
-uniformly, then an integer amount uniformly from 1 through maximum-request.
-Customer accounts and cash are outside the model and assumed sufficient.
+Observed mutual willingness: imports from the private data/ directory. An A--B
+edge represents mutual Yes reports, NOT acquaintance or actual trading. The
+exporter normalizes IDs, removes self/cross-market reports, collapses duplicate
+directed reports using any Yes, and excludes nonrespondent alters. Missing reverse
+reports create no edge. All supplied respondents are retained, including isolates;
+unavailable roster members are not invented. Source and checksum are in the
+private import audit. Raw survey workbooks remain outside the ABM repository.
 
-Half the kiosks have withdrawal probability withdrawal-share + demand-polarization;
-the other half use withdrawal-share - demand-polarization. Probabilities are
-clipped to [0, 1]. Thus withdrawal-share is the midpoint, not necessarily the
-realized market share when clipping occurs. Kiosk types alternate around the
-circle and do not imply geographic clustering. Polarization creates complementary
-cash and e-float needs. Demand is independent across requests, with no common shocks.
+Imported synthetic: imports a pre-generated graph library from the
+synthetic-networks/ directory, using exactly the same loader and CSV schema.
+No summary-fitting or advanced graph-generation code is needed in NetLogo.
 
-A successful deposit adds cash and removes equal e-float. A withdrawal removes
-cash and adds equal e-float. Requests are processed sequentially. There is no
-partial customer service: an unserviceable request fails immediately and is lost.
-There are no customer retries, queues, spending, or feedback to future demand.
+Use Choose local network after selecting either imported source, then Setup.
+The dialog reads the local catalog at runtime. Private network IDs are not
+embedded in model widgets or code. With no ID selected, Setup uses the first
+catalog entry. Missing files in an imported mode produce an explicit error;
+the model never silently substitutes a random graph for an imported experiment.
+Switch to Synthetic random to run without files. Kiosk count and density sliders
+are ignored by both imported modes. The loaded-network monitor records the
+catalog's network_type and network_id, not the current button selection alone.
 
-## SHARING RULE
+Both imported folders have networks.csv (network_id,network_type), nodes.csv
+(network_id,node_id), and edges.csv (network_id,source,target). Keep each
+undirected edge once and include isolated nodes in nodes.csv. Additional catalog
+columns may contain generation seeds and fit/provenance information. Use synthetic
+IDs and identify synthetic graphs in network_type; do not label them observed.
 
-No sharing: kiosks serve customers using only their own resources.
+data/ and experiment results/ are Git-ignored. synthetic-networks/ can be versioned. Never publish
+survey-derived files or fitted synthetic libraries without an explicit review.
+Local simulation outputs may contain private network IDs as well. Saving a world
+or exporting an interface can also capture runtime information; keep such exports
+in ignored local directories. Git ignore does not remove previously tracked files
+or history; check Git before committing. See experiments/NETWORKS.md for local-file provenance.
 
-Network sharing: exchange is possible along an undirected random link, if both
-kiosks participate. Each possible pair has independent probability network-density
-of a link. Participation is independently drawn with probability
-participation-percent / 100; it need not equal that exact fraction in a small market.
+Network sharing uses the loaded topology filtered by participation. All-to-all
+sharing bypasses its edges but keeps its nodes. No sharing suppresses peer swaps.
+Demand types alternate in stable node order and remain synthetic; wealth is
+uniform. Total requests-per-tick does not automatically scale with imported node
+count, so cross-network comparisons should consider demand per kiosk.
 
-All-to-all sharing: every participating pair is eligible, regardless of links.
-Set participation-percent to 100 for universal participation.
+## CODE-OWNED PARAMETERS
 
-Only an otherwise failing customer request triggers exchange. The requester seeks
-exactly its shortage, paying an equal amount of the opposite resource. Both sides
-must retain minimum-reserve of the resource given away after each swap. The
-reserve constrains sharing, not customer service. Multiple partners may jointly
-cover a shortage, in random order. Availability is checked first: if the entire
-request cannot be funded, no swaps take place. This assumes perfect information
-and atomic, instantaneous settlement. There are no fees, travel, credit, default,
-provider restrictions, external top-ups, learning, or network changes.
+All simulation parameters are explicitly declared in globals, including
+target-balance-percent, low-balance-percent, and settlement-delay. They never
+depend on interface widgets for definition. initialize-controls supplies defaults;
+startup invokes it automatically. Setup also initializes defaults if needed.
 
-The seed reproduces balances, types, participation, network, and demand.
-Sharing and topology use local randomness so scenario differences do not alter
-the generated customer request sequence. This holds when other controls stay fixed.
+Widgets use ui- prefixed bindings. The Setup button calls interface-setup, which
+copies those settings to the simulation parameters before setup. Go and Step
+copy only the live balance-label switch. Core setup/go never overwrite parameters
+from UI values, so headless experiments keep their own settings. For code-only
+or API use, call initialize-controls once, set parameter overrides, then setup/go.
+The batch harness does this automatically. Parameters survive clear-all in setup.
 
-## DISPLAY AND OUTPUT DEFINITIONS
+## QUICK START AND CONTROLS
 
-Node color shows cash share: orange below 25%, blue above 75%, teal otherwise.
-Color indicates imbalance, not an observed failure or a reserve violation.
-Small nodes do not participate. Labels show cash / e-float. Circle positions are
-for readability and do not represent distance. Network mode displays eligible
-links; turquoise links were used this tick. Other modes hide links to avoid clutter.
+Choose a source with Network source, then sharing-mode and Settlement delay
+(ticks). Press Setup, then Go / stop or
++100 ticks. Step advances one tick so you can inspect pending trades. Compare
+runs using the same seed and other controls. Setup clears
+all histories and pending trades. Keep controls fixed throughout a comparison;
+only show-balances? is intended as a live display control (updates next tick).
 
-Value served (%) is 100 * completed value / requested value. Deposit and
-withdrawal rates use their own requested-value denominators. Before any demand,
-the corresponding rate displays 0 (not an estimated failure rate).
-Requests rescued counts customer requests made possible by sharing. Partner swaps
-counts bilateral exchanges; one rescued request may require several swaps.
-Swapped value counts the cash leg once, not cash plus e-float. It is an internal
-flow, not additional customer activity. Customer totals include deposits and
-withdrawals and should not be interpreted as GDP, spending, or unique money.
+Low balance (%) is the trigger; Refill target (%) is the desired holding of the
+scarce resource. Both are percentages of that kiosk's booked cash + e-float,
+not percentages of its starting cash alone. Default: trigger 25%, target 50%.
+The target must exceed the trigger. With starting-balance 500, total holdings
+are 1000, the trigger is 250, and the target is 500. Equality at the trigger
+does not initiate a trade. A trigger of zero disables initiation.
 
-The histogram shows the distribution of cash shares. Market liquidity shows total
-cash and e-float. A swap preserves both market totals; customer transactions
-convert one kiosk resource into the other. Cash + e-float remains constant.
-check-accounting runs every tick to reject negative or unreconciled balances.
+minimum-reserve is an absolute amount protected on BOTH outgoing legs when
+booking a trade. It restricts trades, not customer service. Each kiosk starts
+with starting-balance cash AND starting-balance e-float. model-seed reproduces
+topology, participation, and customer demand. Network, matching, transfer agents,
+and display operations use local randomness; paired demand stays identical when
+sharing mode, delay, thresholds, reserves, or topology change, holding demand
+settings, kiosk count, and seed fixed. Each demand batch uses a separate seed
+derived from model-seed and the tick, independently of the trading process.
 
-## USEFUL EXPERIMENTS
+## EXACT TICK ORDER AND SETTLEMENT
 
-1. Compare all three modes over 100 ticks with identical settings and seed.
-2. Increase network-density or participation-percent to explore access limits.
-3. Raise minimum-reserve to examine the cost of protecting potential donors.
-4. Set demand-polarization to 0 to remove persistent local demand differences.
-5. Set withdrawal-share to 1 and demand-polarization to 0: sharing cannot cure
-   a sustained market-wide cash shortage without external replenishment.
-6. Repeat across seeds. Better connectivity need not improve every single run:
-   exchanges can change which customers are served later.
+At tick t, each Go step performs these phases:
+1. Settle every previously booked trade whose due tick is t or earlier.
+2. In random kiosk order, assess available balances and book new trades.
+   Newly booked zero-delay trades settle immediately in this phase.
+3. Generate and serve the customer requests for this tick, in sequence.
+4. Check accounting, record end-of-tick low balances, update the view, advance time.
 
-## DEVELOPMENT BOUNDARY
+A trade initiated at t is due at t + settlement-delay. Delay 0 can supply the
+current customer batch. Delay 1 leaves it pending throughout the current batch
+and settles before the next batch. Delay 2 leaves it pending for two batches.
+Pending arrows can show a due tick equal to the displayed counter: the displayed
+counter advances after processing, and that trade settles at the next Go step.
 
-No real network data are imported. Future extensions can replace setup topology
-and balances, add provider compatibility, observed demand and rebalancing costs,
-or persistent customers. Each extension requires an explicit new assumption.
-</info>
+## LOW-BALANCE TRADING RULE
+
+At the rebalancing phase, a participating kiosk without a pending trade checks
+whether available cash or available e-float is strictly below its trigger. It
+requests enough of the low resource to reach the target, paying equal value in
+the opposite resource. Customer requests never initiate trades or wait for one.
+
+Among eligible, uncommitted participants with surplus of the needed resource
+above minimum-reserve, choose one partner uniformly at random. Network sharing
+requires a relationship link; All-to-all sharing allows any participating pair;
+No sharing books none. Participation is independently drawn with probability
+participation-percent / 100, not a guaranteed exact fraction of kiosks.
+In synthetic mode, each possible relationship has probability network-density.
+Imported modes instead use the fixed links from their local graph library.
+
+Trade size is the smallest of: desired refill, requester's spendable opposite
+resource above minimum-reserve, and partner's spendable requested resource above
+minimum-reserve. Partial refills are allowed. If no eligible supplier exists or
+the requester cannot pay while protecting its reserve, the attempt is unmet.
+One kiosk can be in at most one pending trade and book at most one new trade
+per tick in either role. The latter prevents instant back-and-forth matching.
+A kiosk may settle an old trade and book one new trade in the same tick.
+
+Matching assumes perfect knowledge of eligible partners' available balances.
+There are no fees, travel agents, default, credit, external top-ups, provider
+restrictions, learning, or relationship changes. Delay is a fixed experiment
+parameter, not an observed travel time. Settlement is an atomic, equal-value swap.
+
+## BOOKED, RESERVED, AND AVAILABLE BALANCES
+
+Booked cash and e-float remain on their owners' ledgers until settlement.
+Booking reserves the requester's outgoing resource and the partner's outgoing
+resource. Available = booked minus reserved. Customers cannot spend reserved
+funds, and anticipated incoming funds are not available. Reservations can
+therefore cause a customer failure even when booked resources appear sufficient.
+
+Settlement releases both reservations, debits each outgoing leg, and credits
+its counterparty simultaneously. Reserved amounts are subsets of booked balances,
+not additional money. Each pending quantity creates one cash reservation and
+one equal e-float reservation. Swaps preserve both market totals and each kiosk's
+cash + e-float. Successful customers convert one kiosk resource to the other.
+check-accounting runs every tick to catch negative/overcommitted balances,
+unreconciled market resources, and mismatches between trades and reservations.
+
+## CUSTOMER DEMAND
+
+One tick is an abstract batch, not a measured minute or day. Each of
+requests-per-tick requests selects a kiosk uniformly and an integer amount
+uniformly from 1 through maximum-request. Alternating kiosks use withdrawal
+probability withdrawal-share + demand-polarization or the corresponding difference,
+clipped to [0,1]. withdrawal-share is the midpoint; clipping may change the
+market mean; odd-sized markets also have one more kiosk of the first type.
+Alternating types around the circle are not geographic clusters.
+
+A deposit adds cash and removes equal e-float. A withdrawal does the reverse.
+The requested outgoing resource must be fully available or the request fails
+and is lost. There is no partial customer service, retry, queue, persistent
+customer, spending feedback, common shock, or insufficient customer funds.
+
+## VISUALS AND OUTPUT DEFINITIONS
+
+Orange kiosks have low available cash; blue have low available e-float; teal
+are above both triggers. Small nodes do not participate. A dark-centered ring
+marks an operator with a pending trade. Labels show AVAILABLE cash / e-float.
+Positions around the circle are illustrative, with no distance interpretation.
+Network mode shows eligible relationship links; teal links settled this tick.
+Amber arrows show pending trades from requester to partner, NOT the direction
+of cash movement. Their labels show amount @ due tick. Both legs settle together.
+Pending arrows also appear in all-to-all mode; zero-delay trades leave none.
+
+Value served (%) is completed customer value / requested value * 100. Deposit
+and withdrawal lines have separate denominators; before demand, rates display
+zero as a placeholder. Customer demand shows served and failed value this tick.
+These flows are not GDP, economic spending, or unique money.
+
+The trade pipeline counts bilateral trades started and settled; the difference
+is pending. Reserved cash and Reserved e-float monitors show commitments (equal
+in this model). Unmet attempts counts low-balance checks that could book no
+positive trade, not customers or unique operators. A partial refill counts as a
+successful booking even if the target remains unmet. settled-value counts the
+cash leg once, not the sum of both legs. No per-request rescue attribution is made.
+
+The low-balance plot is an end-of-tick count, using the configurable trigger.
+cash-low-ticks and efloat-low-ticks accumulate these kiosk-tick observations.
+Divide by count kiosks * ticks to obtain the share of observed kiosk-ticks
+below each threshold after at least one tick. They are not weekly shortage events.
+
+## EXPERIMENTS AND LIMITATIONS
+
+Compare the three sharing modes at delays 0, 1, and 2 with paired seeds. Then
+vary the trigger, refill target, and reserve to see whether earlier initiation
+offsets delay and how commitments constrain service. Test sparse networks and
+partial participation. With withdrawal-share 1 and demand-polarization 0,
+peer swaps cannot solve a sustained market-wide cash shortage.
+
+No guaranteed monotonic benefit is assumed. Matching and reservations affect
+which customers can be served later. Repeat across seeds. Before calling any
+scenario current practice, add evidence-based external rebalancing and distinguish
+reported borrowing from these swaps. The experiment harness and example sensitivity designs are documented in README.md.
+]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
       <polygon color="-1920102913" filled="true" marked="true">
