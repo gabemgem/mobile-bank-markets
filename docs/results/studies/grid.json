@@ -1,0 +1,6061 @@
+{
+  "version": 1,
+  "id": "grid",
+  "title": "Policy grid \u00b7 10 seeds",
+  "mode": "grid",
+  "network_source": "Synthetic random",
+  "ticks": 500,
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55,
+    66,
+    77,
+    88,
+    99,
+    110
+  ],
+  "warmup_runs": 2,
+  "balance_labels": false,
+  "replicates": 10,
+  "completed_runs": 540,
+  "model_sha256": "4953eda392eea17eb3c9d35707ed3975564fbeac1de3dd7b6e5d2fb54f2bd969",
+  "exported_utc": "2026-11-14T21:26:48.989004+00:00",
+  "points": [
+    {
+      "id": "p00000",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00001",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00002",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00003",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00004",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00005",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00006",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 43.28867401114726,
+          "sd": 9.013918651211988,
+          "min": 30.114832025836712,
+          "max": 58.640535336924266
+        },
+        "deposit_service_pct": {
+          "mean": 43.35835554221545,
+          "sd": 9.044231759391145,
+          "min": 30.217526782799656,
+          "max": 58.481839044076914
+        },
+        "withdrawal_service_pct": {
+          "mean": 43.22314560832993,
+          "sd": 8.995874892727649,
+          "min": 30.01258674314574,
+          "max": 58.79914032239887
+        },
+        "served_count": {
+          "mean": 10307.2,
+          "sd": 1562.1220467328694,
+          "min": 7994.0,
+          "max": 13002.0
+        },
+        "trades_started": {
+          "mean": 702.3,
+          "sd": 401.4166718566189,
+          "min": 39.0,
+          "max": 1481.0
+        },
+        "trades_settled": {
+          "mean": 702.3,
+          "sd": 401.4166718566189,
+          "min": 39.0,
+          "max": 1481.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 153661.2,
+          "sd": 111095.48400142606,
+          "min": 1753.0,
+          "max": 319626.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 2964.0,
+          "sd": 1360.396837527769,
+          "min": 700.0,
+          "max": 5312.0
+        },
+        "cash_low_share": {
+          "mean": 0.45671,
+          "sd": 0.04253086330340983,
+          "min": 0.395,
+          "max": 0.5176
+        },
+        "efloat_low_share": {
+          "mean": 0.44304,
+          "sd": 0.06347811871468433,
+          "min": 0.321,
+          "max": 0.5249
+        }
+      }
+    },
+    {
+      "id": "p00007",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 78.48367158625304,
+          "sd": 8.726215854327066,
+          "min": 57.53432401232927,
+          "max": 87.93020060564665
+        },
+        "deposit_service_pct": {
+          "mean": 78.5731111258006,
+          "sd": 8.92857940499445,
+          "min": 57.20369238559202,
+          "max": 88.23594583098397
+        },
+        "withdrawal_service_pct": {
+          "mean": 78.40211166544316,
+          "sd": 8.564037353052601,
+          "min": 57.866816774108855,
+          "max": 87.62579356559387
+        },
+        "served_count": {
+          "mean": 16440.5,
+          "sd": 1515.2908228382357,
+          "min": 12764.0,
+          "max": 18025.0
+        },
+        "trades_started": {
+          "mean": 2644.7,
+          "sd": 495.16036683976324,
+          "min": 1391.0,
+          "max": 3111.0
+        },
+        "trades_settled": {
+          "mean": 2644.7,
+          "sd": 495.16036683976324,
+          "min": 1391.0,
+          "max": 3111.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 678602.0,
+          "sd": 164452.39807852538,
+          "min": 284475.0,
+          "max": 844960.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 2751.0,
+          "sd": 1342.0084450802337,
+          "min": 1292.0,
+          "max": 5909.0
+        },
+        "cash_low_share": {
+          "mean": 0.35364999999999996,
+          "sd": 0.09396803534535915,
+          "min": 0.2117,
+          "max": 0.5165
+        },
+        "efloat_low_share": {
+          "mean": 0.25395,
+          "sd": 0.06190249052609543,
+          "min": 0.1745,
+          "max": 0.3527
+        }
+      }
+    },
+    {
+      "id": "p00008",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 42.36636516633881,
+          "sd": 8.3993344118855,
+          "min": 30.115720360229467,
+          "max": 57.780412578083975
+        },
+        "deposit_service_pct": {
+          "mean": 42.462670639612014,
+          "sd": 8.433270833508823,
+          "min": 30.217526782799656,
+          "max": 57.70515153913112
+        },
+        "withdrawal_service_pct": {
+          "mean": 42.274373149036066,
+          "sd": 8.378208392501076,
+          "min": 30.014359523870493,
+          "max": 57.85563031490536
+        },
+        "served_count": {
+          "mean": 10169.2,
+          "sd": 1465.2161615270288,
+          "min": 7993.0,
+          "max": 12898.0
+        },
+        "trades_started": {
+          "mean": 700.8,
+          "sd": 371.88194064484736,
+          "min": 49.0,
+          "max": 1396.0
+        },
+        "trades_settled": {
+          "mean": 699.3,
+          "sd": 371.23668700409684,
+          "min": 49.0,
+          "max": 1393.0
+        },
+        "pending_trades": {
+          "mean": 1.5,
+          "sd": 0.8498365855987975,
+          "min": 0.0,
+          "max": 3.0
+        },
+        "settled_value": {
+          "mean": 170753.7,
+          "sd": 108045.9062107399,
+          "min": 2191.0,
+          "max": 349722.0
+        },
+        "pending_value": {
+          "mean": 395.7,
+          "sd": 231.52923981408674,
+          "min": 0.0,
+          "max": 701.0
+        },
+        "reserved_cash": {
+          "mean": 395.7,
+          "sd": 231.52923981408674,
+          "min": 0.0,
+          "max": 701.0
+        },
+        "reserved_efloat": {
+          "mean": 395.7,
+          "sd": 231.52923981408674,
+          "min": 0.0,
+          "max": 701.0
+        },
+        "unmet_attempts": {
+          "mean": 2739.1,
+          "sd": 1338.3025276653839,
+          "min": 605.0,
+          "max": 5059.0
+        },
+        "cash_low_share": {
+          "mean": 0.46762,
+          "sd": 0.037277183966126566,
+          "min": 0.4158,
+          "max": 0.5171
+        },
+        "efloat_low_share": {
+          "mean": 0.45424,
+          "sd": 0.05562909310783343,
+          "min": 0.3381,
+          "max": 0.522
+        }
+      }
+    },
+    {
+      "id": "p00009",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 74.0702376008247,
+          "sd": 7.3732542717092375,
+          "min": 56.31835546228822,
+          "max": 82.23420047930576
+        },
+        "deposit_service_pct": {
+          "mean": 74.18498547097735,
+          "sd": 7.453067118100128,
+          "min": 56.04225633479106,
+          "max": 82.44077118635684
+        },
+        "withdrawal_service_pct": {
+          "mean": 73.96245253489633,
+          "sd": 7.329298985722243,
+          "min": 56.59600875980356,
+          "max": 82.02853389064306
+        },
+        "served_count": {
+          "mean": 15739.1,
+          "sd": 1285.4965707201764,
+          "min": 12586.0,
+          "max": 17110.0
+        },
+        "trades_started": {
+          "mean": 2410.4,
+          "sd": 459.5278252970349,
+          "min": 1321.0,
+          "max": 2857.0
+        },
+        "trades_settled": {
+          "mean": 2406.2,
+          "sd": 458.11056404419327,
+          "min": 1320.0,
+          "max": 2851.0
+        },
+        "pending_trades": {
+          "mean": 4.2,
+          "sd": 1.6193277068654826,
+          "min": 1.0,
+          "max": 6.0
+        },
+        "settled_value": {
+          "mean": 674004.3,
+          "sd": 143671.32532203107,
+          "min": 312207.0,
+          "max": 810977.0
+        },
+        "pending_value": {
+          "mean": 1073.8,
+          "sd": 551.7497017066102,
+          "min": 112.0,
+          "max": 1733.0
+        },
+        "reserved_cash": {
+          "mean": 1073.8,
+          "sd": 551.7497017066102,
+          "min": 112.0,
+          "max": 1733.0
+        },
+        "reserved_efloat": {
+          "mean": 1073.8,
+          "sd": 551.7497017066102,
+          "min": 112.0,
+          "max": 1733.0
+        },
+        "unmet_attempts": {
+          "mean": 2220.9,
+          "sd": 1316.5255156408225,
+          "min": 1138.0,
+          "max": 5608.0
+        },
+        "cash_low_share": {
+          "mean": 0.39405,
+          "sd": 0.07164925757543558,
+          "min": 0.2779,
+          "max": 0.5108
+        },
+        "efloat_low_share": {
+          "mean": 0.31765,
+          "sd": 0.053231908768248314,
+          "min": 0.2313,
+          "max": 0.3798
+        }
+      }
+    },
+    {
+      "id": "p00010",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 41.00202861588826,
+          "sd": 7.726693871963835,
+          "min": 30.115720360229467,
+          "max": 56.5423421089324
+        },
+        "deposit_service_pct": {
+          "mean": 41.081854495374834,
+          "sd": 7.7200125984277665,
+          "min": 30.217526782799656,
+          "max": 56.46217456674844
+        },
+        "withdrawal_service_pct": {
+          "mean": 40.92629566871112,
+          "sd": 7.745997779995972,
+          "min": 30.014359523870493,
+          "max": 56.6224635259831
+        },
+        "served_count": {
+          "mean": 9924.5,
+          "sd": 1354.0538517109774,
+          "min": 7986.0,
+          "max": 12693.0
+        },
+        "trades_started": {
+          "mean": 387.9,
+          "sd": 198.7971886678034,
+          "min": 45.0,
+          "max": 739.0
+        },
+        "trades_settled": {
+          "mean": 386.1,
+          "sd": 197.94244393538014,
+          "min": 45.0,
+          "max": 736.0
+        },
+        "pending_trades": {
+          "mean": 1.8,
+          "sd": 1.0327955589886446,
+          "min": 0.0,
+          "max": 3.0
+        },
+        "settled_value": {
+          "mean": 101120.1,
+          "sd": 63598.771473896326,
+          "min": 1851.0,
+          "max": 200606.0
+        },
+        "pending_value": {
+          "mean": 462.9,
+          "sd": 361.5136235330558,
+          "min": 0.0,
+          "max": 1171.0
+        },
+        "reserved_cash": {
+          "mean": 462.9,
+          "sd": 361.5136235330558,
+          "min": 0.0,
+          "max": 1171.0
+        },
+        "reserved_efloat": {
+          "mean": 462.9,
+          "sd": 361.5136235330558,
+          "min": 0.0,
+          "max": 1171.0
+        },
+        "unmet_attempts": {
+          "mean": 2695.5,
+          "sd": 1237.9660962867906,
+          "min": 681.0,
+          "max": 4860.0
+        },
+        "cash_low_share": {
+          "mean": 0.47119,
+          "sd": 0.028662497758879597,
+          "min": 0.4227,
+          "max": 0.5096
+        },
+        "efloat_low_share": {
+          "mean": 0.45811,
+          "sd": 0.04396962208919547,
+          "min": 0.3588,
+          "max": 0.5024
+        }
+      }
+    },
+    {
+      "id": "p00011",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 65.8369501872692,
+          "sd": 5.128454183886478,
+          "min": 55.38344513513406,
+          "max": 72.04845962816296
+        },
+        "deposit_service_pct": {
+          "mean": 65.96140080586807,
+          "sd": 5.057975665125227,
+          "min": 55.165443321643814,
+          "max": 72.24401776617107
+        },
+        "withdrawal_service_pct": {
+          "mean": 65.71851147862002,
+          "sd": 5.233847859602081,
+          "min": 55.602674087172375,
+          "max": 71.8537574087461
+        },
+        "served_count": {
+          "mean": 14355.6,
+          "sd": 916.9324705536147,
+          "min": 12397.0,
+          "max": 15437.0
+        },
+        "trades_started": {
+          "mean": 1360.2,
+          "sd": 254.27098405703575,
+          "min": 762.0,
+          "max": 1646.0
+        },
+        "trades_settled": {
+          "mean": 1355.0,
+          "sd": 253.24296633865274,
+          "min": 759.0,
+          "max": 1640.0
+        },
+        "pending_trades": {
+          "mean": 5.2,
+          "sd": 1.398411797560202,
+          "min": 3.0,
+          "max": 7.0
+        },
+        "settled_value": {
+          "mean": 384466.2,
+          "sd": 80286.86787984418,
+          "min": 187682.0,
+          "max": 465636.0
+        },
+        "pending_value": {
+          "mean": 1526.3,
+          "sd": 462.2803502445483,
+          "min": 888.0,
+          "max": 2407.0
+        },
+        "reserved_cash": {
+          "mean": 1526.3,
+          "sd": 462.2803502445483,
+          "min": 888.0,
+          "max": 2407.0
+        },
+        "reserved_efloat": {
+          "mean": 1526.3,
+          "sd": 462.2803502445483,
+          "min": 888.0,
+          "max": 2407.0
+        },
+        "unmet_attempts": {
+          "mean": 2393.6,
+          "sd": 1142.626428696429,
+          "min": 1361.0,
+          "max": 5313.0
+        },
+        "cash_low_share": {
+          "mean": 0.40789,
+          "sd": 0.03870436237256296,
+          "min": 0.3338,
+          "max": 0.4435
+        },
+        "efloat_low_share": {
+          "mean": 0.36672,
+          "sd": 0.035653605084977814,
+          "min": 0.3004,
+          "max": 0.4177
+        }
+      }
+    },
+    {
+      "id": "p00012",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 59.82767820771406,
+          "sd": 8.795251926543033,
+          "min": 44.8771729646285,
+          "max": 72.27956665066665
+        },
+        "deposit_service_pct": {
+          "mean": 59.99238958260946,
+          "sd": 8.896297594550184,
+          "min": 44.85107477421333,
+          "max": 72.20107620479544
+        },
+        "withdrawal_service_pct": {
+          "mean": 59.668699722810395,
+          "sd": 8.714768059386051,
+          "min": 44.903156928519515,
+          "max": 72.4561462831501
+        },
+        "served_count": {
+          "mean": 13183.2,
+          "sd": 1502.4315698966866,
+          "min": 10658.0,
+          "max": 15280.0
+        },
+        "trades_started": {
+          "mean": 1746.6,
+          "sd": 442.85969686923545,
+          "min": 1159.0,
+          "max": 2293.0
+        },
+        "trades_settled": {
+          "mean": 1746.6,
+          "sd": 442.85969686923545,
+          "min": 1159.0,
+          "max": 2293.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 421820.2,
+          "sd": 133745.1032115444,
+          "min": 174671.0,
+          "max": 612287.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 342.2,
+          "sd": 379.93180674665524,
+          "min": 0.0,
+          "max": 1174.0
+        },
+        "cash_low_share": {
+          "mean": 0.36763,
+          "sd": 0.11870838264887242,
+          "min": 0.2193,
+          "max": 0.5431
+        },
+        "efloat_low_share": {
+          "mean": 0.39755,
+          "sd": 0.08423259134352003,
+          "min": 0.299,
+          "max": 0.5495
+        }
+      }
+    },
+    {
+      "id": "p00013",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 96.7529048399232,
+          "sd": 0.23431837522768048,
+          "min": 96.3089204382663,
+          "max": 97.07267250805033
+        },
+        "deposit_service_pct": {
+          "mean": 96.98249113733554,
+          "sd": 0.6465229083285965,
+          "min": 95.81317626750585,
+          "max": 98.09743576237295
+        },
+        "withdrawal_service_pct": {
+          "mean": 96.53254803224776,
+          "sd": 0.744914345382234,
+          "min": 95.27813725432787,
+          "max": 97.5408144662215
+        },
+        "served_count": {
+          "mean": 19499.8,
+          "sd": 36.04256742612361,
+          "min": 19436.0,
+          "max": 19550.0
+        },
+        "trades_started": {
+          "mean": 2702.6,
+          "sd": 90.9617746333285,
+          "min": 2577.0,
+          "max": 2906.0
+        },
+        "trades_settled": {
+          "mean": 2702.6,
+          "sd": 90.9617746333285,
+          "min": 2577.0,
+          "max": 2906.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 822516.5,
+          "sd": 20388.107013921403,
+          "min": 787113.0,
+          "max": 861680.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.16515,
+          "sd": 0.03126155786265297,
+          "min": 0.1168,
+          "max": 0.223
+        },
+        "efloat_low_share": {
+          "mean": 0.1459,
+          "sd": 0.027781288667014712,
+          "min": 0.1099,
+          "max": 0.1915
+        }
+      }
+    },
+    {
+      "id": "p00014",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 58.13018360595729,
+          "sd": 7.82248937603998,
+          "min": 44.74066557960858,
+          "max": 69.24157916241873
+        },
+        "deposit_service_pct": {
+          "mean": 58.27713313699396,
+          "sd": 7.854283319359203,
+          "min": 44.79429424973539,
+          "max": 69.01782305901527
+        },
+        "withdrawal_service_pct": {
+          "mean": 57.98896871713929,
+          "sd": 7.811279788671558,
+          "min": 44.687271631371914,
+          "max": 69.46659479543551
+        },
+        "served_count": {
+          "mean": 12911.3,
+          "sd": 1350.1337423463729,
+          "min": 10632.0,
+          "max": 14791.0
+        },
+        "trades_started": {
+          "mean": 1394.4,
+          "sd": 319.50106937744874,
+          "min": 1012.0,
+          "max": 2031.0
+        },
+        "trades_settled": {
+          "mean": 1391.6,
+          "sd": 318.73611516599607,
+          "min": 1010.0,
+          "max": 2027.0
+        },
+        "pending_trades": {
+          "mean": 2.8,
+          "sd": 1.2292725943057183,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "settled_value": {
+          "mean": 400278.5,
+          "sd": 94343.12794057187,
+          "min": 291957.0,
+          "max": 545734.0
+        },
+        "pending_value": {
+          "mean": 822.1,
+          "sd": 391.6703404083025,
+          "min": 0.0,
+          "max": 1253.0
+        },
+        "reserved_cash": {
+          "mean": 822.1,
+          "sd": 391.6703404083025,
+          "min": 0.0,
+          "max": 1253.0
+        },
+        "reserved_efloat": {
+          "mean": 822.1,
+          "sd": 391.6703404083025,
+          "min": 0.0,
+          "max": 1253.0
+        },
+        "unmet_attempts": {
+          "mean": 55.7,
+          "sd": 131.39596645255136,
+          "min": 0.0,
+          "max": 427.0
+        },
+        "cash_low_share": {
+          "mean": 0.39567,
+          "sd": 0.08370564895314214,
+          "min": 0.3004,
+          "max": 0.5513
+        },
+        "efloat_low_share": {
+          "mean": 0.40362,
+          "sd": 0.055329995883286,
+          "min": 0.3448,
+          "max": 0.5219
+        }
+      }
+    },
+    {
+      "id": "p00015",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 90.64752065602916,
+          "sd": 0.4308698647557152,
+          "min": 89.77612456405545,
+          "max": 91.26293328958464
+        },
+        "deposit_service_pct": {
+          "mean": 90.84725021565394,
+          "sd": 0.5973860009443542,
+          "min": 90.10252762215922,
+          "max": 92.32126613411346
+        },
+        "withdrawal_service_pct": {
+          "mean": 90.4567832209669,
+          "sd": 0.9151597652699575,
+          "min": 88.68907848430372,
+          "max": 91.7756020747312
+        },
+        "served_count": {
+          "mean": 18540.1,
+          "sd": 73.99466947768002,
+          "min": 18394.0,
+          "max": 18654.0
+        },
+        "trades_started": {
+          "mean": 2426.0,
+          "sd": 41.62531281163742,
+          "min": 2391.0,
+          "max": 2537.0
+        },
+        "trades_settled": {
+          "mean": 2421.8,
+          "sd": 41.6727995486531,
+          "min": 2388.0,
+          "max": 2533.0
+        },
+        "pending_trades": {
+          "mean": 4.2,
+          "sd": 1.398411797560202,
+          "min": 2.0,
+          "max": 6.0
+        },
+        "settled_value": {
+          "mean": 752309.7,
+          "sd": 13280.883956942693,
+          "min": 742498.0,
+          "max": 788382.0
+        },
+        "pending_value": {
+          "mean": 1202.4,
+          "sd": 506.8215114263052,
+          "min": 461.0,
+          "max": 2149.0
+        },
+        "reserved_cash": {
+          "mean": 1202.4,
+          "sd": 506.8215114263052,
+          "min": 461.0,
+          "max": 2149.0
+        },
+        "reserved_efloat": {
+          "mean": 1202.4,
+          "sd": 506.8215114263052,
+          "min": 461.0,
+          "max": 2149.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.26403,
+          "sd": 0.014156039150992925,
+          "min": 0.2493,
+          "max": 0.2933
+        },
+        "efloat_low_share": {
+          "mean": 0.25393,
+          "sd": 0.010114791149598682,
+          "min": 0.2358,
+          "max": 0.2658
+        }
+      }
+    },
+    {
+      "id": "p00016",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 54.34913284029358,
+          "sd": 6.448960970457003,
+          "min": 44.07668497293541,
+          "max": 64.45422550880049
+        },
+        "deposit_service_pct": {
+          "mean": 54.47230361273512,
+          "sd": 6.464010757980337,
+          "min": 44.18335954733854,
+          "max": 64.49177019862309
+        },
+        "withdrawal_service_pct": {
+          "mean": 54.231001936380096,
+          "sd": 6.453029162822197,
+          "min": 43.97047729166379,
+          "max": 64.41670242066074
+        },
+        "served_count": {
+          "mean": 12283.5,
+          "sd": 1142.4100499480132,
+          "min": 10467.0,
+          "max": 14097.0
+        },
+        "trades_started": {
+          "mean": 812.6,
+          "sd": 182.45803170409718,
+          "min": 566.0,
+          "max": 1081.0
+        },
+        "trades_settled": {
+          "mean": 809.8,
+          "sd": 181.99865689370102,
+          "min": 563.0,
+          "max": 1079.0
+        },
+        "pending_trades": {
+          "mean": 2.8,
+          "sd": 1.3165611772087666,
+          "min": 1.0,
+          "max": 5.0
+        },
+        "settled_value": {
+          "mean": 245378.8,
+          "sd": 59529.99809582467,
+          "min": 173841.0,
+          "max": 336471.0
+        },
+        "pending_value": {
+          "mean": 799.8,
+          "sd": 380.9566321191371,
+          "min": 163.0,
+          "max": 1503.0
+        },
+        "reserved_cash": {
+          "mean": 799.8,
+          "sd": 380.9566321191371,
+          "min": 163.0,
+          "max": 1503.0
+        },
+        "reserved_efloat": {
+          "mean": 799.8,
+          "sd": 380.9566321191371,
+          "min": 163.0,
+          "max": 1503.0
+        },
+        "unmet_attempts": {
+          "mean": 46.2,
+          "sd": 58.139296330259945,
+          "min": 7.0,
+          "max": 206.0
+        },
+        "cash_low_share": {
+          "mean": 0.41646,
+          "sd": 0.04783818093903191,
+          "min": 0.3572,
+          "max": 0.5068
+        },
+        "efloat_low_share": {
+          "mean": 0.41843,
+          "sd": 0.023755796953352004,
+          "min": 0.3909,
+          "max": 0.4602
+        }
+      }
+    },
+    {
+      "id": "p00017",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.1,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 80.27665732166217,
+          "sd": 0.9524235459323875,
+          "min": 78.95469134200891,
+          "max": 81.77840421988118
+        },
+        "deposit_service_pct": {
+          "mean": 80.45707153560747,
+          "sd": 0.9972223650186821,
+          "min": 79.45235283762642,
+          "max": 82.73348500902559
+        },
+        "withdrawal_service_pct": {
+          "mean": 80.1038963022072,
+          "sd": 1.1860504043256983,
+          "min": 78.2395647128924,
+          "max": 81.61260613951863
+        },
+        "served_count": {
+          "mean": 16827.2,
+          "sd": 155.76891716756444,
+          "min": 16628.0,
+          "max": 17101.0
+        },
+        "trades_started": {
+          "mean": 1671.4,
+          "sd": 38.32956503217269,
+          "min": 1606.0,
+          "max": 1719.0
+        },
+        "trades_settled": {
+          "mean": 1664.3,
+          "sd": 38.92742535083003,
+          "min": 1598.0,
+          "max": 1712.0
+        },
+        "pending_trades": {
+          "mean": 7.1,
+          "sd": 1.66332999331662,
+          "min": 4.0,
+          "max": 9.0
+        },
+        "settled_value": {
+          "mean": 517114.6,
+          "sd": 11836.729758585256,
+          "min": 496205.0,
+          "max": 542538.0
+        },
+        "pending_value": {
+          "mean": 2218.5,
+          "sd": 576.7250933792749,
+          "min": 1334.0,
+          "max": 3061.0
+        },
+        "reserved_cash": {
+          "mean": 2218.5,
+          "sd": 576.7250933792749,
+          "min": 1334.0,
+          "max": 3061.0
+        },
+        "reserved_efloat": {
+          "mean": 2218.5,
+          "sd": 576.7250933792749,
+          "min": 1334.0,
+          "max": 3061.0
+        },
+        "unmet_attempts": {
+          "mean": 1.1,
+          "sd": 1.5238839267549948,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "cash_low_share": {
+          "mean": 0.33058,
+          "sd": 0.009921559017278137,
+          "min": 0.3168,
+          "max": 0.3459
+        },
+        "efloat_low_share": {
+          "mean": 0.33007,
+          "sd": 0.009812695857917945,
+          "min": 0.3145,
+          "max": 0.3453
+        }
+      }
+    },
+    {
+      "id": "p00018",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00019",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00020",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00021",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00022",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00023",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00024",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 55.894836252130915,
+          "sd": 12.50147265172142,
+          "min": 37.953821791448796,
+          "max": 71.71635929435939
+        },
+        "deposit_service_pct": {
+          "mean": 56.04062007278776,
+          "sd": 12.50898766218013,
+          "min": 38.0508913774723,
+          "max": 71.51717179710374
+        },
+        "withdrawal_service_pct": {
+          "mean": 55.754631673720176,
+          "sd": 12.507104709328182,
+          "min": 37.45326567230245,
+          "max": 71.94873804328584
+        },
+        "served_count": {
+          "mean": 12501.4,
+          "sd": 2138.2641558048904,
+          "min": 9431.0,
+          "max": 15171.0
+        },
+        "trades_started": {
+          "mean": 1338.0,
+          "sd": 626.8474916419286,
+          "min": 455.0,
+          "max": 2121.0
+        },
+        "trades_settled": {
+          "mean": 1338.0,
+          "sd": 626.8474916419286,
+          "min": 455.0,
+          "max": 2121.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 330376.6,
+          "sd": 182706.5129084225,
+          "min": 71829.0,
+          "max": 576172.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 1073.7,
+          "sd": 1027.298404121758,
+          "min": 188.0,
+          "max": 3234.0
+        },
+        "cash_low_share": {
+          "mean": 0.37539,
+          "sd": 0.09587086743230303,
+          "min": 0.2357,
+          "max": 0.5236
+        },
+        "efloat_low_share": {
+          "mean": 0.4102,
+          "sd": 0.08376151330480551,
+          "min": 0.3088,
+          "max": 0.5362
+        }
+      }
+    },
+    {
+      "id": "p00025",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 96.01472495558036,
+          "sd": 0.6885900036781912,
+          "min": 95.02528701029009,
+          "max": 96.95545481013184
+        },
+        "deposit_service_pct": {
+          "mean": 96.25401252753724,
+          "sd": 0.9017577849780728,
+          "min": 94.56660748453612,
+          "max": 97.6120884023439
+        },
+        "withdrawal_service_pct": {
+          "mean": 95.78476375992955,
+          "sd": 1.0040844876209056,
+          "min": 93.99245774139932,
+          "max": 96.88077748227826
+        },
+        "served_count": {
+          "mean": 19396.0,
+          "sd": 105.96645171415757,
+          "min": 19254.0,
+          "max": 19546.0
+        },
+        "trades_started": {
+          "mean": 2844.4,
+          "sd": 122.89308813400008,
+          "min": 2652.0,
+          "max": 3030.0
+        },
+        "trades_settled": {
+          "mean": 2844.4,
+          "sd": 122.89308813400008,
+          "min": 2652.0,
+          "max": 3030.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 855758.5,
+          "sd": 38245.06086702206,
+          "min": 808236.0,
+          "max": 911565.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 48.4,
+          "sd": 10.68955876856789,
+          "min": 30.0,
+          "max": 65.0
+        },
+        "cash_low_share": {
+          "mean": 0.17386000000000001,
+          "sd": 0.025671653195261455,
+          "min": 0.1436,
+          "max": 0.2163
+        },
+        "efloat_low_share": {
+          "mean": 0.16342,
+          "sd": 0.025828700659881788,
+          "min": 0.128,
+          "max": 0.2184
+        }
+      }
+    },
+    {
+      "id": "p00026",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 54.19840717819775,
+          "sd": 11.298499862485494,
+          "min": 37.88509766928192,
+          "max": 68.67420651134745
+        },
+        "deposit_service_pct": {
+          "mean": 54.33285598002945,
+          "sd": 11.312537815563486,
+          "min": 37.87216265692953,
+          "max": 68.73209622536994
+        },
+        "withdrawal_service_pct": {
+          "mean": 54.069106815795294,
+          "sd": 11.29607640597073,
+          "min": 37.426588571925414,
+          "max": 68.9313397685932
+        },
+        "served_count": {
+          "mean": 12239.6,
+          "sd": 1946.1313875938022,
+          "min": 9448.0,
+          "max": 14732.0
+        },
+        "trades_started": {
+          "mean": 1226.1,
+          "sd": 484.2383366346232,
+          "min": 493.0,
+          "max": 1889.0
+        },
+        "trades_settled": {
+          "mean": 1223.8,
+          "sd": 483.65226259277557,
+          "min": 492.0,
+          "max": 1886.0
+        },
+        "pending_trades": {
+          "mean": 2.3,
+          "sd": 1.0593499054713802,
+          "min": 1.0,
+          "max": 4.0
+        },
+        "settled_value": {
+          "mean": 338788.1,
+          "sd": 151780.1122380297,
+          "min": 114685.0,
+          "max": 529632.0
+        },
+        "pending_value": {
+          "mean": 568.4,
+          "sd": 325.298222149051,
+          "min": 321.0,
+          "max": 1438.0
+        },
+        "reserved_cash": {
+          "mean": 568.4,
+          "sd": 325.298222149051,
+          "min": 321.0,
+          "max": 1438.0
+        },
+        "reserved_efloat": {
+          "mean": 568.4,
+          "sd": 325.298222149051,
+          "min": 321.0,
+          "max": 1438.0
+        },
+        "unmet_attempts": {
+          "mean": 753.6,
+          "sd": 948.0672971893925,
+          "min": 61.0,
+          "max": 2765.0
+        },
+        "cash_low_share": {
+          "mean": 0.40637,
+          "sd": 0.07089756381960918,
+          "min": 0.3144,
+          "max": 0.5279
+        },
+        "efloat_low_share": {
+          "mean": 0.42776,
+          "sd": 0.060458400758060256,
+          "min": 0.3603,
+          "max": 0.5172
+        }
+      }
+    },
+    {
+      "id": "p00027",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 89.13729021359727,
+          "sd": 1.4878813559511892,
+          "min": 87.4888488429619,
+          "max": 91.18833998680842
+        },
+        "deposit_service_pct": {
+          "mean": 89.3397960531778,
+          "sd": 1.6517173411200352,
+          "min": 86.70057323246753,
+          "max": 91.36362636065547
+        },
+        "withdrawal_service_pct": {
+          "mean": 88.94358028352967,
+          "sd": 1.5729341894542923,
+          "min": 86.51640542869113,
+          "max": 91.21361248470157
+        },
+        "served_count": {
+          "mean": 18308.9,
+          "sd": 245.69830189798944,
+          "min": 18020.0,
+          "max": 18647.0
+        },
+        "trades_started": {
+          "mean": 2531.5,
+          "sd": 130.40385986107415,
+          "min": 2330.0,
+          "max": 2694.0
+        },
+        "trades_settled": {
+          "mean": 2525.5,
+          "sd": 130.25551811727593,
+          "min": 2325.0,
+          "max": 2687.0
+        },
+        "pending_trades": {
+          "mean": 6.0,
+          "sd": 1.4907119849998598,
+          "min": 4.0,
+          "max": 9.0
+        },
+        "settled_value": {
+          "mean": 776250.1,
+          "sd": 35361.42249354043,
+          "min": 717949.0,
+          "max": 818406.0
+        },
+        "pending_value": {
+          "mean": 1922.8,
+          "sd": 496.4587484261798,
+          "min": 1338.0,
+          "max": 2777.0
+        },
+        "reserved_cash": {
+          "mean": 1922.8,
+          "sd": 496.4587484261798,
+          "min": 1338.0,
+          "max": 2777.0
+        },
+        "reserved_efloat": {
+          "mean": 1922.8,
+          "sd": 496.4587484261798,
+          "min": 1338.0,
+          "max": 2777.0
+        },
+        "unmet_attempts": {
+          "mean": 20.0,
+          "sd": 8.856886837057615,
+          "min": 10.0,
+          "max": 40.0
+        },
+        "cash_low_share": {
+          "mean": 0.26874,
+          "sd": 0.019755066860597227,
+          "min": 0.2392,
+          "max": 0.2928
+        },
+        "efloat_low_share": {
+          "mean": 0.27051,
+          "sd": 0.012841551481205233,
+          "min": 0.2525,
+          "max": 0.291
+        }
+      }
+    },
+    {
+      "id": "p00028",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 49.72287546166521,
+          "sd": 9.131133726565139,
+          "min": 36.909783414230965,
+          "max": 61.83439581407711
+        },
+        "deposit_service_pct": {
+          "mean": 49.8391245537492,
+          "sd": 9.150306053457001,
+          "min": 36.628943805877356,
+          "max": 61.62296447057939
+        },
+        "withdrawal_service_pct": {
+          "mean": 49.611061006005194,
+          "sd": 9.122351392806685,
+          "min": 36.57272375170931,
+          "max": 62.04701731075622
+        },
+        "served_count": {
+          "mean": 11485.3,
+          "sd": 1592.9355884306462,
+          "min": 9223.0,
+          "max": 13551.0
+        },
+        "trades_started": {
+          "mean": 717.9,
+          "sd": 298.3489567603681,
+          "min": 249.0,
+          "max": 1097.0
+        },
+        "trades_settled": {
+          "mean": 714.9,
+          "sd": 297.3114528571007,
+          "min": 248.0,
+          "max": 1092.0
+        },
+        "pending_trades": {
+          "mean": 3.0,
+          "sd": 1.3333333333333333,
+          "min": 1.0,
+          "max": 5.0
+        },
+        "settled_value": {
+          "mean": 209389.4,
+          "sd": 91008.86044556322,
+          "min": 73377.0,
+          "max": 326712.0
+        },
+        "pending_value": {
+          "mean": 933.0,
+          "sd": 472.3649718879107,
+          "min": 336.0,
+          "max": 1540.0
+        },
+        "reserved_cash": {
+          "mean": 933.0,
+          "sd": 472.3649718879107,
+          "min": 336.0,
+          "max": 1540.0
+        },
+        "reserved_efloat": {
+          "mean": 933.0,
+          "sd": 472.3649718879107,
+          "min": 336.0,
+          "max": 1540.0
+        },
+        "unmet_attempts": {
+          "mean": 774.7,
+          "sd": 820.5346563200254,
+          "min": 168.0,
+          "max": 2402.0
+        },
+        "cash_low_share": {
+          "mean": 0.4337,
+          "sd": 0.042367519005326086,
+          "min": 0.3742,
+          "max": 0.497
+        },
+        "efloat_low_share": {
+          "mean": 0.43952,
+          "sd": 0.03310340029530367,
+          "min": 0.393,
+          "max": 0.4935
+        }
+      }
+    },
+    {
+      "id": "p00029",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 78.22844234356545,
+          "sd": 3.215737453852801,
+          "min": 74.01775443016346,
+          "max": 82.25557001608374
+        },
+        "deposit_service_pct": {
+          "mean": 78.39872823799566,
+          "sd": 3.23803415680732,
+          "min": 73.30281611041376,
+          "max": 82.27647488646296
+        },
+        "withdrawal_service_pct": {
+          "mean": 78.06589883097361,
+          "sd": 3.283605517730408,
+          "min": 73.25492241903994,
+          "max": 82.23462260518436
+        },
+        "served_count": {
+          "mean": 16491.5,
+          "sd": 544.9581533373814,
+          "min": 15757.0,
+          "max": 17174.0
+        },
+        "trades_started": {
+          "mean": 1704.8,
+          "sd": 84.4706392120297,
+          "min": 1601.0,
+          "max": 1835.0
+        },
+        "trades_settled": {
+          "mean": 1697.5,
+          "sd": 83.8825236731572,
+          "min": 1593.0,
+          "max": 1826.0
+        },
+        "pending_trades": {
+          "mean": 7.3,
+          "sd": 1.3374935098492586,
+          "min": 5.0,
+          "max": 9.0
+        },
+        "settled_value": {
+          "mean": 519810.9,
+          "sd": 19225.37934577336,
+          "min": 494346.0,
+          "max": 549054.0
+        },
+        "pending_value": {
+          "mean": 2145.3,
+          "sd": 535.7327380949074,
+          "min": 954.0,
+          "max": 2709.0
+        },
+        "reserved_cash": {
+          "mean": 2145.3,
+          "sd": 535.7327380949074,
+          "min": 954.0,
+          "max": 2709.0
+        },
+        "reserved_efloat": {
+          "mean": 2145.3,
+          "sd": 535.7327380949074,
+          "min": 954.0,
+          "max": 2709.0
+        },
+        "unmet_attempts": {
+          "mean": 102.7,
+          "sd": 34.80118133371656,
+          "min": 50.0,
+          "max": 158.0
+        },
+        "cash_low_share": {
+          "mean": 0.34373,
+          "sd": 0.021561387813506906,
+          "min": 0.3133,
+          "max": 0.3742
+        },
+        "efloat_low_share": {
+          "mean": 0.34157,
+          "sd": 0.02091868117789031,
+          "min": 0.3129,
+          "max": 0.3754
+        }
+      }
+    },
+    {
+      "id": "p00030",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 59.81242488996813,
+          "sd": 8.76981254762896,
+          "min": 44.85851794238066,
+          "max": 72.2003268764653
+        },
+        "deposit_service_pct": {
+          "mean": 59.981462184336685,
+          "sd": 8.864914697608672,
+          "min": 44.85107477421333,
+          "max": 72.10868877106908
+        },
+        "withdrawal_service_pct": {
+          "mean": 59.649052425735405,
+          "sd": 8.694257418531658,
+          "min": 44.865928533299716,
+          "max": 72.36703656482035
+        },
+        "served_count": {
+          "mean": 13175.6,
+          "sd": 1502.3583830468385,
+          "min": 10613.0,
+          "max": 15252.0
+        },
+        "trades_started": {
+          "mean": 1739.2,
+          "sd": 447.3146543541805,
+          "min": 1135.0,
+          "max": 2319.0
+        },
+        "trades_settled": {
+          "mean": 1739.2,
+          "sd": 447.3146543541805,
+          "min": 1135.0,
+          "max": 2319.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 418399.7,
+          "sd": 135881.1255751389,
+          "min": 173360.0,
+          "max": 602507.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 341.5,
+          "sd": 399.37652799220825,
+          "min": 2.0,
+          "max": 1224.0
+        },
+        "cash_low_share": {
+          "mean": 0.36594,
+          "sd": 0.11738459296971927,
+          "min": 0.2202,
+          "max": 0.5454
+        },
+        "efloat_low_share": {
+          "mean": 0.39905,
+          "sd": 0.08505066790514411,
+          "min": 0.3033,
+          "max": 0.5512
+        }
+      }
+    },
+    {
+      "id": "p00031",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 96.78889459367687,
+          "sd": 0.2466632681339976,
+          "min": 96.2001442445439,
+          "max": 97.01914459320207
+        },
+        "deposit_service_pct": {
+          "mean": 97.02942948606321,
+          "sd": 0.5469361861702741,
+          "min": 96.11171431780608,
+          "max": 97.8184632402547
+        },
+        "withdrawal_service_pct": {
+          "mean": 96.5575203747043,
+          "sd": 0.8194570213623065,
+          "min": 95.15380065935481,
+          "max": 97.91645380437505
+        },
+        "served_count": {
+          "mean": 19507.0,
+          "sd": 33.51284994015148,
+          "min": 19426.0,
+          "max": 19536.0
+        },
+        "trades_started": {
+          "mean": 2722.5,
+          "sd": 75.12545063647428,
+          "min": 2613.0,
+          "max": 2889.0
+        },
+        "trades_settled": {
+          "mean": 2722.5,
+          "sd": 75.12545063647428,
+          "min": 2613.0,
+          "max": 2889.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 829208.6,
+          "sd": 14792.283823369233,
+          "min": 810070.0,
+          "max": 862463.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.16597,
+          "sd": 0.030244707526000867,
+          "min": 0.1184,
+          "max": 0.2061
+        },
+        "efloat_low_share": {
+          "mean": 0.14749,
+          "sd": 0.02645967371932869,
+          "min": 0.1038,
+          "max": 0.1916
+        }
+      }
+    },
+    {
+      "id": "p00032",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 58.27459687166404,
+          "sd": 7.80521861226497,
+          "min": 44.75497763371407,
+          "max": 69.33450490513046
+        },
+        "deposit_service_pct": {
+          "mean": 58.41526398706745,
+          "sd": 7.825559159053961,
+          "min": 44.81407840460575,
+          "max": 69.04630514200494
+        },
+        "withdrawal_service_pct": {
+          "mean": 58.13975706081858,
+          "sd": 7.806761303884611,
+          "min": 44.696135534995676,
+          "max": 69.62432695310402
+        },
+        "served_count": {
+          "mean": 12930.3,
+          "sd": 1347.2149090294063,
+          "min": 10614.0,
+          "max": 14806.0
+        },
+        "trades_started": {
+          "mean": 1389.1,
+          "sd": 344.18000781244945,
+          "min": 953.0,
+          "max": 2042.0
+        },
+        "trades_settled": {
+          "mean": 1386.1,
+          "sd": 343.4774616574815,
+          "min": 952.0,
+          "max": 2037.0
+        },
+        "pending_trades": {
+          "mean": 3.0,
+          "sd": 0.9428090415820634,
+          "min": 1.0,
+          "max": 5.0
+        },
+        "settled_value": {
+          "mean": 395574.2,
+          "sd": 96915.79602337508,
+          "min": 282379.0,
+          "max": 530096.0
+        },
+        "pending_value": {
+          "mean": 917.9,
+          "sd": 312.585437209662,
+          "min": 193.0,
+          "max": 1329.0
+        },
+        "reserved_cash": {
+          "mean": 917.9,
+          "sd": 312.585437209662,
+          "min": 193.0,
+          "max": 1329.0
+        },
+        "reserved_efloat": {
+          "mean": 917.9,
+          "sd": 312.585437209662,
+          "min": 193.0,
+          "max": 1329.0
+        },
+        "unmet_attempts": {
+          "mean": 54.6,
+          "sd": 131.09301193342756,
+          "min": 0.0,
+          "max": 425.0
+        },
+        "cash_low_share": {
+          "mean": 0.3917,
+          "sd": 0.08161236289789542,
+          "min": 0.302,
+          "max": 0.5467
+        },
+        "efloat_low_share": {
+          "mean": 0.40572,
+          "sd": 0.056787631673729015,
+          "min": 0.3386,
+          "max": 0.5232
+        }
+      }
+    },
+    {
+      "id": "p00033",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 90.55591288472759,
+          "sd": 0.23909878904537998,
+          "min": 90.10901171439565,
+          "max": 91.01134277277022
+        },
+        "deposit_service_pct": {
+          "mean": 90.74969003197954,
+          "sd": 0.6446958219482061,
+          "min": 89.69817113422783,
+          "max": 91.43624800190457
+        },
+        "withdrawal_service_pct": {
+          "mean": 90.37093650843258,
+          "sd": 0.6996926746779033,
+          "min": 89.33262283850492,
+          "max": 91.42420399519983
+        },
+        "served_count": {
+          "mean": 18530.7,
+          "sd": 42.939362930636136,
+          "min": 18433.0,
+          "max": 18599.0
+        },
+        "trades_started": {
+          "mean": 2436.2,
+          "sd": 34.774831256080724,
+          "min": 2384.0,
+          "max": 2492.0
+        },
+        "trades_settled": {
+          "mean": 2430.5,
+          "sd": 34.757093600523554,
+          "min": 2378.0,
+          "max": 2486.0
+        },
+        "pending_trades": {
+          "mean": 5.7,
+          "sd": 1.7029386365926402,
+          "min": 3.0,
+          "max": 8.0
+        },
+        "settled_value": {
+          "mean": 755009.8,
+          "sd": 13536.152126804722,
+          "min": 740153.0,
+          "max": 780448.0
+        },
+        "pending_value": {
+          "mean": 1814.2,
+          "sd": 605.2167288574308,
+          "min": 727.0,
+          "max": 2557.0
+        },
+        "reserved_cash": {
+          "mean": 1814.2,
+          "sd": 605.2167288574308,
+          "min": 727.0,
+          "max": 2557.0
+        },
+        "reserved_efloat": {
+          "mean": 1814.2,
+          "sd": 605.2167288574308,
+          "min": 727.0,
+          "max": 2557.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.26011,
+          "sd": 0.018397853135624267,
+          "min": 0.2286,
+          "max": 0.2875
+        },
+        "efloat_low_share": {
+          "mean": 0.25796,
+          "sd": 0.017496933064587824,
+          "min": 0.2295,
+          "max": 0.2854
+        }
+      }
+    },
+    {
+      "id": "p00034",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 54.59703888156733,
+          "sd": 6.467219570403507,
+          "min": 44.16847952685336,
+          "max": 64.48163898398543
+        },
+        "deposit_service_pct": {
+          "mean": 54.72744985335807,
+          "sd": 6.478208094293234,
+          "min": 44.284654420274805,
+          "max": 64.24351389787195
+        },
+        "withdrawal_service_pct": {
+          "mean": 54.47186790647142,
+          "sd": 6.476994822125432,
+          "min": 44.052813107546726,
+          "max": 64.7211044831338
+        },
+        "served_count": {
+          "mean": 12309.1,
+          "sd": 1124.3184058698753,
+          "min": 10495.0,
+          "max": 13984.0
+        },
+        "trades_started": {
+          "mean": 810.7,
+          "sd": 193.52981395353245,
+          "min": 551.0,
+          "max": 1090.0
+        },
+        "trades_settled": {
+          "mean": 807.1,
+          "sd": 193.09839173045665,
+          "min": 548.0,
+          "max": 1084.0
+        },
+        "pending_trades": {
+          "mean": 3.6,
+          "sd": 1.0749676997731399,
+          "min": 2.0,
+          "max": 6.0
+        },
+        "settled_value": {
+          "mean": 243488.0,
+          "sd": 60487.8728212891,
+          "min": 166215.0,
+          "max": 332011.0
+        },
+        "pending_value": {
+          "mean": 1103.1,
+          "sd": 417.7456562710537,
+          "min": 715.0,
+          "max": 2022.0
+        },
+        "reserved_cash": {
+          "mean": 1103.1,
+          "sd": 417.7456562710537,
+          "min": 715.0,
+          "max": 2022.0
+        },
+        "reserved_efloat": {
+          "mean": 1103.1,
+          "sd": 417.7456562710537,
+          "min": 715.0,
+          "max": 2022.0
+        },
+        "unmet_attempts": {
+          "mean": 44.1,
+          "sd": 56.35492682789835,
+          "min": 6.0,
+          "max": 201.0
+        },
+        "cash_low_share": {
+          "mean": 0.41303,
+          "sd": 0.050162337576224576,
+          "min": 0.354,
+          "max": 0.5128
+        },
+        "efloat_low_share": {
+          "mean": 0.41917,
+          "sd": 0.025457461250747954,
+          "min": 0.3859,
+          "max": 0.4685
+        }
+      }
+    },
+    {
+      "id": "p00035",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.3,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 80.67182696398643,
+          "sd": 0.4184132210998491,
+          "min": 80.13052593344204,
+          "max": 81.30280279582023
+        },
+        "deposit_service_pct": {
+          "mean": 80.8481461522722,
+          "sd": 0.8011144533214895,
+          "min": 79.54787742402058,
+          "max": 81.99745946592058
+        },
+        "withdrawal_service_pct": {
+          "mean": 80.50322100475398,
+          "sd": 0.5539702149319112,
+          "min": 79.57991017315383,
+          "max": 81.26522477301248
+        },
+        "served_count": {
+          "mean": 16901.2,
+          "sd": 76.16035714201976,
+          "min": 16822.0,
+          "max": 17016.0
+        },
+        "trades_started": {
+          "mean": 1664.9,
+          "sd": 21.553293122964863,
+          "min": 1638.0,
+          "max": 1707.0
+        },
+        "trades_settled": {
+          "mean": 1657.6,
+          "sd": 21.50555483796893,
+          "min": 1630.0,
+          "max": 1700.0
+        },
+        "pending_trades": {
+          "mean": 7.3,
+          "sd": 1.4181364924121764,
+          "min": 5.0,
+          "max": 9.0
+        },
+        "settled_value": {
+          "mean": 516951.2,
+          "sd": 7114.924139519066,
+          "min": 507328.0,
+          "max": 528383.0
+        },
+        "pending_value": {
+          "mean": 2267.1,
+          "sd": 498.39151276882717,
+          "min": 1582.0,
+          "max": 2974.0
+        },
+        "reserved_cash": {
+          "mean": 2267.1,
+          "sd": 498.39151276882717,
+          "min": 1582.0,
+          "max": 2974.0
+        },
+        "reserved_efloat": {
+          "mean": 2267.1,
+          "sd": 498.39151276882717,
+          "min": 1582.0,
+          "max": 2974.0
+        },
+        "unmet_attempts": {
+          "mean": 0.5,
+          "sd": 1.2692955176439846,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "cash_low_share": {
+          "mean": 0.3311,
+          "sd": 0.013782355870218036,
+          "min": 0.3152,
+          "max": 0.3527
+        },
+        "efloat_low_share": {
+          "mean": 0.32492,
+          "sd": 0.011193728402795729,
+          "min": 0.308,
+          "max": 0.3411
+        }
+      }
+    },
+    {
+      "id": "p00036",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00037",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00038",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00039",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00040",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00041",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "No sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 30.81544234256856,
+          "sd": 0.5515981179982145,
+          "min": 29.7789896954069,
+          "max": 31.691044063244437
+        },
+        "deposit_service_pct": {
+          "mean": 30.891906452180788,
+          "sd": 0.4744296800787794,
+          "min": 30.14698380117275,
+          "max": 31.700561842209385
+        },
+        "withdrawal_service_pct": {
+          "mean": 30.741931586055273,
+          "sd": 0.6824919773456092,
+          "min": 29.419951241316447,
+          "max": 31.68153176042122
+        },
+        "served_count": {
+          "mean": 8110.7,
+          "sd": 130.31930870834998,
+          "min": 7851.0,
+          "max": 8320.0
+        },
+        "trades_started": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "trades_settled": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.49545,
+          "sd": 0.0010024968827881701,
+          "min": 0.4942,
+          "max": 0.4976
+        },
+        "efloat_low_share": {
+          "mean": 0.49541,
+          "sd": 0.0012887978895078911,
+          "min": 0.4931,
+          "max": 0.4966
+        }
+      }
+    },
+    {
+      "id": "p00042",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 59.747336918180444,
+          "sd": 8.805436307986122,
+          "min": 44.8812198213066,
+          "max": 72.29692204551675
+        },
+        "deposit_service_pct": {
+          "mean": 59.8978077258159,
+          "sd": 8.897174617732063,
+          "min": 44.85107477421333,
+          "max": 72.1346047321358
+        },
+        "withdrawal_service_pct": {
+          "mean": 59.60251427357627,
+          "sd": 8.734249888053316,
+          "min": 44.91123292959894,
+          "max": 72.52715558994413
+        },
+        "served_count": {
+          "mean": 13165.8,
+          "sd": 1511.9232637788054,
+          "min": 10627.0,
+          "max": 15287.0
+        },
+        "trades_started": {
+          "mean": 1671.1,
+          "sd": 437.5589991964258,
+          "min": 1058.0,
+          "max": 2236.0
+        },
+        "trades_settled": {
+          "mean": 1671.1,
+          "sd": 437.5589991964258,
+          "min": 1058.0,
+          "max": 2236.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 405653.5,
+          "sd": 138506.01136593314,
+          "min": 157189.0,
+          "max": 593198.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 417.0,
+          "sd": 432.6456081161835,
+          "min": 26.0,
+          "max": 1286.0
+        },
+        "cash_low_share": {
+          "mean": 0.37239,
+          "sd": 0.1199828918360169,
+          "min": 0.2191,
+          "max": 0.5496
+        },
+        "efloat_low_share": {
+          "mean": 0.39078,
+          "sd": 0.07461715322602139,
+          "min": 0.3017,
+          "max": 0.5386
+        }
+      }
+    },
+    {
+      "id": "p00043",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 96.70892181195173,
+          "sd": 0.2815484005327682,
+          "min": 96.2129471110057,
+          "max": 97.04206176367906
+        },
+        "deposit_service_pct": {
+          "mean": 96.95829883444655,
+          "sd": 0.7122851263375682,
+          "min": 95.78972674408294,
+          "max": 98.08771123001152
+        },
+        "withdrawal_service_pct": {
+          "mean": 96.4690851315802,
+          "sd": 0.7436891396204577,
+          "min": 95.29141023463896,
+          "max": 97.59049902934795
+        },
+        "served_count": {
+          "mean": 19498.5,
+          "sd": 39.11024304592227,
+          "min": 19436.0,
+          "max": 19550.0
+        },
+        "trades_started": {
+          "mean": 2710.5,
+          "sd": 68.06900093940625,
+          "min": 2625.0,
+          "max": 2834.0
+        },
+        "trades_settled": {
+          "mean": 2710.5,
+          "sd": 68.06900093940625,
+          "min": 2625.0,
+          "max": 2834.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 821989.7,
+          "sd": 18242.083056310574,
+          "min": 795717.0,
+          "max": 851799.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 2.0,
+          "sd": 0.9428090415820634,
+          "min": 1.0,
+          "max": 4.0
+        },
+        "cash_low_share": {
+          "mean": 0.16427,
+          "sd": 0.02526737246155823,
+          "min": 0.1332,
+          "max": 0.2068
+        },
+        "efloat_low_share": {
+          "mean": 0.149,
+          "sd": 0.022099874308340407,
+          "min": 0.1149,
+          "max": 0.1769
+        }
+      }
+    },
+    {
+      "id": "p00044",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 57.84976241987103,
+          "sd": 7.985264963008703,
+          "min": 44.76484801585578,
+          "max": 70.00769587794497
+        },
+        "deposit_service_pct": {
+          "mean": 57.98782185744188,
+          "sd": 8.011831048878664,
+          "min": 44.813287038410934,
+          "max": 69.79989358777327
+        },
+        "withdrawal_service_pct": {
+          "mean": 57.71728475472592,
+          "sd": 7.977678823866323,
+          "min": 44.71662100114837,
+          "max": 70.21666789325133
+        },
+        "served_count": {
+          "mean": 12856.3,
+          "sd": 1370.626543673448,
+          "min": 10621.0,
+          "max": 14910.0
+        },
+        "trades_started": {
+          "mean": 1368.2,
+          "sd": 304.55971864680697,
+          "min": 902.0,
+          "max": 1888.0
+        },
+        "trades_settled": {
+          "mean": 1365.6,
+          "sd": 304.1082409640065,
+          "min": 900.0,
+          "max": 1884.0
+        },
+        "pending_trades": {
+          "mean": 2.6,
+          "sd": 0.699205898780101,
+          "min": 2.0,
+          "max": 4.0
+        },
+        "settled_value": {
+          "mean": 387172.1,
+          "sd": 91898.3700634686,
+          "min": 259751.0,
+          "max": 489327.0
+        },
+        "pending_value": {
+          "mean": 806.3,
+          "sd": 220.31394266667132,
+          "min": 415.0,
+          "max": 1115.0
+        },
+        "reserved_cash": {
+          "mean": 806.3,
+          "sd": 220.31394266667132,
+          "min": 415.0,
+          "max": 1115.0
+        },
+        "reserved_efloat": {
+          "mean": 806.3,
+          "sd": 220.31394266667132,
+          "min": 415.0,
+          "max": 1115.0
+        },
+        "unmet_attempts": {
+          "mean": 123.5,
+          "sd": 188.102365748015,
+          "min": 6.0,
+          "max": 597.0
+        },
+        "cash_low_share": {
+          "mean": 0.39526,
+          "sd": 0.0864373787457975,
+          "min": 0.2793,
+          "max": 0.554
+        },
+        "efloat_low_share": {
+          "mean": 0.40558,
+          "sd": 0.046300511156285674,
+          "min": 0.352,
+          "max": 0.5179
+        }
+      }
+    },
+    {
+      "id": "p00045",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 90.62510278113913,
+          "sd": 0.7670735307754085,
+          "min": 89.70331779435534,
+          "max": 92.20454225861205
+        },
+        "deposit_service_pct": {
+          "mean": 90.83621825838743,
+          "sd": 0.8808187705139306,
+          "min": 89.34150191241702,
+          "max": 92.38182716323692
+        },
+        "withdrawal_service_pct": {
+          "mean": 90.42280173630492,
+          "sd": 1.0793368489190045,
+          "min": 88.93867406780193,
+          "max": 92.02784066754327
+        },
+        "served_count": {
+          "mean": 18539.8,
+          "sd": 123.0056909252576,
+          "min": 18392.0,
+          "max": 18780.0
+        },
+        "trades_started": {
+          "mean": 2413.2,
+          "sd": 80.18977490927381,
+          "min": 2261.0,
+          "max": 2530.0
+        },
+        "trades_settled": {
+          "mean": 2407.9,
+          "sd": 79.89360981260572,
+          "min": 2258.0,
+          "max": 2527.0
+        },
+        "pending_trades": {
+          "mean": 5.3,
+          "sd": 2.0027758514399734,
+          "min": 3.0,
+          "max": 8.0
+        },
+        "settled_value": {
+          "mean": 748188.2,
+          "sd": 24186.29417114853,
+          "min": 695370.0,
+          "max": 777905.0
+        },
+        "pending_value": {
+          "mean": 1605.2,
+          "sd": 574.8071753978797,
+          "min": 961.0,
+          "max": 2501.0
+        },
+        "reserved_cash": {
+          "mean": 1605.2,
+          "sd": 574.8071753978797,
+          "min": 961.0,
+          "max": 2501.0
+        },
+        "reserved_efloat": {
+          "mean": 1605.2,
+          "sd": 574.8071753978797,
+          "min": 961.0,
+          "max": 2501.0
+        },
+        "unmet_attempts": {
+          "mean": 0.9,
+          "sd": 1.286683937707919,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "cash_low_share": {
+          "mean": 0.25591,
+          "sd": 0.017226107447063536,
+          "min": 0.23,
+          "max": 0.2771
+        },
+        "efloat_low_share": {
+          "mean": 0.2562,
+          "sd": 0.013617472436379513,
+          "min": 0.2417,
+          "max": 0.2791
+        }
+      }
+    },
+    {
+      "id": "p00046",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 53.46392281404588,
+          "sd": 6.437719163647778,
+          "min": 44.64028379322734,
+          "max": 63.655819710174825
+        },
+        "deposit_service_pct": {
+          "mean": 53.57021253495521,
+          "sd": 6.424612093488732,
+          "min": 44.67420442967227,
+          "max": 63.480652053493706
+        },
+        "withdrawal_service_pct": {
+          "mean": 53.36272175117302,
+          "sd": 6.470594854796597,
+          "min": 44.60651162057765,
+          "max": 63.917127961953334
+        },
+        "served_count": {
+          "mean": 12136.4,
+          "sd": 1120.0029960277388,
+          "min": 10591.0,
+          "max": 13897.0
+        },
+        "trades_started": {
+          "mean": 828.5,
+          "sd": 202.34088398871182,
+          "min": 545.0,
+          "max": 1083.0
+        },
+        "trades_settled": {
+          "mean": 825.1,
+          "sd": 201.38600304445745,
+          "min": 543.0,
+          "max": 1078.0
+        },
+        "pending_trades": {
+          "mean": 3.4,
+          "sd": 1.1737877907772674,
+          "min": 2.0,
+          "max": 5.0
+        },
+        "settled_value": {
+          "mean": 246128.1,
+          "sd": 66913.6706136264,
+          "min": 158802.0,
+          "max": 330635.0
+        },
+        "pending_value": {
+          "mean": 1009.4,
+          "sd": 402.194867086977,
+          "min": 458.0,
+          "max": 1717.0
+        },
+        "reserved_cash": {
+          "mean": 1009.4,
+          "sd": 402.194867086977,
+          "min": 458.0,
+          "max": 1717.0
+        },
+        "reserved_efloat": {
+          "mean": 1009.4,
+          "sd": 402.194867086977,
+          "min": 458.0,
+          "max": 1717.0
+        },
+        "unmet_attempts": {
+          "mean": 131.0,
+          "sd": 101.32236782775175,
+          "min": 32.0,
+          "max": 312.0
+        },
+        "cash_low_share": {
+          "mean": 0.42459,
+          "sd": 0.050206339794447837,
+          "min": 0.353,
+          "max": 0.5149
+        },
+        "efloat_low_share": {
+          "mean": 0.42408999999999997,
+          "sd": 0.021834603016516907,
+          "min": 0.3881,
+          "max": 0.4736
+        }
+      }
+    },
+    {
+      "id": "p00047",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "Network sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 80.39210500190173,
+          "sd": 1.4130749444708157,
+          "min": 79.2045787792564,
+          "max": 83.65002782712719
+        },
+        "deposit_service_pct": {
+          "mean": 80.56678859143776,
+          "sd": 1.4694818096897448,
+          "min": 78.90094645429411,
+          "max": 83.79811574163163
+        },
+        "withdrawal_service_pct": {
+          "mean": 80.22491487492775,
+          "sd": 1.5463406592677145,
+          "min": 78.65219384569174,
+          "max": 83.50242716046941
+        },
+        "served_count": {
+          "mean": 16858.6,
+          "sd": 233.0465857100488,
+          "min": 16669.0,
+          "max": 17380.0
+        },
+        "trades_started": {
+          "mean": 1655.6,
+          "sd": 46.9945623331986,
+          "min": 1577.0,
+          "max": 1718.0
+        },
+        "trades_settled": {
+          "mean": 1649.0,
+          "sd": 46.71426144361293,
+          "min": 1571.0,
+          "max": 1713.0
+        },
+        "pending_trades": {
+          "mean": 6.6,
+          "sd": 1.3498971154211057,
+          "min": 5.0,
+          "max": 9.0
+        },
+        "settled_value": {
+          "mean": 512043.7,
+          "sd": 13918.455550096067,
+          "min": 487908.0,
+          "max": 530942.0
+        },
+        "pending_value": {
+          "mean": 1956.0,
+          "sd": 323.71146274284314,
+          "min": 1506.0,
+          "max": 2539.0
+        },
+        "reserved_cash": {
+          "mean": 1956.0,
+          "sd": 323.71146274284314,
+          "min": 1506.0,
+          "max": 2539.0
+        },
+        "reserved_efloat": {
+          "mean": 1956.0,
+          "sd": 323.71146274284314,
+          "min": 1506.0,
+          "max": 2539.0
+        },
+        "unmet_attempts": {
+          "mean": 13.8,
+          "sd": 4.917090377222873,
+          "min": 5.0,
+          "max": 21.0
+        },
+        "cash_low_share": {
+          "mean": 0.32908,
+          "sd": 0.020353530952201444,
+          "min": 0.2986,
+          "max": 0.3595
+        },
+        "efloat_low_share": {
+          "mean": 0.32653,
+          "sd": 0.01100364081161827,
+          "min": 0.3129,
+          "max": 0.3517
+        }
+      }
+    },
+    {
+      "id": "p00048",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 59.82301493579865,
+          "sd": 8.783371667040562,
+          "min": 44.86769739777245,
+          "max": 72.2899798875767
+        },
+        "deposit_service_pct": {
+          "mean": 59.99016987648331,
+          "sd": 8.872410514488124,
+          "min": 44.85107477421333,
+          "max": 72.12256789713221
+        },
+        "withdrawal_service_pct": {
+          "mean": 59.66152367370391,
+          "sd": 8.714148856997792,
+          "min": 44.884247267455486,
+          "max": 72.4583342449841
+        },
+        "served_count": {
+          "mean": 13183.2,
+          "sd": 1502.4045763745235,
+          "min": 10641.0,
+          "max": 15269.0
+        },
+        "trades_started": {
+          "mean": 1752.5,
+          "sd": 442.98990457521217,
+          "min": 1151.0,
+          "max": 2284.0
+        },
+        "trades_settled": {
+          "mean": 1752.5,
+          "sd": 442.98990457521217,
+          "min": 1151.0,
+          "max": 2284.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 423334.4,
+          "sd": 136535.50744379035,
+          "min": 172209.0,
+          "max": 603064.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 339.4,
+          "sd": 385.84141820183066,
+          "min": 5.0,
+          "max": 1211.0
+        },
+        "cash_low_share": {
+          "mean": 0.36842,
+          "sd": 0.11899852286664928,
+          "min": 0.2231,
+          "max": 0.5459
+        },
+        "efloat_low_share": {
+          "mean": 0.39722,
+          "sd": 0.08317742482188302,
+          "min": 0.3028,
+          "max": 0.5462
+        }
+      }
+    },
+    {
+      "id": "p00049",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 0.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 96.72085327012007,
+          "sd": 0.2424683013406264,
+          "min": 96.38135800968213,
+          "max": 97.10238293641068
+        },
+        "deposit_service_pct": {
+          "mean": 96.96697956047092,
+          "sd": 0.677219503001645,
+          "min": 95.9783082055597,
+          "max": 98.10250062297786
+        },
+        "withdrawal_service_pct": {
+          "mean": 96.48398971005359,
+          "sd": 0.7249336465713907,
+          "min": 95.44268317200806,
+          "max": 97.73514521715961
+        },
+        "served_count": {
+          "mean": 19501.6,
+          "sd": 40.31597422582986,
+          "min": 19439.0,
+          "max": 19564.0
+        },
+        "trades_started": {
+          "mean": 2726.1,
+          "sd": 84.66463252149624,
+          "min": 2634.0,
+          "max": 2860.0
+        },
+        "trades_settled": {
+          "mean": 2726.1,
+          "sd": 84.66463252149624,
+          "min": 2634.0,
+          "max": 2860.0
+        },
+        "pending_trades": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "settled_value": {
+          "mean": 827398.3,
+          "sd": 16632.17068782331,
+          "min": 805139.0,
+          "max": 846530.0
+        },
+        "pending_value": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_cash": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "reserved_efloat": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "unmet_attempts": {
+          "mean": 0.3,
+          "sd": 0.6749485577105528,
+          "min": 0.0,
+          "max": 2.0
+        },
+        "cash_low_share": {
+          "mean": 0.16704,
+          "sd": 0.031442087858297336,
+          "min": 0.1226,
+          "max": 0.2191
+        },
+        "efloat_low_share": {
+          "mean": 0.14764,
+          "sd": 0.024676358456357912,
+          "min": 0.1079,
+          "max": 0.1783
+        }
+      }
+    },
+    {
+      "id": "p00050",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 58.14463140579469,
+          "sd": 7.728397570726074,
+          "min": 44.73049908600262,
+          "max": 69.19685183054787
+        },
+        "deposit_service_pct": {
+          "mean": 58.26902972776604,
+          "sd": 7.749708022755414,
+          "min": 44.78578706314113,
+          "max": 68.93020109537345
+        },
+        "withdrawal_service_pct": {
+          "mean": 58.02579881458442,
+          "sd": 7.727500491629906,
+          "min": 44.675453093206904,
+          "max": 69.46500355046534
+        },
+        "served_count": {
+          "mean": 12911.0,
+          "sd": 1339.739609857909,
+          "min": 10615.0,
+          "max": 14793.0
+        },
+        "trades_started": {
+          "mean": 1386.0,
+          "sd": 330.88937392696334,
+          "min": 980.0,
+          "max": 2037.0
+        },
+        "trades_settled": {
+          "mean": 1383.7,
+          "sd": 330.32309099492943,
+          "min": 979.0,
+          "max": 2033.0
+        },
+        "pending_trades": {
+          "mean": 2.3,
+          "sd": 0.9486832980505138,
+          "min": 1.0,
+          "max": 4.0
+        },
+        "settled_value": {
+          "mean": 397517.1,
+          "sd": 95660.34702872217,
+          "min": 284354.0,
+          "max": 540237.0
+        },
+        "pending_value": {
+          "mean": 647.5,
+          "sd": 309.91835842506794,
+          "min": 261.0,
+          "max": 1215.0
+        },
+        "reserved_cash": {
+          "mean": 647.5,
+          "sd": 309.91835842506794,
+          "min": 261.0,
+          "max": 1215.0
+        },
+        "reserved_efloat": {
+          "mean": 647.5,
+          "sd": 309.91835842506794,
+          "min": 261.0,
+          "max": 1215.0
+        },
+        "unmet_attempts": {
+          "mean": 58.4,
+          "sd": 141.10374433964063,
+          "min": 0.0,
+          "max": 457.0
+        },
+        "cash_low_share": {
+          "mean": 0.39411,
+          "sd": 0.08257666404284231,
+          "min": 0.3015,
+          "max": 0.5463
+        },
+        "efloat_low_share": {
+          "mean": 0.40365,
+          "sd": 0.053915494577677345,
+          "min": 0.3453,
+          "max": 0.5232
+        }
+      }
+    },
+    {
+      "id": "p00051",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 1.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 90.41401777119304,
+          "sd": 0.38014920946175285,
+          "min": 89.69446636832583,
+          "max": 91.07605671757722
+        },
+        "deposit_service_pct": {
+          "mean": 90.60056209645398,
+          "sd": 0.48967284250314747,
+          "min": 89.88951136316612,
+          "max": 91.46631766400525
+        },
+        "withdrawal_service_pct": {
+          "mean": 90.2361121586971,
+          "sd": 0.9033477952876039,
+          "min": 88.82205130617493,
+          "max": 91.49272061047904
+        },
+        "served_count": {
+          "mean": 18503.7,
+          "sd": 59.15337878956892,
+          "min": 18394.0,
+          "max": 18587.0
+        },
+        "trades_started": {
+          "mean": 2420.0,
+          "sd": 42.261093218230876,
+          "min": 2340.0,
+          "max": 2473.0
+        },
+        "trades_settled": {
+          "mean": 2415.0,
+          "sd": 41.36557881996952,
+          "min": 2336.0,
+          "max": 2467.0
+        },
+        "pending_trades": {
+          "mean": 5.0,
+          "sd": 1.632993161855452,
+          "min": 3.0,
+          "max": 7.0
+        },
+        "settled_value": {
+          "mean": 748138.0,
+          "sd": 13160.146216681806,
+          "min": 723526.0,
+          "max": 767762.0
+        },
+        "pending_value": {
+          "mean": 1495.6,
+          "sd": 543.9034227997957,
+          "min": 828.0,
+          "max": 2506.0
+        },
+        "reserved_cash": {
+          "mean": 1495.6,
+          "sd": 543.9034227997957,
+          "min": 828.0,
+          "max": 2506.0
+        },
+        "reserved_efloat": {
+          "mean": 1495.6,
+          "sd": 543.9034227997957,
+          "min": 828.0,
+          "max": 2506.0
+        },
+        "unmet_attempts": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "cash_low_share": {
+          "mean": 0.26109,
+          "sd": 0.01556759097898223,
+          "min": 0.2363,
+          "max": 0.2846
+        },
+        "efloat_low_share": {
+          "mean": 0.25424,
+          "sd": 0.013622220409642803,
+          "min": 0.2309,
+          "max": 0.273
+        }
+      }
+    },
+    {
+      "id": "p00052",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 50.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 54.27324169979124,
+          "sd": 6.246106569441312,
+          "min": 44.01262619283568,
+          "max": 63.6114890730434
+        },
+        "deposit_service_pct": {
+          "mean": 54.39482318599699,
+          "sd": 6.267773572609312,
+          "min": 44.12380924117874,
+          "max": 63.37263465201422
+        },
+        "withdrawal_service_pct": {
+          "mean": 54.156886462260466,
+          "sd": 6.246079942680728,
+          "min": 43.90192977030671,
+          "max": 63.85168801255492
+        },
+        "served_count": {
+          "mean": 12271.2,
+          "sd": 1095.3040978041972,
+          "min": 10484.0,
+          "max": 13856.0
+        },
+        "trades_started": {
+          "mean": 826.1,
+          "sd": 200.49020480368168,
+          "min": 564.0,
+          "max": 1107.0
+        },
+        "trades_settled": {
+          "mean": 822.8,
+          "sd": 199.38449733561978,
+          "min": 561.0,
+          "max": 1101.0
+        },
+        "pending_trades": {
+          "mean": 3.3,
+          "sd": 1.4944341180973262,
+          "min": 1.0,
+          "max": 6.0
+        },
+        "settled_value": {
+          "mean": 247999.8,
+          "sd": 63470.391091349746,
+          "min": 169670.0,
+          "max": 341450.0
+        },
+        "pending_value": {
+          "mean": 954.9,
+          "sd": 534.6351715578265,
+          "min": 179.0,
+          "max": 1828.0
+        },
+        "reserved_cash": {
+          "mean": 954.9,
+          "sd": 534.6351715578265,
+          "min": 179.0,
+          "max": 1828.0
+        },
+        "reserved_efloat": {
+          "mean": 954.9,
+          "sd": 534.6351715578265,
+          "min": 179.0,
+          "max": 1828.0
+        },
+        "unmet_attempts": {
+          "mean": 45.6,
+          "sd": 47.55861880061512,
+          "min": 5.0,
+          "max": 172.0
+        },
+        "cash_low_share": {
+          "mean": 0.41817,
+          "sd": 0.04444972315874294,
+          "min": 0.3723,
+          "max": 0.5071
+        },
+        "efloat_low_share": {
+          "mean": 0.42059,
+          "sd": 0.02560908909829563,
+          "min": 0.3948,
+          "max": 0.475
+        }
+      }
+    },
+    {
+      "id": "p00053",
+      "varied": "joint",
+      "replicates": 10,
+      "parameters": {
+        "network-source": "Synthetic random",
+        "sharing-mode": "All-to-all sharing",
+        "number-of-kiosks": 20.0,
+        "starting-balance": 500.0,
+        "network-density": 0.6,
+        "participation-percent": 100.0,
+        "requests-per-tick": 40.0,
+        "maximum-request": 100.0,
+        "withdrawal-share": 0.5,
+        "demand-polarization": 0.35,
+        "minimum-reserve": 100.0,
+        "low-balance-percent": 25.0,
+        "target-balance-percent": 50.0,
+        "settlement-delay": 2.0
+      },
+      "metrics": {
+        "service_pct": {
+          "mean": 80.37796496920033,
+          "sd": 0.6973941559465296,
+          "min": 79.13492792712687,
+          "max": 81.20863682838097
+        },
+        "deposit_service_pct": {
+          "mean": 80.55147353964936,
+          "sd": 0.5149901538653862,
+          "min": 80.00681809672633,
+          "max": 81.41074601344822
+        },
+        "withdrawal_service_pct": {
+          "mean": 80.21214365245491,
+          "sd": 1.1409277382700242,
+          "min": 78.24226702503714,
+          "max": 81.4820034218706
+        },
+        "served_count": {
+          "mean": 16850.8,
+          "sd": 111.75349857809573,
+          "min": 16630.0,
+          "max": 16979.0
+        },
+        "trades_started": {
+          "mean": 1686.1,
+          "sd": 18.911783510699237,
+          "min": 1660.0,
+          "max": 1732.0
+        },
+        "trades_settled": {
+          "mean": 1679.2,
+          "sd": 18.825514601200148,
+          "min": 1655.0,
+          "max": 1726.0
+        },
+        "pending_trades": {
+          "mean": 6.9,
+          "sd": 1.5238839267549948,
+          "min": 5.0,
+          "max": 10.0
+        },
+        "settled_value": {
+          "mean": 522443.6,
+          "sd": 7690.575100587587,
+          "min": 516223.0,
+          "max": 542476.0
+        },
+        "pending_value": {
+          "mean": 2117.5,
+          "sd": 566.583768446173,
+          "min": 1043.0,
+          "max": 2986.0
+        },
+        "reserved_cash": {
+          "mean": 2117.5,
+          "sd": 566.583768446173,
+          "min": 1043.0,
+          "max": 2986.0
+        },
+        "reserved_efloat": {
+          "mean": 2117.5,
+          "sd": 566.583768446173,
+          "min": 1043.0,
+          "max": 2986.0
+        },
+        "unmet_attempts": {
+          "mean": 1.0,
+          "sd": 1.3333333333333333,
+          "min": 0.0,
+          "max": 3.0
+        },
+        "cash_low_share": {
+          "mean": 0.33245,
+          "sd": 0.010361815585225512,
+          "min": 0.3208,
+          "max": 0.3508
+        },
+        "efloat_low_share": {
+          "mean": 0.3324,
+          "sd": 0.011213583033287993,
+          "min": 0.3099,
+          "max": 0.3463
+        }
+      }
+    }
+  ],
+  "sensitivity": [
+    {
+      "parameter": "network-density",
+      "metric": "service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.07117651811366199
+    },
+    {
+      "parameter": "network-density",
+      "metric": "deposit_service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.06821082985892607
+    },
+    {
+      "parameter": "network-density",
+      "metric": "withdrawal_service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.07117651811366199
+    },
+    {
+      "parameter": "network-density",
+      "metric": "served_count",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.0741436736447236
+    },
+    {
+      "parameter": "network-density",
+      "metric": "trades_started",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.0637622974768222
+    },
+    {
+      "parameter": "network-density",
+      "metric": "trades_settled",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.06672798573155811
+    },
+    {
+      "parameter": "network-density",
+      "metric": "pending_trades",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.03437339154439587
+    },
+    {
+      "parameter": "network-density",
+      "metric": "settled_value",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.0741422063683979
+    },
+    {
+      "parameter": "network-density",
+      "metric": "pending_value",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.038365884876477255
+    },
+    {
+      "parameter": "network-density",
+      "metric": "reserved_cash",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.038365884876477255
+    },
+    {
+      "parameter": "network-density",
+      "metric": "reserved_efloat",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.038365884876477255
+    },
+    {
+      "parameter": "network-density",
+      "metric": "unmet_attempts",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.13481784790958018
+    },
+    {
+      "parameter": "network-density",
+      "metric": "cash_low_share",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.10973046542522889
+    },
+    {
+      "parameter": "network-density",
+      "metric": "efloat_low_share",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.04893385620314261
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.14680156860942783
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "deposit_service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.14680156860942783
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "withdrawal_service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.14680156860942783
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "served_count",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.1438387268707638
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "trades_started",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.24615212514308105
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "trades_settled",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.24911781339781694
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "pending_trades",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.5595668390948165
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "settled_value",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.18535551592099475
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "pending_value",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.55950248778196
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "reserved_cash",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.55950248778196
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "reserved_efloat",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.55950248778196
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "unmet_attempts",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.006059229119531694
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "cash_low_share",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.1838726717936268
+    },
+    {
+      "parameter": "settlement-delay",
+      "metric": "efloat_low_share",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.17052707464731517
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.3922788398544813
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "deposit_service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.3922788398544813
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "withdrawal_service_pct",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.3922788398544813
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "served_count",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.39228660306363006
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "trades_started",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.3317419818522465
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "trades_settled",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.32932050753215714
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "pending_trades",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.18797530049339772
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "settled_value",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.37290704529376617
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "pending_value",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.1853432151366367
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "reserved_cash",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.1853432151366367
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "reserved_efloat",
+      "n_complete_points": 54.0,
+      "spearman_rho": 0.1853432151366367
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "unmet_attempts",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.31786658595073086
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "cash_low_share",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.35353525073305103
+    },
+    {
+      "parameter": "participation-percent",
+      "metric": "efloat_low_share",
+      "n_complete_points": 54.0,
+      "spearman_rho": -0.3922788398544813
+    }
+  ],
+  "caveat": "Abstract, uncalibrated simulation. Error bars show between-seed SD, not confidence intervals. LHS correlations are marginal, not causal or partial effects."
+}

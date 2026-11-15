@@ -1,0 +1,22 @@
+{
+  "studies": [
+    {
+      "id": "oat",
+      "title": "OAT sensitivity - 10 seeds",
+      "mode": "oat",
+      "file": "oat.json"
+    },
+    {
+      "id": "lhs",
+      "title": "Joint sensitivity \u00b7 10 seeds",
+      "mode": "lhs",
+      "file": "lhs.json"
+    },
+    {
+      "id": "grid",
+      "title": "Policy grid \u00b7 10 seeds",
+      "mode": "grid",
+      "file": "grid.json"
+    }
+  ]
+}

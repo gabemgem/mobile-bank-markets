@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "kind": "performance-benchmark",
+  "network_source": "Synthetic random",
+  "model_sha256": "4953eda392eea17eb3c9d35707ed3975564fbeac1de3dd7b6e5d2fb54f2bd969",
+  "runner_sha256": "78bdfb68c7cb19f36a140bb1e96f8ff07aeeacd716f14d80734c0585d393593c",
+  "environment": {
+    "os": "Windows",
+    "logical_cpus": 16,
+    "python": "3.12.14"
+  },
+  "measured_runs": 24,
+  "warmup_runs": 2,
+  "measured_wall_seconds": 9.430413599999156,
+  "startup_seconds": 5.169614099999157,
+  "cases": [
+    {
+      "case": "dense-network",
+      "number-of-kiosks": 40,
+      "network-density": 0.8,
+      "requests-per-tick": 80,
+      "sharing-mode": "Network sharing",
+      "settlement-delay": 2,
+      "setup_seconds": 0.053558350000000005,
+      "metrics_seconds": 0.019284700000000002,
+      "seconds_per_tick": 0.0008432017777777777,
+      "planning_seconds_per_tick": 0.0013749,
+      "measured_ticks": [
+        50,
+        500
+      ],
+      "measured_replicates": 4,
+      "median_run_seconds": 0.33475165
+    },
+    {
+      "case": "baseline-network",
+      "number-of-kiosks": 20,
+      "network-density": 0.3,
+      "requests-per-tick": 40,
+      "sharing-mode": "Network sharing",
+      "settlement-delay": 1,
+      "setup_seconds": 0.05186455,
+      "metrics_seconds": 0.01773155,
+      "seconds_per_tick": 0.000388198111111111,
+      "planning_seconds_per_tick": 0.0006645539999999999,
+      "measured_ticks": [
+        50,
+        500
+      ],
+      "measured_replicates": 4,
+      "median_run_seconds": 0.20008995
+    },
+    {
+      "case": "sparse-no-sharing",
+      "number-of-kiosks": 10,
+      "network-density": 0.1,
+      "requests-per-tick": 20,
+      "sharing-mode": "No sharing",
+      "settlement-delay": 1,
+      "setup_seconds": 0.017443399999999998,
+      "metrics_seconds": 0.012230399999999999,
+      "seconds_per_tick": 7.49393e-05,
+      "planning_seconds_per_tick": 0.00022149599999999998,
+      "measured_ticks": [
+        50,
+        500
+      ],
+      "measured_replicates": 4,
+      "median_run_seconds": 0.05534504999999999
+    },
+    {
+      "case": "instant-all-to-all",
+      "number-of-kiosks": 20,
+      "network-density": 0.3,
+      "requests-per-tick": 40,
+      "sharing-mode": "All-to-all sharing",
+      "settlement-delay": 0,
+      "setup_seconds": 0.010284399999999999,
+      "metrics_seconds": 0.00940755,
+      "seconds_per_tick": 0.00021318188888888893,
+      "planning_seconds_per_tick": 0.00030653799999999997,
+      "measured_ticks": [
+        50,
+        500
+      ],
+      "measured_replicates": 4,
+      "median_run_seconds": 0.0882052
+    },
+    {
+      "case": "dense-all-to-all",
+      "number-of-kiosks": 40,
+      "network-density": 0.8,
+      "requests-per-tick": 80,
+      "sharing-mode": "All-to-all sharing",
+      "settlement-delay": 2,
+      "setup_seconds": 0.0098824,
+      "metrics_seconds": 0.0094049,
+      "seconds_per_tick": 0.00046125222222222217,
+      "planning_seconds_per_tick": 0.00050505,
+      "measured_ticks": [
+        50,
+        500
+      ],
+      "measured_replicates": 4,
+      "median_run_seconds": 0.15118579999999998
+    },
+    {
+      "case": "instant-network",
+      "number-of-kiosks": 20,
+      "network-density": 0.8,
+      "requests-per-tick": 40,
+      "sharing-mode": "Network sharing",
+      "settlement-delay": 0,
+      "setup_seconds": 0.00755785,
+      "metrics_seconds": 0.0070791,
+      "seconds_per_tick": 0.00023792544444444446,
+      "planning_seconds_per_tick": 0.000285662,
+      "measured_ticks": [
+        50,
+        500
+      ],
+      "measured_replicates": 4,
+      "median_run_seconds": 0.07983675
+    }
+  ],
+  "caveat": "Machine-specific planning estimates, not confidence intervals. Long horizons are extrapolated; matching activity and background load can change runtime.",
+  "estimates": {
+    "oat": {
+      "planned_runs": 150,
+      "warmup_runs": 2,
+      "estimated_seconds": 47.192268299999135,
+      "planning_seconds": 69.564434566666,
+      "warnings": [
+        "Some workloads exceed their nearest benchmark case; upward workload scaling was applied."
+      ],
+      "method": "Nearest policy/workload case; setup plus measured tick rate. Planning allowance uses at least 1.5x run costs, not a statistical confidence bound."
+    },
+    "lhs": {
+      "planned_runs": 800,
+      "warmup_runs": 2,
+      "estimated_seconds": 302.6044628388883,
+      "planning_seconds": 470.0680430833283,
+      "warnings": [
+        "Some workloads exceed their nearest benchmark case; upward workload scaling was applied."
+      ],
+      "method": "Nearest policy/workload case; setup plus measured tick rate. Planning allowance uses at least 1.5x run costs, not a statistical confidence bound."
+    },
+    "grid": {
+      "planned_runs": 540,
+      "warmup_runs": 2,
+      "estimated_seconds": 91.80333763333178,
+      "planning_seconds": 153.09808506666545,
+      "warnings": [
+        "Some workloads exceed their nearest benchmark case; upward workload scaling was applied."
+      ],
+      "method": "Nearest policy/workload case; setup plus measured tick rate. Planning allowance uses at least 1.5x run costs, not a statistical confidence bound."
+    }
+  }
+}
