@@ -1,5 +1,7 @@
 # Mobile Bank Markets
 
+[Open the published model in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets.nlogox)
+
 Mobile Bank Markets is an agent-based model of liquidity sharing among mobile-money kiosk operators. It explores how trading cash and electronic balances through a network affects customers' ability to deposit and withdraw money.
 
 Mobile-money kiosks connect cash-based local economies to electronic accounts. An operator needs cash to serve withdrawals and electronic value (e-float) to serve deposits. Even when a market has enough liquidity overall, individual kiosks can run short. Sharing liquidity with other operators may help keep these services available.
@@ -58,8 +60,6 @@ The [experiment guide](experiments/RUNNING.md) explains benchmarking, configurin
 Press **Setup** after changing controls to start a new run. The model's Info tab documents transaction accounting, trade timing, parameters, and assumptions. Local imports and the experiment harness use desktop NetLogo.
 
 In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wait for **Ready: 920 GitHub graphs**, enter a graph ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup**. The **Use random networks** button returns to data-free simulation. The [generation guide](docs/synthetic-networks/) explains URL pinning and download handling.
-
-[Open the published model in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets.nlogox)
 
 ## Interpretation
 
