@@ -19,7 +19,11 @@ empty graphs, and complete graphs are retained as valid random outcomes.
 In desktop NetLogo 7.0.3, open ../MobileBankMarkets.nlogox, choose **Imported
 synthetic**, then use **Choose local network** to select generator, size, and ID.
 Reopen the chooser after replacing files to refresh the in-memory cache.
-The desktop file importer does not automatically load these files in NetLogo Web.
+In NetLogo Web, click **Load GitHub library**, wait for **Ready: 920 GitHub
+graphs**, enter an ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`,
+and click **Setup**. The default URL downloads this published library directly.
+For desktop/headless use, first run `python scripts/install_netlogo_fetch.py`
+from the repository directory to install the official Fetch extension.
 
 All node and graph IDs are synthetic. No respondent IDs, observed adjacencies,
 or fit objects are included. Generation from fitted survey structure is not a

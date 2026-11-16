@@ -5,6 +5,11 @@ Run commands in PowerShell from the `ABM` directory. Python 3.10+, a JDK
 If Java is not on PATH, append `--java 'C:/path/to/java.exe' --javac 'C:/path/to/javac.exe'`.
 If NetLogo is elsewhere, append `--netlogo-home 'C:/path/to/NetLogo 7.0.3'`.
 
+Install the model's official Fetch extension once before running desktop or
+headless NetLogo: `python scripts/install_netlogo_fetch.py`. The installer pins
+Fetch 1.0.5 for Java 11 compatibility. Abstract-network experiments still require
+no network data and make no HTTP requests during simulation.
+
 ## 1. Measure this computer before a full study
 
 ```powershell

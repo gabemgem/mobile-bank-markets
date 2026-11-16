@@ -28,6 +28,8 @@ The model tracks deposit and withdrawal success, requested and served transactio
 
 **Imported synthetic** loads pre-generated graphs from `synthetic-networks/`, using the same node-and-edge format as observed networks. This supports graph ensembles generated outside NetLogo, with their generation settings and seeds recorded alongside them. Synthetic libraries can be included in the repository. Real survey exports in `data/` remain excluded from Git.
 
+**GitHub synthetic** downloads the public [920-graph library](https://github.com/gabemgem/mobile-bank-markets/tree/main/synthetic-networks) in desktop NetLogo or NetLogo Web. It includes pooled primary and corrected hub sensitivity graphs at every size from 2–24 kiosks.
+
 See the [network data guide](experiments/NETWORKS.md) for file formats, provenance, and import instructions.
 
 The [structural ERGM pipeline](experiments/ERGM_NETWORKS.md) fits mutual willingness-to-trade networks and generates synthetic ensembles for import, with separate fitting diagnostics and reproducible graph seeds.
@@ -49,11 +51,13 @@ The [experiment guide](experiments/RUNNING.md) explains benchmarking, configurin
 
 ## Run the model
 
-1. Open [MobileBankMarkets.nlogox](MobileBankMarkets.nlogox) in desktop **NetLogo 7.0.3**.
+1. For desktop **NetLogo 7.0.3**, run `python scripts/install_netlogo_fetch.py` once to install the official Fetch extension, then open [MobileBankMarkets.nlogox](MobileBankMarkets.nlogox).
 2. Choose **Synthetic random** to run without data, or select an imported network source and use **Choose local network**.
 3. Set the controls, click **Setup**, and use **Step**, **Go / stop**, or **+100 ticks**.
 
-Press **Setup** after changing controls to start a new run. The model's Info tab documents transaction accounting, trade timing, parameters, and assumptions. Imported networks and the experiment harness use desktop NetLogo.
+Press **Setup** after changing controls to start a new run. The model's Info tab documents transaction accounting, trade timing, parameters, and assumptions. Local imports and the experiment harness use desktop NetLogo.
+
+In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wait for **Ready: 920 GitHub graphs**, enter a graph ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup**. The **Use random networks** button returns to data-free simulation. The [generation guide](docs/synthetic-networks/) explains URL pinning and download handling.
 
 [Open the published model in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets.nlogox)
 

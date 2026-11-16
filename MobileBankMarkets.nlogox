@@ -829,7 +829,7 @@ No sharing means no peer swaps; it is not an estimate of current practice.
 
 The code explicitly declares network-source and selected-market as globals.
 Startup and Setup default to Synthetic random. These variables do not depend
-on chooser widgets. The Network source button offers three modes:
+on chooser widgets. The ui-network-source chooser offers four modes:
 
 Synthetic random: generates an undirected Erdos-Renyi network using the kiosk
 count and density sliders. This mode reads NO local network files and works
@@ -862,13 +862,29 @@ embedded in model widgets or code. With no ID selected, Setup uses the first
 catalog entry. Missing files when a library is loaded produce an explicit error;
 the model never silently substitutes a random graph for an imported experiment.
 Switch to Synthetic random to run without files. Kiosk count and density sliders
-are ignored by both imported modes. The loaded-network monitor records the
+are ignored by all imported modes. The loaded-network monitor records the
 catalog's network_type and network_id, not the current button selection alone.
 
-This CSV importer uses desktop file operations. Publishing the CSVs on GitHub
-does not make them load automatically in NetLogo Web. A browser loader would
-need asynchronous Fetch requests plus CSV string parsing, or bundled NetLogo 7
-resources. See the site's Synthetic network generation page for details.
+GitHub synthetic: downloads a public library in desktop NetLogo or NetLogo Web.
+Near the bottom of the interface, click Load GitHub library, wait for Ready:
+920 GitHub graphs, enter ui-github-network-id (e.g. pooled-n20-r01 or
+corrected-hub-n20-r01), then Setup. This button selects the GitHub source.
+ui-github-base-url defaults to the repository's raw main/synthetic-networks
+directory. Replace main with a commit SHA to pin a library version. After
+changing the URL, load again; changing graph ID only requires Setup.
+
+All three CSVs must download and pass structural validation before the library
+is available. Cancel download discards pending results and ignores late replies;
+it does not abort HTTP transport. Web HTTP failures may show the standard Web
+error dialog. Missing callbacks expire after 30 seconds when the status monitor,
+Setup, or Go checks them. Retry Load GitHub library or click Use random networks.
+Random and local-import modes make no remote requests. Desktop imports remain
+local and private. Browser modes never read desktop files or open local dialogs.
+
+Desktop prerequisite: run python scripts/install_netlogo_fetch.py once from
+the repository folder. It installs the official, checksum-pinned Fetch 1.0.5
+extension compatible with the Java 11 harness. NetLogo Web supplies Fetch itself.
+See the site's Synthetic network generation page for download links and details.
 
 Both imported folders have networks.csv (network_id,network_type), nodes.csv
 (network_id,node_id), and edges.csv (network_id,source,target). Keep each

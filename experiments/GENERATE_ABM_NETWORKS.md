@@ -110,9 +110,16 @@ The explanatory page is `docs/synthetic-networks/index.md`. The README and Pages
 landing page link to it without changing the project landing path. The page is
 descriptive; it does not contain fit objects or copies of the generated library.
 
-The current NetLogo importer remains desktop-only. A NetLogo Web loader needs
-asynchronous Fetch plus `csv:from-string`, or bundled NetLogo 7 resources. Merely
-pushing companion CSVs does not make desktop file operations work in a browser.
-Root library files would need raw GitHub URLs, or deliberate placement under the
-Pages source. The official documentation and checked hosting behavior are linked
-on the site page. No live browser import of these unpublished CSVs is claimed.
+The shared model supports **GitHub synthetic** through Fetch and CSV string
+parsing. Click **Load GitHub library**, wait for **Ready: 920 GitHub graphs**,
+enter a graph ID and click **Setup**. The default raw GitHub URLs were tested in
+NetLogo Web: the full library loaded and both generators completed 100 ticks.
+The site page documents version pinning, retries, cancellation, and timeouts.
+Local imports and data-free random generation remain available on desktop.
+
+Before desktop/headless use, run `python scripts/install_netlogo_fetch.py` once
+to install the checksum-pinned official Fetch extension (1.0.5, Java 11 compatible).
+The extension binary is ignored; NetLogo Web supplies its own implementation.
+`tests/WebNetworkChecks.java` exercises HTTP loading, partial/cancelled/stale
+callbacks, malformed libraries, timeout, retry, and data-free recovery against
+a tiny local fixture rather than the survey data.

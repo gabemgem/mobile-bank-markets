@@ -94,10 +94,25 @@ remain available through the local harness outputs.
 
 ## NetLogo Web
 
-The current importer uses `csv:from-file` and desktop file checks. Uploading the
-model and companion CSVs to GitHub does not enable Web imports. NetLogo Web can
-parse fetched CSV strings through the CSV extension, or read bundled NetLogo 7
-resources, after the importer is adapted. Use direct raw-file URLs with browser
-cross-origin access, not GitHub blob pages. The Pages site built from `docs/`
-does not automatically serve the root library. See the site's generation page
-for checked sources and the distinction between desktop and Web loading.
+Select **GitHub synthetic**, or click **Load GitHub library**, in the shared model.
+The URL input defaults to the public root-level `synthetic-networks/` directory
+on raw.githubusercontent.com. Wait for **Ready: 920 GitHub graphs**, enter an ID
+such as `pooled-n20-r01` or `corrected-hub-n20-r01`, and click **Setup**. The
+source chooser and URL/ID inputs work in both Web and desktop NetLogo; **Choose
+local network** remains a desktop-only path for the local import modes.
+
+All three CSVs must pass validation before any remote graph is available. Cancel
+or timeout discards partial results, and stale replies are ignored. Web HTTP
+failures may display a standard Web error dialog; missing replies expire after
+30 seconds when the status monitor, Setup, or Go checks. Use **Load GitHub
+library** to retry or **Use random networks** for data-free operation.
+
+Pin a reproducible base URL by replacing `main` with a commit SHA. Use a raw
+directory URL without a filename or trailing slash; GitHub `blob` pages are HTML.
+The Pages site built from `docs/` does not automatically serve the root library.
+See the [generation page](../docs/synthetic-networks/) for direct download links.
+
+Desktop prerequisite (including headless experiments): run
+`python scripts/install_netlogo_fetch.py` once. It verifies and installs the
+official Fetch 1.0.5 extension, compatible with the Java 11 harness. Web supplies
+Fetch itself. Random networks and local imports never make HTTP requests.

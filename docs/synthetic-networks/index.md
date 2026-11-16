@@ -107,39 +107,54 @@ an imported graph supplies its own node count and ties. The importer caches CSV
 tables for repeated runs. Reopen the chooser or run `reload-network-library`
 after replacing the files. Built-in random networks still work without any data.
 
-## Can NetLogo Web load these from GitHub?
+## Load the published library in NetLogo Web
 
-**The current desktop importer cannot load this library in NetLogo Web.** A
-browser-compatible loader can enable it. Publishing CSVs next to the model on GitHub does not
-give a browser access to a desktop directory.
+The [published library on GitHub](https://github.com/gabemgem/mobile-bank-markets/tree/main/synthetic-networks)
+contains all 920 generated graphs. Download the three companion files:
+[catalog](https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks/networks.csv),
+[nodes](https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks/nodes.csv),
+and [edges](https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks/edges.csv).
+These live in the repository root; the Pages website serves its content from `docs/`.
 
-NetLogo Web supports CSV parsing, but its file-based CSV primitives differ from
-desktop NetLogo. A Web loader can use the **Fetch extension** to request the three
-public CSVs asynchronously, then parse the returned text with `csv:from-string`.
-It must wait for all three files before enabling network selection and Setup.
+The model's **GitHub synthetic** source works in NetLogo Web and desktop NetLogo.
+It uses the **Fetch extension** to request all three CSVs, parses their text,
+and validates the complete library before making it available to Setup.
 NetLogo documents this distinction in its [Web extension
 notes](https://netlogoweb.org/whats-new) and [Fetch extension
 reference](https://github.com/NetLogo/Fetch-Extension).
 
-Use direct, version-pinned raw-file URLs, for example:
+1. [Open the model in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets.nlogox).
+2. Near the bottom of the interface, leave `ui-github-base-url` at its default and click **Load GitHub library**. This selects **GitHub synthetic** automatically.
+3. Wait for **Ready: 920 GitHub graphs** in the status monitor.
+4. Enter a graph ID in `ui-github-network-id`, for example `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup** and run.
+
+The base URL identifies the directory, without a CSV filename. For reproducible
+runs, replace `main` with a full commit SHA, for example:
 
 ```text
-https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/<commit>/synthetic-networks/networks.csv
+https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/<commit>/synthetic-networks
 ```
 
-The companion URLs use `nodes.csv` and `edges.csv`. A GitHub `blob` page is HTML,
-not CSV. The `docs/` Pages site does not automatically serve files from the
-repository's root-level library. The current published model's raw GitHub URL
-was checked on 16 November 2026 and returned a cross-origin access header of `*`.
-Test the actual published CSV URLs and a live Web loader before relying on this
-route; desktop import checks do not establish browser compatibility.
+Use raw URLs that allow browser cross-origin access; GitHub `blob` pages are HTML.
+Changing the URL requires **Load GitHub library** again. Changing the graph ID
+requires **Setup**, but reuses the downloaded library. The default public URLs
+were tested in NetLogo Web on 16 November 2026: all 920 graphs downloaded, and
+both example graphs completed 100 ticks with accounting checks.
 
-An alternative is to bundle CSV text as **NetLogo 7 resources** and parse it through
-the [Resource extension](https://docs.netlogo.org/7.0.3/resource). NetLogo Web
-[supports bundled resources](https://netlogoweb.org/whats-new), allowing a single
-model file to carry its library. This also requires adapting the importer.
-Neither remote fetching nor resource bundling is implemented by the desktop
-CSV importer described above.
+**Cancel download** discards pending results; late responses cannot replace a
+newer library. An incomplete, malformed, or failed library cannot be used by
+Setup. Browser HTTP errors may also display NetLogo Web's standard error dialog;
+the loader expires missing responses after 30 seconds when its monitor, Setup,
+or Go checks the status. Retry with **Load GitHub library**, or use **Use random
+networks** for data-free runs. Cancel invalidates responses rather than aborting
+the browser's underlying requests.
+
+Desktop NetLogo needs the official Fetch extension installed once with
+`python scripts/install_netlogo_fetch.py` from the repository directory. The
+installer pins Fetch 1.0.5 for compatibility with the Java 11 experiment harness
+and verifies the official archive and JAR checksums. NetLogo Web supplies Fetch
+itself. Desktop imports still use the local CSV folders; no remote request is
+made in **Synthetic random** or either local-import mode.
 
 ## Reproducibility and data handling
 
