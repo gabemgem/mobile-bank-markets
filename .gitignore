@@ -4,3 +4,5 @@ __pycache__/
 # Private survey exports and local working files.
 /data/
 /local-*/
+# Official extension binaries are installed locally from pinned source packages.
+/fetch/

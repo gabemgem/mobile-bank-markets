@@ -1,0 +1,13 @@
+local({
+  cfg<-dget('experiments/configs/validate_shrinkage.R')
+  cfg$activity_scales<-c(0,.75,1.5,2.25)
+  cfg$activity_penalty<-.03
+  cfg$activity_weight_penalty<-.003
+  cfg$activity_training_effects<-3L
+  cfg$activity_training_graphs<-4L
+  cfg$activity_burnin<-8192L
+  cfg$activity_interval<-2048L
+  cfg$activity_seed<-501001L
+  cfg$activity_features<-c(degree_sd=1,max_degree=.5,n_isolates=.25,clustering=.25)
+  cfg
+})

@@ -1,0 +1,39 @@
+suppressPackageStartupMessages({library(ergm);library(ergm.multi)})
+for(file in c('mutual_ergm_functions.R','pooled_mutual_ergm_functions.R',
+  'shrinkage_mutual_ergm_functions.R','validate_shrinkage_functions.R','revised_shrinkage_functions.R'))
+  source(file.path('scripts',file))
+cfg<-dget('experiments/configs/revised_shrinkage_validation.R')
+cfg$calibration_graphs<-4L;cfg$calibration_grid<-9L;cfg$calibration_quadrature<-7L
+cfg$prediction_burnin<-2048L;cfg$prediction_interval<-1024L
+star<-network::network.initialize(6,directed=FALSE);network::add.edges(star,rep(1,5),2:6)
+path<-network::network.initialize(4,directed=FALSE);network::add.edges(path,1:3,2:4)
+nets<-list(star=star,path=path)
+zero<-setNames(c(0,0),names(nets))
+old<-shrinkage_formula(nets,zero)
+new<-shrinkage_formula(nets,zero,cfg$structural_terms)
+beta<-c(-2,0,-.5,.5);expanded<-shrinkage_initial(beta,cfg)
+stopifnot(length(expanded)==5,expanded[4]==0,
+  abs(sum(summary(old)*beta)-sum(summary(new)*expanded))<1e-8)
+d<-rowSums(as.matrix(star,matrix.type='adjacency'))
+stopifnot(abs(unname(summary(star~gwdegree(2,fixed=TRUE)))-
+  exp(2)*sum(1-(1-exp(-2))^d))<1e-8)
+cal<-calibrate_new_market(nets,expanded,.6,cfg,331L)
+stopifnot(cal$convergence==0,cal$training_crps<=cal$raw_training_crps+1e-8,
+  abs(cal$shift)<=cfg$calibration_shift_bound+1e-8,cal$scale>=0,
+  cal$scale<=cfg$calibration_scale_bound+1e-8,
+  all(cal$count_draws>=0),
+  all(sweep(cal$count_draws,2,choose(cal$registry$n_nodes,2),'<=')))
+cfg$bootstrap_replicates<-1L;cfg$effect_draws<-1L;cfg$graphs_per_effect<-2L
+specs<-data.frame(network_id=c('held-a','held-b'),n_nodes=c(4,6))
+parameters<-list(list(id='fixture',beta=expanded,alpha=c(-1,0),tau=.6,
+  new_density=list(shift=0,scale=1)))
+raw<-prediction_graphs(specs,parameters,'new_market_raw',cfg,332L)
+corrected<-prediction_graphs(specs,parameters,'new_market_uncertain',cfg,332L)
+columns<-setdiff(names(raw),'regime')
+stopifnot(identical(raw[columns],corrected[columns]))
+parameters[[1]]$new_density<-list(shift=.2,scale=.5)
+a<-prediction_graphs(specs,parameters,'new_market_uncertain',cfg,333L)
+specs$n_links<-c(6,15)
+b<-prediction_graphs(specs,parameters,'new_market_uncertain',cfg,333L)
+stopifnot(identical(a,b))
+cat('PASS: nested old model, multi-scale degree statistic, valid count kernel, predictive calibration, raw-law ablation, and count-blind new-market prediction.\n')

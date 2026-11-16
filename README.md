@@ -4,7 +4,7 @@ Mobile Bank Markets is an agent-based model of liquidity sharing among mobile-mo
 
 Mobile-money kiosks connect cash-based local economies to electronic accounts. An operator needs cash to serve withdrawals and electronic value (e-float) to serve deposits. Even when a market has enough liquidity overall, individual kiosks can run short. Sharing liquidity with other operators may help keep these services available.
 
-[Explore experiment results](docs/results/) · [Run experiments](experiments/RUNNING.md) · [Network data guide](experiments/NETWORKS.md)
+[Explore experiment results](docs/results/) · [Synthetic network generation](docs/synthetic-networks/) · [Run experiments](experiments/RUNNING.md) · [Network data guide](experiments/NETWORKS.md)
 
 ## The model
 
@@ -29,6 +29,9 @@ The model tracks deposit and withdrawal success, requested and served transactio
 **Imported synthetic** loads pre-generated graphs from `synthetic-networks/`, using the same node-and-edge format as observed networks. This supports graph ensembles generated outside NetLogo, with their generation settings and seeds recorded alongside them. Synthetic libraries can be included in the repository. Real survey exports in `data/` remain excluded from Git.
 
 See the [network data guide](experiments/NETWORKS.md) for file formats, provenance, and import instructions.
+
+The [structural ERGM pipeline](experiments/ERGM_NETWORKS.md) fits mutual willingness-to-trade networks and generates synthetic ensembles for import, with separate fitting diagnostics and reproducible graph seeds.
+The [synthetic network generation guide](docs/synthetic-networks/) explains the pooled primary generator, corrected hub sensitivity networks, repeated draws across kiosk counts, and desktop/Web loading options.
 
 ## Experiments and results
 

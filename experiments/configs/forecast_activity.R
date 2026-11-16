@@ -1,0 +1,16 @@
+local({
+  cfg<-dget('experiments/configs/activity_validation.R')
+  cfg$forecast_seed<-901001L
+  cfg$count_quadrature<-61L
+  cfg$count_penalty<-.01
+  cfg$count_shift_bound<-1.5
+  cfg$count_slope_bound<-1
+  cfg$count_scale_bound<-1.5
+  cfg$closure_scales<-c(0,.5,1,1.5)
+  cfg$closure_effects<-3L
+  cfg$closure_graphs<-4L
+  cfg$closure_penalty<-.02
+  cfg$closure_hub_tolerance<-.02
+  cfg$closure_features<-c(clustering=1,degree_sd=1,max_degree=.5,triangles=.25,largest_component=.25)
+  cfg
+})

@@ -11,7 +11,7 @@ Mobile Bank Markets is an agent-based model of liquidity sharing among mobile-mo
 
 Mobile-money kiosks connect cash-based local economies to electronic accounts. An operator needs cash to serve withdrawals and electronic value (e-float) to serve deposits. Even when a market has enough liquidity overall, individual kiosks can run short. Sharing liquidity with other operators may help keep these services available.
 
-[Explore experiment results](results/) · [Run experiments](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/RUNNING.md) · [Network data guide](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/NETWORKS.md)
+[Explore experiment results](results/) · [Synthetic network generation](synthetic-networks/) · [Run experiments](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/RUNNING.md) · [Network data guide](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/NETWORKS.md)
 
 ## The model
 
@@ -36,6 +36,9 @@ The model tracks deposit and withdrawal success, requested and served transactio
 **Imported synthetic** loads pre-generated graphs from `synthetic-networks/`, using the same node-and-edge format as observed networks. This supports graph ensembles generated outside NetLogo, with their generation settings and seeds recorded alongside them. Synthetic libraries can be included in the repository. Real survey exports in `data/` remain excluded from Git.
 
 See the [network data guide](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/NETWORKS.md) for file formats, provenance, and import instructions.
+
+The [structural ERGM pipeline](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/ERGM_NETWORKS.md) fits mutual willingness-to-trade networks and generates synthetic ensembles for import, with separate fitting diagnostics and reproducible graph seeds.
+The [synthetic network generation guide](synthetic-networks/) explains the pooled primary generator, corrected hub sensitivity networks, repeated draws across kiosk counts, and desktop/Web loading options.
 
 ## Experiments and results
 

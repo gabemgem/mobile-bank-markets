@@ -1,0 +1,32 @@
+suppressPackageStartupMessages({library(ergm);library(ergm.multi)})
+source('scripts/mutual_ergm_functions.R')
+source('scripts/pooled_mutual_ergm_functions.R')
+empty <- network::network.initialize(6,directed=FALSE)
+star <- network::network.initialize(6,directed=FALSE)
+network::add.edges(star,rep(1,5),2:6)
+ring <- network::network.initialize(10,directed=FALSE)
+network::add.edges(ring,1:10,c(2:10,1))
+nets <- list(empty=empty,star=star,ring=ring)
+formula <- pooled_formula(nets,'edges')
+stopifnot(length(ergm.multi::uncombine_network(environment(formula)$combined)) == 3)
+cfg <- dget('experiments/configs/pooled_mutual_ergm.R')
+cfg$diagnostic_draws <- 4L; cfg$burnin <- 256L; cfg$interval <- 128L
+folder <- tempfile('pooled-ergm-checks-');dir.create(folder)
+fit <- pooled_fit(nets,'edges',cfg,914L,folder)
+stopifnot(fit$status == 'ready_for_review')
+saved_fit <- readRDS(file.path(folder,'fit.rds'))
+draw <- simulate(saved_fit,nsim=1,seed=916L,
+  control=control.simulate.ergm(MCMC.burnin=256L,MCMC.interval=128L))
+fast <- split_pooled_draw(draw,nets)
+reference <- ergm.multi::uncombine_network(draw,use.subnet.cache=FALSE)
+stopifnot(all(vapply(seq_along(nets),function(i)
+  identical(as.matrix(fast[[i]],matrix.type='adjacency'),
+            as.matrix(reference[[i]],matrix.type='adjacency')),logical(1))))
+diagnostic <- pooled_diagnostics(file.path(folder,'fit.rds'),nets,cfg,915L,folder)
+stopifnot(diagnostic$status == 'complete')
+observed <- read.csv(file.path(folder,'observed.csv'))
+draws <- read.csv(file.path(folder,'diagnostic_draws.csv'))
+stopifnot(observed$n_isolates[observed$network_id=='empty'] == 6,
+          nrow(draws) == 12, all(table(draws$network_id)==4),
+          all(draws$n_nodes[draws$network_id=='ring']==10))
+cat('PASS: pooled formula, empty-market/isolate preservation, constrained simulation, block splitting, and per-market diagnostics.\n')

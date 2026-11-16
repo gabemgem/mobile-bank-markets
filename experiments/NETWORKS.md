@@ -28,6 +28,18 @@ and adjacency; graph fitting and diagnostics take place outside the simulation.
 Graph-generation seeds and simulation seeds serve different purposes and should
 be recorded separately.
 
+The supplied library has 20 graphs for each size 2–24 from each of two generators:
+pooled degree-plus-closure (primary) and corrected hub (sensitivity), 920 graphs in
+total. Both use four equally weighted market-bootstrap fits. See
+[generation commands](GENERATE_ABM_NETWORKS.md) and the
+[site explanation](../docs/synthetic-networks/).
+
+The chooser filters catalogs with `generator` and `n_nodes` metadata before
+offering graph IDs. CSV tables are cached across imported Setup calls. Reopen
+**Choose local network** or run `reload-network-library` after changing files.
+Switching to Synthetic random clears the cache; the data-free mode remains
+independent of both libraries.
+
 `synthetic-networks/` is available for versioned graph libraries. Private exploratory
 files can instead live under an ignored `local-.../` directory. The built-in imported
 synthetic mode reads `synthetic-networks/`; it does not read those alternate folders.
@@ -60,6 +72,10 @@ Network selection reads the catalog at runtime, so no model-file update is neede
 
 ## Experiment configuration
 
+For structural ERGMs fitted to the mutual willingness networks, see the
+[ERGM generation pipeline](ERGM_NETWORKS.md). It fits candidate models, produces
+diagnostics, and exports graph ensembles in this library format.
+
 Set `network-source` to `Imported synthetic` or `Observed mutual willingness` and
 `selected-market` to a catalog network ID. The legacy name `selected-market` applies
 to either library. It can also be swept over several IDs. A blank ID selects the
@@ -75,3 +91,13 @@ statistics for every generated graph and retain generator settings and diagnosti
 The NetLogo model imports such libraries; it does not fit them. The public report
 exporter accepts only built-in Synthetic random studies; imported-library studies
 remain available through the local harness outputs.
+
+## NetLogo Web
+
+The current importer uses `csv:from-file` and desktop file checks. Uploading the
+model and companion CSVs to GitHub does not enable Web imports. NetLogo Web can
+parse fetched CSV strings through the CSV extension, or read bundled NetLogo 7
+resources, after the importer is adapted. Use direct raw-file URLs with browser
+cross-origin access, not GitHub blob pages. The Pages site built from `docs/`
+does not automatically serve the root library. See the site's generation page
+for checked sources and the distinction between desktop and Web loading.

@@ -1,0 +1,18 @@
+local({
+  cfg<-dget('experiments/configs/forecast_activity.R')
+  cfg$outer_folds<-3L
+  cfg$inner_folds<-2L
+  cfg$outer_bootstraps<-3L
+  cfg$inner_effects<-12L
+  cfg$outer_effects<-12L
+  cfg$graphs_per_effect<-4L
+  cfg$nested_seed<-1401001L
+  cfg$pair_timeout<-1800
+  cfg$prediction_timeout<-900
+  cfg$selection_metrics<-c('n_links','degree_sd','max_degree','n_isolates','largest_component','clustering')
+  cfg$metrics<-c(cfg$selection_metrics,'n_components','triangles')
+  cfg$scale_floors<-c(n_links=1,degree_sd=.25,max_degree=1,n_isolates=1,
+    largest_component=1,clustering=.1,n_components=1,triangles=1)
+  cfg$report_bootstraps<-2000L
+  cfg
+})

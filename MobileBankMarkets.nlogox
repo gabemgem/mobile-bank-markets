@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <model version="NetLogo 7.0.3" snapToGrid="true">
-  <code><![CDATA[extensions [csv]
+  <code><![CDATA[extensions [csv fetch]
 
 breed [kiosks kiosk]
 breed [transfers transfer]
@@ -12,6 +12,9 @@ globals [
   sharing-mode number-of-kiosks starting-balance network-density participation-percent requests-per-tick maximum-request withdrawal-share demand-polarization minimum-reserve model-seed show-balances? low-balance-percent target-balance-percent settlement-delay
   network-source selected-market
   network-description active-market
+  network-cache-source network-cache-catalog network-cache-nodes network-cache-edges
+  github-network-base-url network-load-status network-load-token network-load-start
+  network-pending-tables network-load-timeout
   requested-values served-values  ; [deposit withdrawal], in illustrative units
   requested-count served-count tick-served tick-failed
   initiated-count settled-count settled-value tick-settled-value
@@ -35,6 +38,9 @@ end
 to initialize-controls
   set network-source "Synthetic random"
   set selected-market ""
+  set github-network-base-url "https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks"
+  set network-load-timeout 30
+  clear-network-cache
   set sharing-mode "Network sharing"
   set number-of-kiosks 20
   set starting-balance 500
@@ -59,6 +65,12 @@ end
 
 to interface-setup
   if controls-initialized? != true [ initialize-controls ]
+  if network-source = "GitHub synthetic" [
+    if normalized-network-url (runresult "ui-github-base-url") != github-network-base-url [
+      error "The library URL changed. Click Load GitHub library before Setup."
+    ]
+    set selected-market runresult "ui-github-network-id"
+  ]
   ; UI bindings are evaluated only here, so core code compiles without widgets.
   set sharing-mode runresult "ui-sharing-mode"
   set number-of-kiosks runresult "ui-number-of-kiosks"
@@ -88,11 +100,114 @@ to choose-network-source
   if selection != false [
     set network-source selection
     set selected-market ""
+    clear-network-cache
   ]
 end
 
 to-report network-sources
-  report ["Synthetic random" "Observed mutual willingness" "Imported synthetic"]
+  report ["Synthetic random" "Observed mutual willingness" "Imported synthetic" "GitHub synthetic"]
+end
+
+to interface-load-github
+  if controls-initialized? != true [ initialize-controls ]
+  set github-network-base-url runresult "ui-github-base-url"
+  set selected-market runresult "ui-github-network-id"
+  load-github-networks
+end
+
+to use-random-networks
+  set network-source "Synthetic random"
+  set selected-market ""
+  clear-network-cache
+end
+
+to-report normalized-network-url [address]
+  if not is-string? address [ report "" ]
+  while [not empty? address and last address = "/"] [
+    set address but-last address
+  ]
+  report address
+end
+
+to load-github-networks
+  if controls-initialized? != true [ initialize-controls ]
+  clear-network-cache
+  set network-source "GitHub synthetic"
+  set active-market ""
+  set github-network-base-url normalized-network-url github-network-base-url
+  if not ((position "https://" github-network-base-url = 0) or
+          (position "http://" github-network-base-url = 0)) [
+    set network-load-status "Error: use a public HTTP(S) directory URL."
+    stop
+  ]
+  set network-load-status "Loading"
+  set network-load-start timer
+  let token network-load-token
+  let base-url github-network-base-url
+  let files ["networks.csv" "nodes.csv" "edges.csv"]
+  foreach (range 3) [index ->
+    if token = network-load-token [
+      let address (word base-url "/" (item index files))
+      carefully [
+        fetch:url-async address [text -> receive-network-file token index text]
+      ] [
+        fail-network-load token (word "Download failed: " (item index files) ". " error-message)
+      ]
+    ]
+  ]
+end
+
+to receive-network-file [token index text]
+  ; Late responses from cancelled, superseded, or timed-out requests are discarded.
+  check-network-load-timeout
+  if token != network-load-token or network-load-status != "Loading" [ stop ]
+  carefully [
+    let rows csv:from-string text
+    let headers [["network_id" "network_type"] ["network_id" "node_id"] ["network_id" "source" "target"]]
+    check-network-header rows (item index headers)
+    set network-pending-tables replace-item index network-pending-tables rows
+    if not member? [] network-pending-tables [
+      let catalog item 0 network-pending-tables
+      if empty? but-first catalog [ error "The downloaded catalog contains no graphs." ]
+      let ids map [row -> item 0 row] (but-first catalog)
+      if length ids != length remove-duplicates ids [ error "Duplicate graph IDs in the downloaded catalog." ]
+      ; Publish the three tables together; Setup never sees a partial download.
+      set network-cache-catalog catalog
+      set network-cache-nodes but-first (item 1 network-pending-tables)
+      set network-cache-edges but-first (item 2 network-pending-tables)
+      set network-cache-source github-network-base-url
+      set network-pending-tables (list [] [] [])
+      set network-load-status (word "Ready: " length ids " GitHub graphs")
+    ]
+  ] [
+    fail-network-load token (word "Invalid network CSV: " error-message)
+  ]
+end
+
+to fail-network-load [token message]
+  if token != network-load-token [ stop ]
+  clear-network-cache
+  set network-load-status (word "Error: " message)
+end
+
+to cancel-network-load
+  clear-network-cache
+  set network-load-status "Cancelled. Reload the library or use random networks."
+end
+
+to check-network-load-timeout
+  if network-load-status = "Loading" [
+    if timer - network-load-start >= network-load-timeout [
+      fail-network-load network-load-token "Download timed out. Check the raw URL, HTTP errors, and CORS, then retry."
+    ]
+  ]
+end
+
+to-report network-library-status
+  check-network-load-timeout
+  ifelse network-load-status = "Loading"
+    [ report (word "Loading: " length filter [rows -> not empty? rows] network-pending-tables " / 3 files") ]
+    [ report network-load-status ]
 end
 
 to-report import-directory
@@ -101,20 +216,93 @@ to-report import-directory
 end
 
 to-report local-catalog
-  let path word import-directory "/networks.csv"
-  if not file-exists? path [
-    error (word "Local network catalog not found: " path
-      ". Choose Synthetic random to run without data files.")
+  ensure-network-library
+  report but-first network-cache-catalog
+end
+
+to clear-network-cache
+  set network-cache-source ""
+  set network-cache-catalog []
+  set network-cache-nodes []
+  set network-cache-edges []
+  set network-pending-tables (list [] [] [])
+  set network-load-token (list new-seed timer)
+  set network-load-status "No library loaded"
+end
+
+to reload-network-library
+  if network-source = "GitHub synthetic" [ load-github-networks stop ]
+  clear-network-cache
+  if network-source != "Synthetic random" [ ensure-network-library ]
+end
+
+to ensure-network-library
+  if network-source = "GitHub synthetic" [
+    check-network-load-timeout
+    if network-cache-source != github-network-base-url or empty? network-cache-catalog [
+      error (word network-load-status ". Click Load GitHub library and wait for Ready before Setup.")
+    ]
+    stop
   ]
-  report but-first csv:from-file path
+  let folder import-directory
+  if network-cache-source = folder [ stop ]
+  clear-network-cache
+  foreach ["networks.csv" "nodes.csv" "edges.csv"] [filename ->
+    if not file-exists? (word folder "/" filename) [
+      error (word "Missing local network file: " folder "/" filename
+        ". Choose Synthetic random to run without data.")
+    ]
+  ]
+  let catalog csv:from-file (word folder "/networks.csv")
+  let nodes csv:from-file (word folder "/nodes.csv")
+  let edges csv:from-file (word folder "/edges.csv")
+  check-network-header catalog ["network_id" "network_type"]
+  check-network-header nodes ["network_id" "node_id"]
+  check-network-header edges ["network_id" "source" "target"]
+  set network-cache-catalog catalog
+  set network-cache-nodes but-first nodes
+  set network-cache-edges but-first edges
+  set network-cache-source folder
+  set network-load-status (word "Ready: " length but-first catalog " local graphs")
+end
+
+to check-network-header [rows required-columns]
+  if empty? rows [ error "Network CSV has no header." ]
+  if length first rows < length required-columns [ error "Network CSV header is incomplete." ]
+  if sublist (first rows) 0 (length required-columns) != required-columns [
+    error (word "Network CSV must start with columns " required-columns)
+  ]
 end
 
 to choose-local-network
+  if network-source = "GitHub synthetic" [
+    error "For GitHub networks, enter the graph ID in ui-github-network-id, then click Setup."
+  ]
   if network-source = "Synthetic random" [
     user-message "Synthetic random needs no files. Select an imported source first to choose a local network."
     stop
   ]
-  let ids map [row -> item 0 row] local-catalog
+  reload-network-library
+  let catalog local-catalog
+  if empty? catalog [ user-message "The network catalog is empty." stop ]
+  ; Optional metadata keeps large synthetic libraries easy to browse.
+  if network-source = "Imported synthetic" [
+    let generator-column position "generator" first network-cache-catalog
+    if generator-column != false [
+      let choices sort remove-duplicates map [row -> item generator-column row] catalog
+      let selection user-one-of "Synthetic generator" choices
+      if selection = false [ stop ]
+      set catalog filter [row -> item generator-column row = selection] catalog
+    ]
+    let size-column position "n_nodes" first network-cache-catalog
+    if size-column != false [
+      let sizes sort remove-duplicates map [row -> item size-column row] catalog
+      let selection user-one-of "Number of kiosks" (map [n -> word n ""] sizes)
+      if selection = false [ stop ]
+      set catalog filter [row -> (word (item size-column row) "") = selection] catalog
+    ]
+  ]
+  let ids map [row -> item 0 row] catalog
   let selection user-one-of "Local network (private; not saved in model code)" ids
   if selection != false [ set selected-market selection ]
 end
@@ -123,9 +311,24 @@ to setup
   if controls-initialized? != true [ initialize-controls ]
   if not member? network-source network-sources [ set network-source "Synthetic random" ]
   if not is-string? selected-market [ set selected-market "" ]
+  if network-source = "Synthetic random" [ clear-network-cache ]
+  if network-source != "Synthetic random" [ ensure-network-library ]
   validate-controls
   let saved-controls map [name -> runresult name] parameter-names
+  let saved-library (list network-cache-source network-cache-catalog network-cache-nodes network-cache-edges)
+  let saved-loader (list github-network-base-url network-load-status network-load-token
+    network-load-start network-pending-tables network-load-timeout)
   clear-all
+  set network-cache-source item 0 saved-library
+  set network-cache-catalog item 1 saved-library
+  set network-cache-nodes item 2 saved-library
+  set network-cache-edges item 3 saved-library
+  set github-network-base-url item 0 saved-loader
+  set network-load-status item 1 saved-loader
+  set network-load-token item 2 saved-loader
+  set network-load-start item 3 saved-loader
+  set network-pending-tables item 4 saved-loader
+  set network-load-timeout item 5 saved-loader
   set network-source item 0 saved-controls
   set selected-market item 1 saved-controls
   set sharing-mode item 2 saved-controls
@@ -189,22 +392,15 @@ to load-market-network
   if selected-market = "" [ set selected-market item 0 first catalog ]
   let entries filter [row -> item 0 row = selected-market] catalog
   if length entries != 1 [ error "Choose a network ID that occurs once in the local catalog." ]
-  let folder import-directory
-  foreach ["nodes.csv" "edges.csv"] [filename ->
-    if not file-exists? (word folder "/" filename) [
-      error (word "Missing local network file: " folder "/" filename
-        ". Choose Synthetic random to run without data.")
-    ]
-  ]
   let nodes filter [row -> item 0 row = selected-market]
-    (but-first csv:from-file (word folder "/nodes.csv"))
+    network-cache-nodes
   if empty? nodes [ error "Selected network has no exported nodes." ]
   foreach nodes [row ->
     if any? kiosks with [agent-id = item 1 row] [ error "Duplicate imported node ID." ]
     create-kiosks 1 [ set agent-id item 1 row ]
   ]
   let edges filter [row -> item 0 row = selected-market]
-    (but-first csv:from-file (word folder "/edges.csv"))
+    network-cache-edges
   foreach edges [row ->
     let source one-of kiosks with [agent-id = item 1 row]
     let target one-of kiosks with [agent-id = item 2 row]
@@ -220,6 +416,10 @@ to load-market-network
 end
 
 to go
+  if network-source = "GitHub synthetic" [
+    ensure-network-library
+    if active-market != selected-market [ error "Click Setup to initialize the selected GitHub graph before running." ]
+  ]
   validate-controls
   set tick-served 0
   set tick-failed 0
@@ -525,8 +725,14 @@ Full assumptions: Info tab.</note>
     <monitor x="760" y="850" width="445" height="55" display="Network loaded at Setup" precision="0" fontSize="11">network-description</monitor>
     <button x="10" y="90" width="110" height="55" display="Network source" kind="Observer" forever="false" disableUntilTicks="false">choose-network-source</button>
     <button x="270" y="90" width="170" height="55" display="Choose local network" kind="Observer" forever="false" disableUntilTicks="false">choose-local-network</button>
-    <monitor x="125" y="90" width="125" height="55" display="Selected source" precision="0" fontSize="11">ifelse-value (network-source = "Synthetic random") ["Random"] [ifelse-value (network-source = "Imported synthetic") ["Synthetic file"] ["Observed"]]</monitor>
+    <monitor x="125" y="90" width="125" height="55" display="Selected source" precision="0" fontSize="11">ifelse-value (network-source = "GitHub synthetic") ["GitHub"] [ifelse-value (network-source = "Synthetic random") ["Random"] [ifelse-value (network-source = "Imported synthetic") ["Synthetic file"] ["Observed"]]]</monitor>
     <monitor x="450" y="90" width="286" height="55" display="Selected local ID (runtime only)" precision="0" fontSize="11">selected-market</monitor>
+    <input x="10" y="920" width="725" height="60" variable="ui-github-base-url" type="string" multiline="false">https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks</input>
+    <input x="760" y="920" width="280" height="60" variable="ui-github-network-id" type="string" multiline="false">pooled-n20-r01</input>
+    <button x="1045" y="920" width="160" height="60" display="Load GitHub library" kind="Observer" forever="false" disableUntilTicks="false">interface-load-github</button>
+    <monitor x="10" y="990" width="725" height="60" display="Library download / cache status" precision="0" fontSize="11">network-library-status</monitor>
+    <button x="760" y="990" width="280" height="60" display="Use random networks" kind="Observer" forever="false" disableUntilTicks="false">use-random-networks</button>
+    <button x="1045" y="990" width="160" height="60" display="Cancel download" kind="Observer" forever="false" disableUntilTicks="false">cancel-network-load</button>
   </widgets>
   <info><![CDATA[## PURPOSE AND STATUS
 
@@ -558,15 +764,29 @@ private import audit. Raw survey workbooks remain outside the ABM repository.
 Imported synthetic: imports a pre-generated graph library from the
 synthetic-networks/ directory, using exactly the same loader and CSV schema.
 No summary-fitting or advanced graph-generation code is needed in NetLogo.
+The supplied ensemble has pooled primary networks and corrected hub sensitivity
+networks: 20 draws per generator at each size from 2 to 24 kiosks. Four matched
+market-bootstrap fits contribute equally to each size. IDs such as
+pooled-n12-r03 identify generator, kiosk count, and replicate. Initial balances,
+customer demand, and trading rules remain illustrative when these graphs load.
 
 Use Choose local network after selecting either imported source, then Setup.
-The dialog reads the local catalog at runtime. Private network IDs are not
+Synthetic catalogs with generator and n_nodes columns offer those filters before
+the final graph choice. The chooser reloads CSV tables and caches them in memory
+for repeated Setup calls. After editing library files, reopen the chooser or run
+reload-network-library. Switching to Synthetic random clears this cache.
+Private network IDs are not
 embedded in model widgets or code. With no ID selected, Setup uses the first
-catalog entry. Missing files in an imported mode produce an explicit error;
+catalog entry. Missing files when a library is loaded produce an explicit error;
 the model never silently substitutes a random graph for an imported experiment.
 Switch to Synthetic random to run without files. Kiosk count and density sliders
 are ignored by both imported modes. The loaded-network monitor records the
 catalog's network_type and network_id, not the current button selection alone.
+
+This CSV importer uses desktop file operations. Publishing the CSVs on GitHub
+does not make them load automatically in NetLogo Web. A browser loader would
+need asynchronous Fetch requests plus CSV string parsing, or bundled NetLogo 7
+resources. See the site's Synthetic network generation page for details.
 
 Both imported folders have networks.csv (network_id,network_type), nodes.csv
 (network_id,node_id), and edges.csv (network_id,source,target). Keep each

@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "relationship": "undirected mutual stated willingness to trade",
+  "primary_generator": "pooled",
+  "sensitivity_generator": "corrected_hub",
+  "network_count": 920,
+  "sizes": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "networks_per_size_per_generator": 20,
+  "parameter_fits": [
+    "bootstrap-1",
+    "bootstrap-2",
+    "bootstrap-3",
+    "bootstrap-4"
+  ],
+  "parameter_sampling": "equal-weight whole-market bootstrap refits",
+  "all_market_point_fit_in_ensemble": false,
+  "sha256_convention": "UTF-8 file bytes with CRLF normalized to LF",
+  "files_sha256_lf": {
+    "networks.csv": "38919d04c5636e47b26f1ac8fdb948ce7d1d5697e6ce3ecf56247ef8907ab0fe",
+    "nodes.csv": "d793fdb3a202039b8b1be05fe7573fc04303ef1da7d0bbc28bfa36846903579e",
+    "edges.csv": "1fa63e53b2cc9cf95e9f5e96d759cc10cf4d03da6c311bbdd04371726572a4f7"
+  },
+  "source_sha256_lf": {
+    "experiments/configs/generate_abm_networks.R": "c10c7df9cbf939188295413e161e324d70224bf62e32d6e0a6cfada3e2266170",
+    "scripts/generate_abm_networks.R": "aea141f7d8df62ff07036dc2ae7b8f9e697fe4b09ca953b5bc95b2ad5c8d9901",
+    "scripts/abm_network_generation_functions.R": "d58e795cdeed8ff5266a7682a06f68a1d065a0187d9866ba8954a55a54d89613",
+    "scripts/pooled_mutual_ergm_functions.R": "93961f124d057cd61b46a9c221f843852df5f0ee2fb35f3c7272e182f64d29f8",
+    "scripts/shrinkage_mutual_ergm_functions.R": "90b50e4406eb542759abb3b6b0c9db3664c8b968fa040e893dd319db725db6d7",
+    "scripts/activity_ergm_functions.R": "1ef7d6c34821685437f6dc127ac49d79c0d801df2a3aae0416843cd0501df59e",
+    "scripts/forecast_activity_functions.R": "2cf16e86a383587c0eae7384cc6804b958d8692813401695ed6b7339e740bb3e",
+    "scripts/nested_network_functions.R": "9cb94fb136c67397ff662cb6b3244f00785dda356168e08917afe2f28212a61b"
+  }
+}
