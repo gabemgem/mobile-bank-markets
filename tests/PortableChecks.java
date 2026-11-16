@@ -14,6 +14,10 @@ public class PortableChecks {
         Path directory = Files.createTempDirectory("netlogo-data-free-");
         Path model = directory.resolve("MobileBankMarkets.nlogox");
         Files.copy(Paths.get(args[0]), model);
+        Path fetchJar=Paths.get(args[0]).toAbsolutePath().getParent().resolve("fetch/fetch.jar");
+        if (!Files.exists(fetchJar)) throw new AssertionError("Run python scripts/install_netlogo_fetch.py first");
+        Files.createDirectory(directory.resolve("fetch"));
+        Files.copy(fetchJar,directory.resolve("fetch/fetch.jar"));
         org.w3c.dom.Document bindings = javax.xml.parsers.DocumentBuilderFactory.newInstance()
             .newDocumentBuilder().parse(model.toFile());
         org.w3c.dom.NodeList all = bindings.getElementsByTagName("widgets").item(0).getChildNodes();

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <model version="NetLogo 7.0.3" snapToGrid="true">
-  <code><![CDATA[extensions [csv fetch]
+  <code><![CDATA[extensions [csv fetch table]
 
 breed [kiosks kiosk]
 breed [transfers transfer]
@@ -15,6 +15,7 @@ globals [
   network-cache-source network-cache-catalog network-cache-nodes network-cache-edges
   github-network-base-url network-load-status network-load-token network-load-start
   network-pending-tables network-load-timeout
+  desktop-dialog-prompt desktop-dialog-options
   requested-values served-values  ; [deposit withdrawal], in illustrative units
   requested-count served-count tick-served tick-failed
   initiated-count settled-count settled-value tick-settled-value
@@ -65,6 +66,7 @@ end
 
 to interface-setup
   if controls-initialized? != true [ initialize-controls ]
+  sync-network-source
   if network-source = "GitHub synthetic" [
     if normalized-network-url (runresult "ui-github-base-url") != github-network-base-url [
       error "The library URL changed. Click Load GitHub library before Setup."
@@ -95,13 +97,18 @@ to interface-go
   go
 end
 
-to choose-network-source
-  let selection user-one-of "Network source" network-sources
-  if selection != false [
+to sync-network-source
+  let selection runresult "ui-network-source"
+  if selection != network-source [
     set network-source selection
     set selected-market ""
     clear-network-cache
   ]
+end
+
+to interface-choose-local-network
+  sync-network-source
+  choose-local-network
 end
 
 to-report network-sources
@@ -112,7 +119,13 @@ to interface-load-github
   if controls-initialized? != true [ initialize-controls ]
   set github-network-base-url runresult "ui-github-base-url"
   set selected-market runresult "ui-github-network-id"
+  run "set ui-network-source \"GitHub synthetic\""
   load-github-networks
+end
+
+to interface-use-random
+  use-random-networks
+  run "set ui-network-source \"Synthetic random\""
 end
 
 to use-random-networks
@@ -131,17 +144,8 @@ end
 
 to load-github-networks
   if controls-initialized? != true [ initialize-controls ]
-  clear-network-cache
-  set network-source "GitHub synthetic"
-  set active-market ""
-  set github-network-base-url normalized-network-url github-network-base-url
-  if not ((position "https://" github-network-base-url = 0) or
-          (position "http://" github-network-base-url = 0)) [
-    set network-load-status "Error: use a public HTTP(S) directory URL."
-    stop
-  ]
-  set network-load-status "Loading"
-  set network-load-start timer
+  begin-github-load github-network-base-url
+  if network-load-status != "Loading" [ stop ]
   let token network-load-token
   let base-url github-network-base-url
   let files ["networks.csv" "nodes.csv" "edges.csv"]
@@ -157,6 +161,20 @@ to load-github-networks
   ]
 end
 
+to begin-github-load [address]
+  clear-network-cache
+  set network-source "GitHub synthetic"
+  set active-market ""
+  set github-network-base-url normalized-network-url address
+  if not ((position "https://" github-network-base-url = 0) or
+          (position "http://" github-network-base-url = 0)) [
+    set network-load-status "Error: use a public HTTP(S) directory URL."
+    stop
+  ]
+  set network-load-status "Loading"
+  set network-load-start timer
+end
+
 to receive-network-file [token index text]
   ; Late responses from cancelled, superseded, or timed-out requests are discarded.
   check-network-load-timeout
@@ -168,9 +186,8 @@ to receive-network-file [token index text]
     set network-pending-tables replace-item index network-pending-tables rows
     if not member? [] network-pending-tables [
       let catalog item 0 network-pending-tables
-      if empty? but-first catalog [ error "The downloaded catalog contains no graphs." ]
+      validate-network-tables catalog (item 1 network-pending-tables) (item 2 network-pending-tables)
       let ids map [row -> item 0 row] (but-first catalog)
-      if length ids != length remove-duplicates ids [ error "Duplicate graph IDs in the downloaded catalog." ]
       ; Publish the three tables together; Setup never sees a partial download.
       set network-cache-catalog catalog
       set network-cache-nodes but-first (item 1 network-pending-tables)
@@ -248,17 +265,18 @@ to ensure-network-library
   if network-cache-source = folder [ stop ]
   clear-network-cache
   foreach ["networks.csv" "nodes.csv" "edges.csv"] [filename ->
-    if not file-exists? (word folder "/" filename) [
+    if not desktop-file-exists? (word folder "/" filename) [
       error (word "Missing local network file: " folder "/" filename
         ". Choose Synthetic random to run without data.")
     ]
   ]
-  let catalog csv:from-file (word folder "/networks.csv")
-  let nodes csv:from-file (word folder "/nodes.csv")
-  let edges csv:from-file (word folder "/edges.csv")
+  let catalog desktop-csv (word folder "/networks.csv")
+  let nodes desktop-csv (word folder "/nodes.csv")
+  let edges desktop-csv (word folder "/edges.csv")
   check-network-header catalog ["network_id" "network_type"]
   check-network-header nodes ["network_id" "node_id"]
   check-network-header edges ["network_id" "source" "target"]
+  validate-network-tables catalog nodes edges
   set network-cache-catalog catalog
   set network-cache-nodes but-first nodes
   set network-cache-edges but-first edges
@@ -266,11 +284,76 @@ to ensure-network-library
   set network-load-status (word "Ready: " length but-first catalog " local graphs")
 end
 
+to-report desktop-file-exists? [path]
+  ; Deferred desktop primitives let the shared model compile in NetLogo Web.
+  report runresult (word "file-exists? \"" path "\"")
+end
+
+to-report desktop-csv [path]
+  report runresult (word "csv:from-file \"" path "\"")
+end
+
+to-report desktop-choice [prompt options]
+  set desktop-dialog-prompt prompt
+  set desktop-dialog-options options
+  let selection runresult "user-one-of desktop-dialog-prompt desktop-dialog-options"
+  set desktop-dialog-prompt ""
+  set desktop-dialog-options []
+  report selection
+end
+
 to check-network-header [rows required-columns]
   if empty? rows [ error "Network CSV has no header." ]
   if length first rows < length required-columns [ error "Network CSV header is incomplete." ]
   if sublist (first rows) 0 (length required-columns) != required-columns [
     error (word "Network CSV must start with columns " required-columns)
+  ]
+end
+
+to validate-network-tables [catalog nodes edges]
+  ; Linear-time validation keeps malformed or partial remote libraries out of the cache.
+  let graphs table:make
+  let vertices table:make
+  let ties table:make
+  let populations table:make
+  foreach (but-first catalog) [row ->
+    check-network-row row 2
+    let id item 0 row
+    if table:has-key? graphs id [ error "Duplicate graph ID in network catalog." ]
+    table:put graphs id true
+  ]
+  if table:length graphs = 0 [ error "The network catalog contains no graphs." ]
+  foreach (but-first nodes) [row ->
+    check-network-row row 2
+    let graph item 0 row
+    let key (list graph (item 1 row))
+    if not table:has-key? graphs graph [ error "Node belongs to an unknown graph." ]
+    if table:has-key? vertices key [ error "Duplicate imported node ID." ]
+    table:put vertices key true
+    table:put populations graph (1 + ifelse-value (table:has-key? populations graph) [table:get populations graph] [0])
+  ]
+  foreach (table:keys graphs) [graph ->
+    if not table:has-key? populations graph [ error "A catalog graph has no nodes." ]
+  ]
+  foreach (but-first edges) [row ->
+    check-network-row row 3
+    let graph item 0 row
+    let source item 1 row
+    let target item 2 row
+    if not table:has-key? vertices (list graph source) or
+       not table:has-key? vertices (list graph target) [ error "Network edge refers to a missing node." ]
+    if source = target [ error "Imported networks cannot contain self-links." ]
+    let key (list graph (sort (list source target)))
+    if table:has-key? ties key [ error "Duplicate undirected network edge." ]
+    table:put ties key true
+  ]
+end
+
+to check-network-row [row columns]
+  if length row < columns [ error "Incomplete network CSV row." ]
+  foreach (sublist row 0 columns) [value ->
+    if not is-string? value [ error "Network identifiers and types must be strings." ]
+    if empty? value [ error "Empty network identifier or type." ]
   ]
 end
 
@@ -290,20 +373,20 @@ to choose-local-network
     let generator-column position "generator" first network-cache-catalog
     if generator-column != false [
       let choices sort remove-duplicates map [row -> item generator-column row] catalog
-      let selection user-one-of "Synthetic generator" choices
+      let selection desktop-choice "Synthetic generator" choices
       if selection = false [ stop ]
       set catalog filter [row -> item generator-column row = selection] catalog
     ]
     let size-column position "n_nodes" first network-cache-catalog
     if size-column != false [
       let sizes sort remove-duplicates map [row -> item size-column row] catalog
-      let selection user-one-of "Number of kiosks" (map [n -> word n ""] sizes)
+      let selection desktop-choice "Number of kiosks" (map [n -> word n ""] sizes)
       if selection = false [ stop ]
       set catalog filter [row -> (word (item size-column row) "") = selection] catalog
     ]
   ]
   let ids map [row -> item 0 row] catalog
-  let selection user-one-of "Local network (private; not saved in model code)" ids
+  let selection desktop-choice "Local network (private; not saved in model code)" ids
   if selection != false [ set selected-market selection ]
 end
 
@@ -723,15 +806,14 @@ Full assumptions: Info tab.</note>
       </pen>
     </plot>
     <monitor x="760" y="850" width="445" height="55" display="Network loaded at Setup" precision="0" fontSize="11">network-description</monitor>
-    <button x="10" y="90" width="110" height="55" display="Network source" kind="Observer" forever="false" disableUntilTicks="false">choose-network-source</button>
-    <button x="270" y="90" width="170" height="55" display="Choose local network" kind="Observer" forever="false" disableUntilTicks="false">choose-local-network</button>
-    <monitor x="125" y="90" width="125" height="55" display="Selected source" precision="0" fontSize="11">ifelse-value (network-source = "GitHub synthetic") ["GitHub"] [ifelse-value (network-source = "Synthetic random") ["Random"] [ifelse-value (network-source = "Imported synthetic") ["Synthetic file"] ["Observed"]]]</monitor>
+    <chooser x="10" y="90" width="240" height="55" display="ui-network-source" variable="ui-network-source" current="0"><choice type="string" value="Synthetic random" /><choice type="string" value="Observed mutual willingness" /><choice type="string" value="Imported synthetic" /><choice type="string" value="GitHub synthetic" /></chooser>
+    <button x="270" y="90" width="170" height="55" display="Choose local network" kind="Observer" forever="false" disableUntilTicks="false">interface-choose-local-network</button>
     <monitor x="450" y="90" width="286" height="55" display="Selected local ID (runtime only)" precision="0" fontSize="11">selected-market</monitor>
     <input x="10" y="920" width="725" height="60" variable="ui-github-base-url" type="string" multiline="false">https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks</input>
     <input x="760" y="920" width="280" height="60" variable="ui-github-network-id" type="string" multiline="false">pooled-n20-r01</input>
     <button x="1045" y="920" width="160" height="60" display="Load GitHub library" kind="Observer" forever="false" disableUntilTicks="false">interface-load-github</button>
     <monitor x="10" y="990" width="725" height="60" display="Library download / cache status" precision="0" fontSize="11">network-library-status</monitor>
-    <button x="760" y="990" width="280" height="60" display="Use random networks" kind="Observer" forever="false" disableUntilTicks="false">use-random-networks</button>
+    <button x="760" y="990" width="280" height="60" display="Use random networks" kind="Observer" forever="false" disableUntilTicks="false">interface-use-random</button>
     <button x="1045" y="990" width="160" height="60" display="Cancel download" kind="Observer" forever="false" disableUntilTicks="false">cancel-network-load</button>
   </widgets>
   <info><![CDATA[## PURPOSE AND STATUS
