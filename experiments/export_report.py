@@ -14,6 +14,7 @@ def build_report(folder, slug, title):
         raise ValueError('Report id must use lowercase letters, numbers, and hyphens')
     manifest=json.loads((folder/'manifest.json').read_text())
     config=json.loads((folder/'config.json').read_text())
+    h.select_model(config.get('model_version', 'v1'))
     if config.get('mode') not in {'oat','lhs','grid'}:
         raise ValueError('Benchmark reports are separate from scientific experiment results')
     if any(k.startswith(('data/','synthetic-networks/')) for k in manifest['sha256']):
@@ -58,7 +59,10 @@ def build_report(folder, slug, title):
             'seeds':config.get('seeds',[11,22,33]),'warmup_runs':config.get('warmup_runs',0),
             'balance_labels':design[0]['show-balances?'].lower()=='true',
             'replicates':len(config.get('seeds',[11,22,33])),'completed_runs':len(design),
-            'model_sha256':manifest['sha256']['MobileBankMarkets.nlogox'],
+            'model_version':config.get('model_version','v1'),
+            'model_file':manifest.get('model_file', h.MODEL.name),
+            'model_sha256':next(value for key,value in manifest['sha256'].items()
+                                if key in {h.MODEL.name, 'MobileBankMarkets.nlogox'}),
             'exported_utc':dt.datetime.now(dt.timezone.utc).isoformat(),
             'points':points,'sensitivity':clean,
             'caveat':'Abstract, uncalibrated simulation. Error bars show between-seed SD, not confidence intervals. '

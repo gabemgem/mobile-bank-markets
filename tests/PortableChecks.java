@@ -12,7 +12,7 @@ public class PortableChecks {
     }
     public static void main(String[] args) throws Exception {
         Path directory = Files.createTempDirectory("netlogo-data-free-");
-        Path model = directory.resolve("MobileBankMarkets.nlogox");
+        Path model = directory.resolve(Paths.get(args[0]).getFileName());
         Files.copy(Paths.get(args[0]), model);
         Path fetchJar=Paths.get(args[0]).toAbsolutePath().getParent().resolve("fetch/fetch.jar");
         if (!Files.exists(fetchJar)) throw new AssertionError("Run python scripts/install_netlogo_fetch.py first");
@@ -25,7 +25,7 @@ public class PortableChecks {
             if (!(all.item(i) instanceof org.w3c.dom.Element)) continue;
             org.w3c.dom.Element widget = (org.w3c.dom.Element)all.item(i);
             // Desktop widgets bind display; headless widgets bind variable.
-            if (widget.hasAttribute("variable") &&
+            if (widget.hasAttribute("variable") && widget.hasAttribute("display") &&
                     !widget.getAttribute("display").equals(widget.getAttribute("variable")))
                 throw new AssertionError("Desktop/headless widget name mismatch: " + widget.getAttribute("variable"));
         }
@@ -74,7 +74,9 @@ public class PortableChecks {
         try {
             core.open(coreModel.toString());
             core.command("setup repeat 5 [go] check-accounting");
-            check(core,"target-balance-percent = 50 and low-balance-percent = 25 and settlement-delay = 1");
+            check(core,"target-balance-percent = 50 and low-balance-percent = 25");
+            if (args[0].contains("_v2")) check(core,"grid-cell-size = 5 and commission-percent = 1");
+            else check(core,"settlement-delay = 1");
             core.command("set target-balance-percent 60 setup go");
             check(core,"target-balance-percent = 60");
             System.out.println("PASS: compiled and ran with every parameter widget removed.");

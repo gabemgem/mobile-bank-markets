@@ -18,10 +18,24 @@ import time
 import xml.etree.ElementTree as ET
 
 ABM = Path(__file__).resolve().parents[1]
-MODEL = ABM / 'MobileBankMarkets.nlogox'
-METRICS = ['service_pct', 'deposit_service_pct', 'withdrawal_service_pct', 'served_count',
+MODEL = ABM / 'MobileBankMarkets_v1.nlogox'
+V1_METRICS = ['service_pct', 'deposit_service_pct', 'withdrawal_service_pct', 'served_count',
            'trades_started', 'trades_settled', 'pending_trades', 'settled_value', 'pending_value',
            'reserved_cash', 'reserved_efloat', 'unmet_attempts', 'cash_low_share', 'efloat_low_share']
+V2_METRICS = ['external_started', 'external_settled', 'external_value', 'external_pending',
+              'external_pending_value', 'net_external_cash', 'closed_share',
+              'closure_failed_count', 'closure_failed_value', 'cash_failed_count', 'efloat_failed_count',
+              'commissions_earned', 'commissions_paid', 'subsidy_spent', 'pending_commissions',
+              'pending_subsidy', 'mean_peer_distance']
+METRICS = V1_METRICS.copy()
+
+
+def select_model(version='v1'):
+    global MODEL, METRICS
+    if version not in {'v1', 'v2'}:
+        raise ValueError('model_version must be v1 or v2')
+    MODEL = ABM / f'MobileBankMarkets_{version}.nlogox'
+    METRICS = V1_METRICS + (V2_METRICS if version == 'v2' else [])
 
 
 def write_csv(path, rows, columns=None):
@@ -79,10 +93,11 @@ def validate_value(name, value, schema):
 
 
 def build_design(config):
-    defaults, schema = controls()
     if not isinstance(config, dict):
         raise ValueError('Configuration must be a JSON object')
-    allowed = {'mode', 'ticks', 'seeds', 'base', 'parameters', 'samples', 'design_seed', 'invalid_combinations', 'warmup_runs'}
+    select_model(config.get('model_version', 'v1'))
+    defaults, schema = controls()
+    allowed = {'model_version', 'mode', 'ticks', 'seeds', 'base', 'parameters', 'samples', 'design_seed', 'invalid_combinations', 'warmup_runs'}
     if set(config) - allowed:
         raise ValueError(f'Unknown configuration fields: {set(config) - allowed}')
     mode = config.get('mode', 'oat')
@@ -170,8 +185,14 @@ def build_design(config):
         for name, value in point.items():
             validate_value(name, value, schema)
         reason = None
+        if point['network-source'] == 'GitHub synthetic':
+            raise ValueError('Batch experiments use local Imported synthetic libraries, not asynchronous GitHub downloads')
         if point['target-balance-percent'] <= point['low-balance-percent']:
             reason = 'Refill target must exceed low-balance trigger'
+        elif config.get('model_version', 'v1') == 'v2' and point['external-open-ticks'] > point['external-cycle-ticks']:
+            reason = 'External opening ticks must not exceed the cycle length'
+        elif config.get('model_version', 'v1') == 'v2' and point['commission-min-percent'] > point['commission-max-percent']:
+            reason = 'Minimum commission must not exceed maximum commission'
         elif point['network-source'] != 'Synthetic random' and any(
             name in parameters for name in ['number-of-kiosks', 'network-density']):
             reason = 'Kiosk count and density are ignored for imported networks; do not sweep them'
@@ -335,6 +356,7 @@ def main():
 
 def execute_design(config, design, rejected, args):
     """Shared executor for normal studies and the small explicit benchmark design."""
+    select_model(config.get('model_version', 'v1'))
     out = args.out.resolve()
     inputs = [MODEL, Path(__file__), Path(__file__).with_name('BatchRunner.java')]
     if config.get('mode')=='benchmark':
@@ -344,7 +366,8 @@ def execute_design(config, design, rejected, args):
         if source in sources:
             inputs.extend(ABM/folder/name for name in ['networks.csv','nodes.csv','edges.csv'])
     hashes = {str(p.relative_to(ABM)): hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs}
-    identity = {'config': config, 'sha256': hashes}
+    identity = {'config': config, 'model_version': config.get('model_version', 'v1'),
+                'model_file': MODEL.name, 'sha256': hashes}
     fingerprint = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
     manifest = out/'manifest.json'
     if out.exists() and any(out.iterdir()):

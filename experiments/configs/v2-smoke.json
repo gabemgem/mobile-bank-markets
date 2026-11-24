@@ -1,0 +1,26 @@
+{
+  "model_version": "v2",
+  "base": {
+    "network-source": "Imported synthetic",
+    "selected-market": "pooled-n12-r01",
+    "external-mode": "Peers then external",
+    "sharing-mode": "Network sharing"
+  },
+  "mode": "grid",
+  "ticks": 24,
+  "seeds": [
+    11,
+    22
+  ],
+  "parameters": {
+    "selected-market": [
+      "pooled-n12-r01",
+      "corrected-hub-n12-r01"
+    ],
+    "external-mode": [
+      "Disabled",
+      "External only",
+      "Peers then external"
+    ]
+  }
+}

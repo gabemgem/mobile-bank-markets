@@ -1,0 +1,70 @@
+{
+  "model_version": "v2",
+  "base": {
+    "network-source": "Imported synthetic",
+    "selected-market": "pooled-n12-r01",
+    "external-mode": "Peers then external",
+    "sharing-mode": "Network sharing"
+  },
+  "mode": "lhs",
+  "ticks": 200,
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55
+  ],
+  "samples": 24,
+  "design_seed": 20261119,
+  "parameters": {
+    "external-travel-ticks": {
+      "min": 0,
+      "max": 8
+    },
+    "external-access-percent": {
+      "min": 0,
+      "max": 100
+    },
+    "external-max-amount": {
+      "min": 100,
+      "max": 1000
+    },
+    "low-balance-percent": {
+      "min": 10,
+      "max": 40
+    },
+    "demand-heterogeneity": {
+      "min": 0,
+      "max": 2
+    },
+    "size-heterogeneity": {
+      "min": 0,
+      "max": 1
+    },
+    "travel-closes-shop?": {
+      "values": [
+        true,
+        false
+      ]
+    },
+    "grid-cell-size": {
+      "min": 2,
+      "max": 16
+    },
+    "commission-mode": {
+      "values": [
+        "Uniform",
+        "Varied"
+      ]
+    },
+    "commission-percent": {
+      "min": 0,
+      "max": 3
+    },
+    "commission-subsidy-percent": {
+      "min": 0,
+      "max": 100
+    }
+  }
+}

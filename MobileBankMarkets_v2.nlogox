@@ -1,0 +1,2148 @@
+<?xml version='1.0' encoding='utf-8'?>
+<model version="NetLogo 7.0.3" snapToGrid="true">
+  <code><![CDATA[extensions [csv fetch table]
+
+breed [kiosks kiosk]
+breed [transfers transfer]
+undirected-link-breed [relationships relationship]
+directed-link-breed [trade-routes trade-route]
+
+globals [
+  controls-initialized?
+  sharing-mode number-of-kiosks starting-balance network-density participation-percent requests-per-tick maximum-request withdrawal-share demand-polarization minimum-reserve model-seed show-balances? low-balance-percent target-balance-percent
+  network-source selected-market
+  grid-cell-size commission-mode commission-percent commission-min-percent commission-max-percent commission-subsidy-percent
+  external-mode external-access-percent external-travel-ticks external-service-delay external-max-amount external-open-ticks external-cycle-ticks  travel-closes-shop? demand-heterogeneity size-heterogeneity
+  network-description active-market
+  network-cache-source network-cache-catalog network-cache-nodes network-cache-edges
+  github-network-base-url network-load-status network-load-token network-load-start
+  network-pending-tables network-load-timeout
+  desktop-dialog-prompt desktop-dialog-options
+  requested-values served-values  ; [deposit withdrawal], in illustrative units
+  requested-count served-count tick-served tick-failed
+  initiated-count settled-count settled-value tick-settled-value
+  trade-attempts unmet-attempts
+  cash-low-ticks efloat-low-ticks  ; sums of end-of-tick kiosk observations
+  initial-cash initial-efloat net-customer-cash
+  external-started external-settled external-value net-external-cash
+  closed-kiosk-ticks closure-failed-count closure-failed-value
+  cash-failed-count efloat-failed-count
+  commissions-earned commissions-paid subsidy-spent peer-distance-total
+]
+
+kiosks-own [
+  agent-id
+  commission-rate earned-commissions paid-commissions
+  demand-weight size-factor external-access? away-until
+  cash efloat reserved-cash reserved-efloat
+  withdrawal-probability participating? pending-transfer traded-this-tick?
+]
+
+transfers-own [requester partner quantity cash-needed? due-tick external? commission-fee requester-fee subsidized-fee]
+
+to startup
+  initialize-controls
+end
+
+to initialize-controls
+  set network-source "Synthetic random"
+  set selected-market ""
+  set github-network-base-url "https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks"
+  set network-load-timeout 30
+  clear-network-cache
+  set sharing-mode "Network sharing"
+  set number-of-kiosks 20
+  set starting-balance 500
+  set network-density 0.2
+  set participation-percent 100
+  set requests-per-tick 40
+  set maximum-request 100
+  set withdrawal-share 0.5
+  set demand-polarization 0.35
+  set minimum-reserve 100
+  set model-seed 42
+  set show-balances? false
+  set low-balance-percent 25
+  set target-balance-percent 50
+  set external-mode "Peers then external"
+  set external-access-percent 100
+  set external-travel-ticks 3
+  set external-service-delay 1
+  set external-max-amount 500
+  set external-open-ticks 8
+  set external-cycle-ticks 12
+  set travel-closes-shop? true
+  set demand-heterogeneity 1
+  set size-heterogeneity 0.5
+  set grid-cell-size 5
+  set commission-mode "Uniform"
+  set commission-percent 1
+  set commission-min-percent 0.5
+  set commission-max-percent 1.5
+  set commission-subsidy-percent 0
+  set controls-initialized? true
+end
+
+to-report parameter-names
+  report ["network-source" "selected-market" "sharing-mode" "number-of-kiosks" "starting-balance" "network-density" "participation-percent" "requests-per-tick" "maximum-request" "withdrawal-share" "demand-polarization" "minimum-reserve" "model-seed" "show-balances?" "low-balance-percent" "target-balance-percent" "external-mode" "external-access-percent" "external-travel-ticks" "external-service-delay" "external-max-amount" "external-open-ticks" "external-cycle-ticks" "travel-closes-shop?" "demand-heterogeneity" "size-heterogeneity" "grid-cell-size" "commission-mode" "commission-percent" "commission-min-percent" "commission-max-percent" "commission-subsidy-percent"]
+end
+
+to interface-setup
+  if controls-initialized? != true [ initialize-controls ]
+  sync-network-source
+  if network-source = "GitHub synthetic" [
+    if normalized-network-url (runresult "ui-github-base-url") != github-network-base-url [
+      error "The library URL changed. Click Load GitHub library before Setup."
+    ]
+    set selected-market runresult "ui-github-network-id"
+  ]
+  ; UI bindings are evaluated only here, so core code compiles without widgets.
+  set sharing-mode runresult "ui-sharing-mode"
+  set number-of-kiosks runresult "ui-number-of-kiosks"
+  set starting-balance runresult "ui-starting-balance"
+  set network-density runresult "ui-network-density"
+  set participation-percent runresult "ui-participation-percent"
+  set requests-per-tick runresult "ui-requests-per-tick"
+  set maximum-request runresult "ui-maximum-request"
+  set withdrawal-share runresult "ui-withdrawal-share"
+  set demand-polarization runresult "ui-demand-polarization"
+  set minimum-reserve runresult "ui-minimum-reserve"
+  set model-seed runresult "ui-model-seed"
+  set show-balances? runresult "ui-show-balances?"
+  set low-balance-percent runresult "ui-low-balance-percent"
+  set target-balance-percent runresult "ui-target-balance-percent"
+  set external-mode runresult "ui-external-mode"
+  set external-access-percent runresult "ui-external-access-percent"
+  set external-travel-ticks runresult "ui-external-travel-ticks"
+  set external-service-delay runresult "ui-external-service-delay"
+  set external-max-amount runresult "ui-external-max-amount"
+  set external-open-ticks runresult "ui-external-open-ticks"
+  set external-cycle-ticks runresult "ui-external-cycle-ticks"
+  set travel-closes-shop? runresult "ui-travel-closes-shop?"
+  set demand-heterogeneity runresult "ui-demand-heterogeneity"
+  set size-heterogeneity runresult "ui-size-heterogeneity"
+  set grid-cell-size runresult "ui-grid-cell-size"
+  set commission-mode runresult "ui-commission-mode"
+  set commission-percent runresult "ui-commission-percent"
+  set commission-min-percent runresult "ui-commission-min-percent"
+  set commission-max-percent runresult "ui-commission-max-percent"
+  set commission-subsidy-percent runresult "ui-commission-subsidy-percent"
+  setup
+end
+
+to interface-go
+  set show-balances? runresult "ui-show-balances?"
+  go
+end
+
+to sync-network-source
+  let selection runresult "ui-network-source"
+  if selection != network-source [
+    set network-source selection
+    set selected-market ""
+    clear-network-cache
+  ]
+end
+
+to interface-choose-local-network
+  sync-network-source
+  choose-local-network
+end
+
+to-report network-sources
+  report ["Synthetic random" "Observed mutual willingness" "Imported synthetic" "GitHub synthetic"]
+end
+
+to interface-load-github
+  if controls-initialized? != true [ initialize-controls ]
+  set github-network-base-url runresult "ui-github-base-url"
+  set selected-market runresult "ui-github-network-id"
+  run "set ui-network-source \"GitHub synthetic\""
+  load-github-networks
+end
+
+to interface-use-random
+  use-random-networks
+  run "set ui-network-source \"Synthetic random\""
+end
+
+to use-random-networks
+  set network-source "Synthetic random"
+  set selected-market ""
+  clear-network-cache
+end
+
+to-report normalized-network-url [address]
+  if not is-string? address [ report "" ]
+  while [not empty? address and last address = "/"] [
+    set address but-last address
+  ]
+  report address
+end
+
+to load-github-networks
+  if controls-initialized? != true [ initialize-controls ]
+  begin-github-load github-network-base-url
+  if network-load-status != "Loading" [ stop ]
+  let token network-load-token
+  let base-url github-network-base-url
+  let files ["networks.csv" "nodes.csv" "edges.csv"]
+  foreach (range 3) [index ->
+    if token = network-load-token [
+      let address (word base-url "/" (item index files))
+      carefully [
+        fetch:url-async address [text -> receive-network-file token index text]
+      ] [
+        fail-network-load token (word "Download failed: " (item index files) ". " error-message)
+      ]
+    ]
+  ]
+end
+
+to begin-github-load [address]
+  clear-network-cache
+  set network-source "GitHub synthetic"
+  set active-market ""
+  set github-network-base-url normalized-network-url address
+  if not ((position "https://" github-network-base-url = 0) or
+          (position "http://" github-network-base-url = 0)) [
+    set network-load-status "Error: use a public HTTP(S) directory URL."
+    stop
+  ]
+  set network-load-status "Loading"
+  set network-load-start timer
+end
+
+to receive-network-file [token index text]
+  ; Late responses from cancelled, superseded, or timed-out requests are discarded.
+  check-network-load-timeout
+  if token != network-load-token or network-load-status != "Loading" [ stop ]
+  carefully [
+    let rows csv:from-string text
+    let headers [["network_id" "network_type"] ["network_id" "node_id"] ["network_id" "source" "target"]]
+    check-network-header rows (item index headers)
+    set network-pending-tables replace-item index network-pending-tables rows
+    if not member? [] network-pending-tables [
+      let catalog item 0 network-pending-tables
+      validate-network-tables catalog (item 1 network-pending-tables) (item 2 network-pending-tables)
+      let ids map [row -> item 0 row] (but-first catalog)
+      ; Publish the three tables together; Setup never sees a partial download.
+      set network-cache-catalog catalog
+      set network-cache-nodes but-first (item 1 network-pending-tables)
+      set network-cache-edges but-first (item 2 network-pending-tables)
+      set network-cache-source github-network-base-url
+      set network-pending-tables (list [] [] [])
+      set network-load-status (word "Ready: " length ids " GitHub graphs")
+    ]
+  ] [
+    fail-network-load token (word "Invalid network CSV: " error-message)
+  ]
+end
+
+to fail-network-load [token message]
+  if token != network-load-token [ stop ]
+  clear-network-cache
+  set network-load-status (word "Error: " message)
+end
+
+to cancel-network-load
+  clear-network-cache
+  set network-load-status "Cancelled. Reload the library or use random networks."
+end
+
+to check-network-load-timeout
+  if network-load-status = "Loading" [
+    if timer - network-load-start >= network-load-timeout [
+      fail-network-load network-load-token "Download timed out. Check the raw URL, HTTP errors, and CORS, then retry."
+    ]
+  ]
+end
+
+to-report network-library-status
+  check-network-load-timeout
+  ifelse network-load-status = "Loading"
+    [ report (word "Loading: " length filter [rows -> not empty? rows] network-pending-tables " / 3 files") ]
+    [ report network-load-status ]
+end
+
+to-report import-directory
+  report ifelse-value (network-source = "Observed mutual willingness")
+    ["data"] ["synthetic-networks"]
+end
+
+to-report local-catalog
+  ensure-network-library
+  report but-first network-cache-catalog
+end
+
+to clear-network-cache
+  set network-cache-source ""
+  set network-cache-catalog []
+  set network-cache-nodes []
+  set network-cache-edges []
+  set network-pending-tables (list [] [] [])
+  set network-load-token (list new-seed timer)
+  set network-load-status "No library loaded"
+end
+
+to reload-network-library
+  if network-source = "GitHub synthetic" [ load-github-networks stop ]
+  clear-network-cache
+  if network-source != "Synthetic random" [ ensure-network-library ]
+end
+
+to ensure-network-library
+  if network-source = "GitHub synthetic" [
+    check-network-load-timeout
+    if network-cache-source != github-network-base-url or empty? network-cache-catalog [
+      error (word network-load-status ". Click Load GitHub library and wait for Ready before Setup.")
+    ]
+    stop
+  ]
+  let folder import-directory
+  if network-cache-source = folder [ stop ]
+  clear-network-cache
+  foreach ["networks.csv" "nodes.csv" "edges.csv"] [filename ->
+    if not desktop-file-exists? (word folder "/" filename) [
+      error (word "Missing local network file: " folder "/" filename
+        ". Choose Synthetic random to run without data.")
+    ]
+  ]
+  let catalog desktop-csv (word folder "/networks.csv")
+  let nodes desktop-csv (word folder "/nodes.csv")
+  let edges desktop-csv (word folder "/edges.csv")
+  check-network-header catalog ["network_id" "network_type"]
+  check-network-header nodes ["network_id" "node_id"]
+  check-network-header edges ["network_id" "source" "target"]
+  validate-network-tables catalog nodes edges
+  set network-cache-catalog catalog
+  set network-cache-nodes but-first nodes
+  set network-cache-edges but-first edges
+  set network-cache-source folder
+  set network-load-status (word "Ready: " length but-first catalog " local graphs")
+end
+
+to-report desktop-file-exists? [path]
+  ; Deferred desktop primitives let the shared model compile in NetLogo Web.
+  report runresult (word "file-exists? \"" path "\"")
+end
+
+to-report desktop-csv [path]
+  report runresult (word "csv:from-file \"" path "\"")
+end
+
+to-report desktop-choice [prompt options]
+  set desktop-dialog-prompt prompt
+  set desktop-dialog-options options
+  let selection runresult "user-one-of desktop-dialog-prompt desktop-dialog-options"
+  set desktop-dialog-prompt ""
+  set desktop-dialog-options []
+  report selection
+end
+
+to check-network-header [rows required-columns]
+  if empty? rows [ error "Network CSV has no header." ]
+  if length first rows < length required-columns [ error "Network CSV header is incomplete." ]
+  if sublist (first rows) 0 (length required-columns) != required-columns [
+    error (word "Network CSV must start with columns " required-columns)
+  ]
+end
+
+to validate-network-tables [catalog nodes edges]
+  ; Linear-time validation keeps malformed or partial remote libraries out of the cache.
+  let graphs table:make
+  let vertices table:make
+  let ties table:make
+  let populations table:make
+  foreach (but-first catalog) [row ->
+    check-network-row row 2
+    let id item 0 row
+    if table:has-key? graphs id [ error "Duplicate graph ID in network catalog." ]
+    table:put graphs id true
+  ]
+  if table:length graphs = 0 [ error "The network catalog contains no graphs." ]
+  foreach (but-first nodes) [row ->
+    check-network-row row 2
+    let graph item 0 row
+    let key (list graph (item 1 row))
+    if not table:has-key? graphs graph [ error "Node belongs to an unknown graph." ]
+    if table:has-key? vertices key [ error "Duplicate imported node ID." ]
+    table:put vertices key true
+    table:put populations graph (1 + ifelse-value (table:has-key? populations graph) [table:get populations graph] [0])
+  ]
+  foreach (table:keys graphs) [graph ->
+    if not table:has-key? populations graph [ error "A catalog graph has no nodes." ]
+  ]
+  foreach (but-first edges) [row ->
+    check-network-row row 3
+    let graph item 0 row
+    let source item 1 row
+    let target item 2 row
+    if not table:has-key? vertices (list graph source) or
+       not table:has-key? vertices (list graph target) [ error "Network edge refers to a missing node." ]
+    if source = target [ error "Imported networks cannot contain self-links." ]
+    let key (list graph (sort (list source target)))
+    if table:has-key? ties key [ error "Duplicate undirected network edge." ]
+    table:put ties key true
+  ]
+end
+
+to check-network-row [row columns]
+  if length row < columns [ error "Incomplete network CSV row." ]
+  foreach (sublist row 0 columns) [value ->
+    if not is-string? value [ error "Network identifiers and types must be strings." ]
+    if empty? value [ error "Empty network identifier or type." ]
+  ]
+end
+
+to choose-local-network
+  if network-source = "GitHub synthetic" [
+    error "For GitHub networks, enter the graph ID in ui-github-network-id, then click Setup."
+  ]
+  if network-source = "Synthetic random" [
+    user-message "Synthetic random needs no files. Select an imported source first to choose a local network."
+    stop
+  ]
+  reload-network-library
+  let catalog local-catalog
+  if empty? catalog [ user-message "The network catalog is empty." stop ]
+  ; Optional metadata keeps large synthetic libraries easy to browse.
+  if network-source = "Imported synthetic" [
+    let generator-column position "generator" first network-cache-catalog
+    if generator-column != false [
+      let choices sort remove-duplicates map [row -> item generator-column row] catalog
+      let selection desktop-choice "Synthetic generator" choices
+      if selection = false [ stop ]
+      set catalog filter [row -> item generator-column row = selection] catalog
+    ]
+    let size-column position "n_nodes" first network-cache-catalog
+    if size-column != false [
+      let sizes sort remove-duplicates map [row -> item size-column row] catalog
+      let selection desktop-choice "Number of kiosks" (map [n -> word n ""] sizes)
+      if selection = false [ stop ]
+      set catalog filter [row -> (word (item size-column row) "") = selection] catalog
+    ]
+  ]
+  let ids map [row -> item 0 row] catalog
+  let selection desktop-choice "Local network (private; not saved in model code)" ids
+  if selection != false [ set selected-market selection ]
+end
+
+to setup
+  if controls-initialized? != true [ initialize-controls ]
+  if not member? network-source network-sources [ set network-source "Synthetic random" ]
+  if not is-string? selected-market [ set selected-market "" ]
+  if network-source = "Synthetic random" [ clear-network-cache ]
+  if network-source != "Synthetic random" [ ensure-network-library ]
+  validate-controls
+  let saved-controls map [name -> runresult name] parameter-names
+  let saved-library (list network-cache-source network-cache-catalog network-cache-nodes network-cache-edges)
+  let saved-loader (list github-network-base-url network-load-status network-load-token
+    network-load-start network-pending-tables network-load-timeout)
+  clear-all
+  set network-cache-source item 0 saved-library
+  set network-cache-catalog item 1 saved-library
+  set network-cache-nodes item 2 saved-library
+  set network-cache-edges item 3 saved-library
+  set github-network-base-url item 0 saved-loader
+  set network-load-status item 1 saved-loader
+  set network-load-token item 2 saved-loader
+  set network-load-start item 3 saved-loader
+  set network-pending-tables item 4 saved-loader
+  set network-load-timeout item 5 saved-loader
+  set network-source item 0 saved-controls
+  set selected-market item 1 saved-controls
+  set sharing-mode item 2 saved-controls
+  set number-of-kiosks item 3 saved-controls
+  set starting-balance item 4 saved-controls
+  set network-density item 5 saved-controls
+  set participation-percent item 6 saved-controls
+  set requests-per-tick item 7 saved-controls
+  set maximum-request item 8 saved-controls
+  set withdrawal-share item 9 saved-controls
+  set demand-polarization item 10 saved-controls
+  set minimum-reserve item 11 saved-controls
+  set model-seed item 12 saved-controls
+  set show-balances? item 13 saved-controls
+  set low-balance-percent item 14 saved-controls
+  set target-balance-percent item 15 saved-controls
+  set external-mode item 16 saved-controls
+  set external-access-percent item 17 saved-controls
+  set external-travel-ticks item 18 saved-controls
+  set external-service-delay item 19 saved-controls
+  set external-max-amount item 20 saved-controls
+  set external-open-ticks item 21 saved-controls
+  set external-cycle-ticks item 22 saved-controls
+  set travel-closes-shop? item 23 saved-controls
+  set demand-heterogeneity item 24 saved-controls
+  set size-heterogeneity item 25 saved-controls
+  set grid-cell-size item 26 saved-controls
+  set commission-mode item 27 saved-controls
+  set commission-percent item 28 saved-controls
+  set commission-min-percent item 29 saved-controls
+  set commission-max-percent item 30 saved-controls
+  set commission-subsidy-percent item 31 saved-controls
+  set controls-initialized? true
+  random-seed model-seed
+  set requested-values [0 0]
+  set served-values [0 0]
+  ask patches [ set pcolor [22 29 40] ]
+  ifelse network-source != "Synthetic random" [
+    load-market-network
+  ] [
+    create-kiosks number-of-kiosks [ set agent-id word "synthetic-" who ]
+    set active-market ""
+    set network-description "Synthetic: undirected Erdos-Renyi"
+  ]
+  ask kiosks [
+    set cash starting-balance
+    set efloat starting-balance
+    set pending-transfer nobody
+    set traded-this-tick? false
+    set withdrawal-probability max list 0 (min list 1
+      (withdrawal-share + ifelse-value (who mod 2 = 0)
+        [demand-polarization] [(- demand-polarization)]))
+    set shape "circle"
+    set label-color white
+  ]
+  with-local-randomness [
+    ask kiosks [ set participating? random-float 100 < participation-percent ]
+    if network-source = "Synthetic random" [
+      ask kiosks [
+        create-relationships-with other kiosks with [who > [who] of myself]
+          with [random-float 1 < network-density]
+      ]
+    ]
+    ask relationships [ set color [58 70 86] set thickness 0.08 ]
+  ]
+  initialize-demand-profiles
+  initialize-commissions
+  initialize-spatial-layout
+  set initial-cash sum [cash] of kiosks
+  set initial-efloat sum [efloat] of kiosks
+  reset-ticks
+  refresh-view
+end
+
+to load-market-network
+  let catalog local-catalog
+  if empty? catalog [ error "Local network catalog is empty." ]
+  if selected-market = "" [ set selected-market item 0 first catalog ]
+  let entries filter [row -> item 0 row = selected-market] catalog
+  if length entries != 1 [ error "Choose a network ID that occurs once in the local catalog." ]
+  let nodes filter [row -> item 0 row = selected-market]
+    network-cache-nodes
+  if empty? nodes [ error "Selected network has no exported nodes." ]
+  foreach nodes [row ->
+    if any? kiosks with [agent-id = item 1 row] [ error "Duplicate imported node ID." ]
+    create-kiosks 1 [ set agent-id item 1 row ]
+  ]
+  let edges filter [row -> item 0 row = selected-market]
+    network-cache-edges
+  foreach edges [row ->
+    let source one-of kiosks with [agent-id = item 1 row]
+    let target one-of kiosks with [agent-id = item 2 row]
+    if source = nobody or target = nobody [ error "Network edge refers to a missing node." ]
+    if source = target [ error "Imported networks cannot contain self-links." ]
+    ask source [
+      if relationship-neighbor? target [ error "Duplicate undirected network edge." ]
+      create-relationship-with target
+    ]
+  ]
+  set active-market selected-market
+  set network-description (word (item 1 first entries) ": " selected-market)
+end
+
+to go
+  if network-source = "GitHub synthetic" [
+    ensure-network-library
+    if active-market != selected-market [ error "Click Setup to initialize the selected GitHub graph before running." ]
+  ]
+  validate-controls
+  set tick-served 0
+  set tick-failed 0
+  set tick-settled-value 0
+  ; Keep matching, hidden transfer agents, and display work off the demand stream.
+  with-local-randomness [
+    ask kiosks [ set traded-this-tick? false ]
+    ask relationships [ set color [58 70 86] set thickness 0.08 ]
+    ask transfers with [due-tick <= ticks] [ settle-transfer ]
+    ask kiosks [ rebalance ]
+  ]
+  foreach customer-requests [request ->
+    ask item 0 request [ serve-request (item 1 request) (item 2 request) ]
+  ]
+  set closed-kiosk-ticks closed-kiosk-ticks + count kiosks with [away?]
+  set cash-low-ticks cash-low-ticks + count kiosks with [low-balance? true]
+  set efloat-low-ticks efloat-low-ticks + count kiosks with [low-balance? false]
+  check-accounting
+  refresh-view
+  tick
+end
+
+to-report model-version
+  report "v2"
+end
+
+to initialize-demand-profiles
+  ; Separate, stable node-order draws keep profiles independent of policy and topology.
+  with-local-randomness [
+    random-seed ((model-seed + 7919) mod 2147483647)
+    foreach sort kiosks [outlet ->
+      ask outlet [
+        let volume-draw random-normal 0 1
+        let size-draw random-normal 0 1
+        set demand-weight exp (demand-heterogeneity * volume-draw)
+        set size-factor exp (size-heterogeneity * size-draw)
+        set external-access? random-float 100 < external-access-percent
+        set away-until 0
+      ]
+    ]
+  ]
+  with-local-randomness [
+    let mean-weight mean [demand-weight] of kiosks
+    ask kiosks [ set demand-weight demand-weight / mean-weight ]
+    ; Keep expected transaction size constant, weighting by expected request arrivals.
+    let mean-size sum [demand-weight * size-factor] of kiosks / count kiosks
+    ask kiosks [ set size-factor size-factor / mean-size ]
+  ]
+end
+
+to-report external-open?
+  report (ticks mod external-cycle-ticks) < external-open-ticks
+end
+
+to-report away?
+  report travel-closes-shop? and ticks < away-until
+end
+
+to book-external-transfer [amount needs-cash?]
+  let outlet self
+  reserve-resource (not needs-cash?) amount
+  set away-until ticks + external-travel-ticks + external-service-delay
+  hatch-transfers 1 [
+    set hidden? true
+    set external? true
+    set requester outlet
+    set partner nobody
+    set quantity amount
+    set cash-needed? needs-cash?
+    set due-tick ticks + external-travel-ticks + external-service-delay
+    ask requester [ set pending-transfer myself set traded-this-tick? true ]
+    set external-started external-started + 1
+    if due-tick = ticks [ settle-transfer ]
+  ]
+end
+
+to-report customer-requests
+  let outlets sort kiosks
+  let batch []
+  let weights map [outlet -> [demand-weight] of outlet] outlets
+  let total sum weights
+  ; Demand is exogenous: closures and policy choices never redirect this stream.
+  with-local-randomness [
+    random-seed ((model-seed + 104729 * ticks) mod 2147483647)
+    repeat requests-per-tick [
+      let index 0
+      ifelse demand-heterogeneity = 0 [
+        set index random length outlets
+      ] [
+        let draw random-float total
+        while [index < length outlets - 1 and draw >= item index weights] [
+          set draw draw - item index weights
+          set index index + 1
+        ]
+      ]
+      let outlet item index outlets
+      let amount (1 + random maximum-request) * [size-factor] of outlet
+      let withdrawal? random-float 1 < [withdrawal-probability] of outlet
+      set batch lput (list outlet amount withdrawal?) batch
+    ]
+  ]
+  report batch
+end
+
+to initialize-commissions
+  with-local-randomness [
+    random-seed ((model-seed + 67867967) mod 2147483647)
+    foreach sort kiosks [outlet ->
+      ask outlet [
+        set commission-rate ifelse-value (commission-mode = "Uniform")
+          [commission-percent / 100]
+          [(commission-min-percent + random-float (commission-max-percent - commission-min-percent)) / 100]
+      ]
+    ]
+  ]
+end
+
+to initialize-spatial-layout
+  ; Freeze a seeded synthetic geography before any trading; policy never moves kiosks.
+  with-local-randomness [
+    random-seed ((model-seed + 15485863) mod 2147483647)
+    layout-circle sort kiosks (max-pxcor - 3)
+    repeat 200 [ layout-spring kiosks relationships 0.2 4 1 ]
+    let middle-x (min [xcor] of kiosks + max [xcor] of kiosks) / 2
+    let middle-y (min [ycor] of kiosks + max [ycor] of kiosks) / 2
+    let span max (list (max [xcor] of kiosks - min [xcor] of kiosks)
+      (max [ycor] of kiosks - min [ycor] of kiosks))
+    ifelse span > 0 [
+      let scale 2 * (max-pxcor - 2) / span
+      ask kiosks [ setxy ((xcor - middle-x) * scale) ((ycor - middle-y) * scale) ]
+    ] [ ask kiosks [ setxy 0 0 ] ]
+    ask patches [
+      let column floor ((pxcor - min-pxcor) / grid-cell-size)
+      let row floor ((pycor - min-pycor) / grid-cell-size)
+      set pcolor ifelse-value ((column + row) mod 2 = 0) [[22 29 40]] [[31 42 57]]
+    ]
+    ; Cell borders sit between patches; this temporary pen has no model role.
+    create-turtles 1 [
+      hide-turtle
+      set color [75 90 109]
+      set pen-size 0.5
+      let left-edge min-pxcor - 0.4999
+      let right-edge max-pxcor + 0.4999
+      let bottom-edge min-pycor - 0.4999
+      let top-edge max-pycor + 0.4999
+      let boundary min-pxcor - 0.5 + grid-cell-size
+      while [boundary < right-edge] [
+        pen-up setxy boundary bottom-edge pen-down setxy boundary top-edge
+        set boundary boundary + grid-cell-size
+      ]
+      set boundary min-pycor - 0.5 + grid-cell-size
+      while [boundary < top-edge] [
+        pen-up setxy left-edge boundary pen-down setxy right-edge boundary
+        set boundary boundary + grid-cell-size
+      ]
+      pen-up die
+    ]
+  ]
+end
+
+to-report grid-distance-to [other-outlet]
+  let column floor ((xcor - min-pxcor + 0.5) / grid-cell-size)
+  let row floor ((ycor - min-pycor + 0.5) / grid-cell-size)
+  let other-column floor (([xcor] of other-outlet - min-pxcor + 0.5) / grid-cell-size)
+  let other-row floor (([ycor] of other-outlet - min-pycor + 0.5) / grid-cell-size)
+  report abs (column - other-column) + abs (row - other-row)
+end
+
+to-report peer-trade-amount [supplier needs-cash?]
+  let desired (balance-level target-balance-percent) - available needs-cash?
+  let own-rate [commission-rate] of supplier * (1 - commission-subsidy-percent / 100)
+  let budget max list 0 ((available (not needs-cash?)) - minimum-reserve)
+  ; Cash buyers pay from incoming cash; e-float buyers must fund cash plus commission.
+  let refill ifelse-value needs-cash? [desired / (1 - own-rate)] [desired]
+  if not needs-cash? [ set budget budget / (1 + own-rate) ]
+  report max list 0 (min (list refill budget ([available needs-cash?] of supplier - minimum-reserve)))
+end
+
+to rebalance
+  if pending-transfer != nobody or traded-this-tick? or away? [ stop ]
+  if not low-balance? true and not low-balance? false [ stop ]
+  let needs-cash? low-balance? true
+  let desired (balance-level target-balance-percent) - available needs-cash?
+  let budget max list 0 ((available (not needs-cash?)) - minimum-reserve)
+  if external-mode != "External only" and sharing-mode != "No sharing" and participating? [
+    set trade-attempts trade-attempts + 1
+    let partners other kiosks with [free-to-trade? and available needs-cash? > minimum-reserve]
+    if sharing-mode = "Network sharing" [
+      set partners partners with [relationship-neighbor? myself]
+    ]
+    let feasible filter [candidate -> peer-trade-amount candidate needs-cash? > 0.000000001] sort partners
+    if not empty? feasible [
+      let nearest min map [candidate -> grid-distance-to candidate] feasible
+      let nearby filter [candidate -> grid-distance-to candidate = nearest] feasible
+      let cheapest min map [candidate -> [commission-rate] of candidate] nearby
+      let tied filter [candidate -> [commission-rate] of candidate = cheapest] nearby
+      let counterparty one-of tied
+      book-transfer counterparty (peer-trade-amount counterparty needs-cash?) needs-cash?
+      stop
+    ]
+    set unmet-attempts unmet-attempts + 1
+  ]
+  if external-mode != "Disabled" and external-access? and external-open? and budget > 0 [
+    let amount min (list desired budget external-max-amount)
+    if amount > 0 [ book-external-transfer amount needs-cash? ]
+  ]
+end
+
+to book-transfer [counterparty amount needs-cash?]
+  let outlet self
+  let trip grid-distance-to counterparty
+  let fee amount * [commission-rate] of counterparty
+  let subsidy fee * commission-subsidy-percent / 100
+  let own-fee fee - subsidy
+  reserve-resource (not needs-cash?) amount
+  if not needs-cash? [ reserve-resource true own-fee ]
+  ask counterparty [ reserve-resource needs-cash? amount ]
+  set away-until ticks + trip
+  hatch-transfers 1 [
+    set hidden? true
+    set requester outlet
+    set partner counterparty
+    set quantity amount
+    set cash-needed? needs-cash?
+    set external? false
+    set commission-fee fee
+    set requester-fee own-fee
+    set subsidized-fee subsidy
+    set due-tick ticks + trip
+    ask (turtle-set requester partner) [
+      set pending-transfer myself
+      set traded-this-tick? true
+    ]
+    set initiated-count initiated-count + 1
+    set peer-distance-total peer-distance-total + trip
+    if due-tick = ticks [ settle-transfer ]
+  ]
+end
+
+to settle-transfer
+  let amount quantity
+  let needs-cash? cash-needed?
+  let external-exchange? external?
+  let fee commission-fee
+  let paid requester-fee
+  let subsidy subsidized-fee
+  let cash-change ifelse-value needs-cash? [amount] [(- amount)]
+  ask requester [
+    reserve-resource (not needs-cash?) (- amount)
+    if not external-exchange? and not needs-cash? [ reserve-resource true (- paid) ]
+    shift-balances cash-change
+    if not external-exchange? [
+      set cash cash - paid
+      set paid-commissions paid-commissions + paid
+    ]
+    set pending-transfer nobody
+  ]
+  ifelse external-exchange? [
+    set external-settled external-settled + 1
+    set external-value external-value + amount
+    set net-external-cash net-external-cash + cash-change
+  ] [
+    ask partner [
+      reserve-resource needs-cash? (- amount)
+      shift-balances (- cash-change)
+      set cash cash + fee
+      set earned-commissions earned-commissions + fee
+      set pending-transfer nobody
+    ]
+    set commissions-earned commissions-earned + fee
+    set commissions-paid commissions-paid + paid
+    set subsidy-spent subsidy-spent + subsidy
+    let connection [relationship-with [partner] of myself] of requester
+    if connection != nobody [
+      ask connection [ set color [65 210 185] set thickness 0.3 ]
+    ]
+    set settled-count settled-count + 1
+    set settled-value settled-value + amount
+    set tick-settled-value tick-settled-value + amount
+  ]
+  die
+end
+
+to serve-request [amount withdrawal?]
+  let kind ifelse-value withdrawal? [1] [0]
+  set requested-count requested-count + 1
+  set requested-values replace-item kind requested-values
+    (item kind requested-values + amount)
+  if away? [
+    set closure-failed-count closure-failed-count + 1
+    set closure-failed-value closure-failed-value + amount
+    set tick-failed tick-failed + amount
+    stop
+  ]
+  ifelse available withdrawal? >= amount [
+    let cash-change ifelse-value withdrawal? [(- amount)] [amount]
+    shift-balances cash-change
+    set net-customer-cash net-customer-cash + cash-change
+    set served-count served-count + 1
+    set served-values replace-item kind served-values
+      (item kind served-values + amount)
+    set tick-served tick-served + amount
+  ] [
+    ifelse withdrawal? [ set cash-failed-count cash-failed-count + 1 ]
+      [ set efloat-failed-count efloat-failed-count + 1 ]
+    set tick-failed tick-failed + amount
+  ]
+end
+
+to-report available [cash?]
+  report ifelse-value cash? [cash - reserved-cash] [efloat - reserved-efloat]
+end
+
+to-report balance-level [percent]
+  report (cash + efloat) * percent / 100
+end
+
+to-report low-balance? [cash?]
+  report available cash? < balance-level low-balance-percent
+end
+
+to-report free-to-trade?
+  report participating? and pending-transfer = nobody and not traded-this-tick? and not away?
+end
+
+to reserve-resource [cash? amount]
+  ifelse cash? [ set reserved-cash reserved-cash + amount ]
+    [ set reserved-efloat reserved-efloat + amount ]
+end
+
+to shift-balances [cash-change]
+  set cash cash + cash-change
+  set efloat efloat - cash-change
+end
+
+to-report percent-served [kind]
+  let demand ifelse-value (kind = -1)
+    [sum requested-values] [item kind requested-values]
+  let completed ifelse-value (kind = -1)
+    [sum served-values] [item kind served-values]
+  if demand = 0 [ report 0 ]
+  report 100 * completed / demand
+end
+
+to validate-controls
+  if grid-cell-size < 1 or grid-cell-size > world-width or grid-cell-size != floor grid-cell-size [
+    error "Grid cell size must be a whole patch count from 1 to the world width."
+  ]
+  if not member? commission-mode ["Uniform" "Varied"] [ error "Invalid commission mode." ]
+  foreach (list commission-percent commission-min-percent commission-max-percent) [rate ->
+    if rate < 0 or rate >= 100 [ error "Commission rates must be at least zero and below 100 percent." ]
+  ]
+  if commission-min-percent > commission-max-percent or commission-subsidy-percent < 0 or commission-subsidy-percent > 100 [
+    error "Invalid commission bounds or subsidy share."
+  ]
+  if not member? external-mode ["Disabled" "External only" "Peers then external"] [ error "Invalid external mode." ]
+  if external-cycle-ticks < 1 or external-cycle-ticks != floor external-cycle-ticks or
+    external-open-ticks < 0 or external-open-ticks > external-cycle-ticks or external-open-ticks != floor external-open-ticks [
+    error "External opening ticks must be an integer from zero to the positive cycle length."
+  ]
+  foreach (list external-travel-ticks external-service-delay) [delay ->
+    if delay < 0 or delay != floor delay [ error "Travel and service delays must be nonnegative whole ticks." ]
+  ]
+  if external-access-percent < 0 or external-access-percent > 100 or external-max-amount <= 0 or
+    demand-heterogeneity < 0 or demand-heterogeneity > 2 or size-heterogeneity < 0 or size-heterogeneity > 2 [
+    error "Invalid external access, transaction limit, or demand heterogeneity."
+  ]
+  if target-balance-percent <= low-balance-percent [
+    error "Target balance (%) must exceed low balance (%)."
+  ]
+end
+
+to refresh-view
+  with-local-randomness [
+    ask trade-routes [ die ]
+    ask relationships [
+      set hidden? sharing-mode != "Network sharing" or
+        not ([participating?] of end1 and [participating?] of end2)
+    ]
+    ask kiosks [
+      set color ifelse-value (low-balance? true) [[235 132 76]]
+        [ifelse-value (low-balance? false) [[78 153 232]] [[65 210 185]]]
+      if pending-transfer != nobody and [external?] of pending-transfer [ set color [176 130 235] ]
+      if away? [ set color [155 164 176] ]
+      set size ifelse-value participating? [1.6] [1.0]
+      set shape ifelse-value (pending-transfer != nobody) ["circle 2"] ["circle"]
+      if away? [ set shape "square" ]
+      set label ifelse-value show-balances?
+        [(word (precision (available true) 1) "/" (precision (available false) 1))] [""]
+    ]
+    ask transfers with [not external?] [
+      let counterparty partner
+      let caption (word (precision quantity 1) " @" due-tick)
+      ask requester [
+        create-trade-route-to counterparty [
+          set color [245 190 65]
+          set thickness 0.25
+          set label caption
+          set label-color white
+        ]
+      ]
+    ]
+  ]
+end
+
+to check-accounting
+  with-local-randomness [
+    if any? kiosks with [reserved-cash < -0.000001 or reserved-efloat < -0.000001 or
+      available true < -0.000001 or available false < -0.000001] [
+      error "Negative or overcommitted kiosk balance."
+    ]
+    if abs (sum [cash] of kiosks - initial-cash - net-customer-cash - net-external-cash - subsidy-spent) > 0.000001 or
+      abs (sum [efloat] of kiosks - initial-efloat + net-customer-cash + net-external-cash) > 0.000001 [
+      error "Market balances do not reconcile with customer, external and subsidy flows."
+    ]
+    let peer-pending transfers with [not external?]
+    let external-pending transfers with [external?]
+    let expected-cash sum [quantity] of peer-pending + sum [requester-fee] of peer-pending with [not cash-needed?] +
+      sum [quantity] of external-pending with [not cash-needed?]
+    let expected-efloat sum [quantity] of peer-pending + sum [quantity] of external-pending with [cash-needed?]
+    if initiated-count - settled-count != count peer-pending or
+      external-started - external-settled != count external-pending or
+      abs (sum [reserved-cash] of kiosks - expected-cash) > 0.000001 or
+      abs (sum [reserved-efloat] of kiosks - expected-efloat) > 0.000001 [
+      error "Pending trades and reservations do not reconcile."
+    ]
+    if abs (commissions-earned - commissions-paid - subsidy-spent) > 0.000001 or
+      abs (commissions-earned - sum [earned-commissions] of kiosks) > 0.000001 or
+      abs (commissions-paid - sum [paid-commissions] of kiosks) > 0.000001 [
+      error "Commission income, requester payments and subsidy spending do not reconcile."
+    ]
+    if requested-count != served-count + closure-failed-count + cash-failed-count + efloat-failed-count [
+      error "Customer request outcomes do not reconcile."
+    ]
+    if any? kiosks with [pending-transfer != nobody and not member? self [requester] of transfers and
+      not member? self [partner] of peer-pending] [ error "Orphaned pending trade." ]
+  ]
+end
+]]></code>
+  <widgets>
+    <note x="10" y="5" width="1200" height="35" fontSize="22" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">MOBILE MONEY v2 | Spatial liquidity and commissions</note>
+    <button x="10" y="47" width="75" height="35" display="Setup" kind="Observer" forever="false" disableUntilTicks="false">interface-setup</button>
+    <button x="90" y="47" width="75" height="35" display="Go / stop" kind="Observer" forever="true" disableUntilTicks="true">interface-go</button>
+    <button x="170" y="47" width="80" height="35" display="+100 ticks" kind="Observer" forever="false" disableUntilTicks="true">repeat 100 [ interface-go ]</button>
+    <note x="340" y="48" width="400" height="35" fontSize="11" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Orange: cash low   Blue: e-float low   Ring: pending trade</note>
+    <note x="760" y="48" width="450" height="35" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Amber: peer swap | Purple: external exchange | Gray square: shop closed</note>
+    <chooser x="10" y="151" width="240" height="55" display="ui-sharing-mode" variable="ui-sharing-mode" current="1">
+      <choice type="string" value="No sharing" />
+      <choice type="string" value="Network sharing" />
+      <choice type="string" value="All-to-all sharing" />
+    </chooser>
+    <slider x="10" y="212" width="240" height="40" display="ui-number-of-kiosks" variable="ui-number-of-kiosks" min="4" max="60" default="20" step="2" direction="Horizontal" />
+    <slider x="10" y="254" width="240" height="40" display="ui-starting-balance" variable="ui-starting-balance" min="100" max="2000" default="500" step="50" direction="Horizontal" />
+    <slider x="10" y="296" width="240" height="40" display="ui-network-density" variable="ui-network-density" min="0" max="1" default="0.2" step="0.05" direction="Horizontal" />
+    <slider x="10" y="338" width="240" height="40" display="ui-participation-percent" variable="ui-participation-percent" min="0" max="100" default="100" step="10" direction="Horizontal" />
+    <slider x="10" y="380" width="240" height="40" display="ui-requests-per-tick" variable="ui-requests-per-tick" min="0" max="100" default="40" step="5" direction="Horizontal" />
+    <slider x="10" y="422" width="240" height="40" display="ui-maximum-request" variable="ui-maximum-request" min="1" max="250" default="100" step="1" direction="Horizontal" />
+    <slider x="10" y="464" width="240" height="40" display="ui-withdrawal-share" variable="ui-withdrawal-share" min="0" max="1" default="0.5" step="0.05" direction="Horizontal" />
+    <slider x="10" y="506" width="240" height="40" display="ui-demand-polarization" variable="ui-demand-polarization" min="0" max="0.45" default="0.35" step="0.05" direction="Horizontal" />
+    <slider x="10" y="548" width="240" height="40" display="ui-minimum-reserve" variable="ui-minimum-reserve" min="0" max="500" default="100" step="25" direction="Horizontal" />
+    <slider x="10" y="590" width="240" height="40" display="ui-model-seed" variable="ui-model-seed" min="1" max="1000" default="42" step="1" direction="Horizontal" />
+    <switch x="10" y="764" width="240" height="35" display="ui-show-balances?" variable="ui-show-balances?" on="false" />
+    <note x="10" y="809" width="240" height="100" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">No data? Synthetic random works by itself.
+Local imports stay local; GitHub loads public synthetic graphs.
+Choose a source, then Setup.
+Full assumptions: Info tab.</note>
+    <view x="270" y="155" width="466" height="466" patchSize="14" minPxcor="-16" maxPxcor="16" minPycor="-16" maxPycor="16" wrappingAllowedX="false" wrappingAllowedY="false" updateMode="1" frameRate="15" showTickCounter="true" tickCounterLabel="ticks" fontSize="11" />
+    <button x="270" y="47" width="60" height="35" display="Step" kind="Observer" forever="false" disableUntilTicks="true">interface-go</button>
+    <slider x="10" y="632" width="240" height="40" display="ui-low-balance-percent" variable="ui-low-balance-percent" min="0" max="45" default="25" step="5" direction="Horizontal" />
+    <slider x="10" y="674" width="240" height="40" display="ui-target-balance-percent" variable="ui-target-balance-percent" min="5" max="75" default="50" step="5" direction="Horizontal" />
+    <monitor x="270" y="631" width="112" height="55" display="Value served (%)" precision="1" fontSize="11">percent-served -1</monitor>
+    <monitor x="388" y="631" width="112" height="55" display="Pending trades" precision="0" fontSize="11">count transfers</monitor>
+    <monitor x="506" y="631" width="112" height="55" display="Trades settled" precision="0" fontSize="11">settled-count</monitor>
+    <monitor x="624" y="631" width="112" height="55" display="Requests failed" precision="0" fontSize="11">requested-count - served-count</monitor>
+    <monitor x="270" y="694" width="112" height="55" display="Reserved cash" precision="1" fontSize="11">sum [reserved-cash] of kiosks</monitor>
+    <monitor x="388" y="694" width="112" height="55" display="Reserved e-float" precision="1" fontSize="11">sum [reserved-efloat] of kiosks</monitor>
+    <monitor x="506" y="694" width="112" height="55" display="Trades started" precision="0" fontSize="11">initiated-count</monitor>
+    <monitor x="624" y="694" width="112" height="55" display="Unmet attempts" precision="0" fontSize="11">unmet-attempts</monitor>
+    <plot x="760" y="90" width="445" height="230" display="Customer value served (cumulative)" xAxis="completed ticks" yAxis="% requested value" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="false" legend="true">
+      <setup />
+      <update />
+      <pen display="All" color="-16777216" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot percent-served -1</update>
+      </pen>
+      <pen display="Deposits" color="-10899396" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot percent-served 0</update>
+      </pen>
+      <pen display="Withdrawals" color="-13345367" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot percent-served 1</update>
+      </pen>
+    </plot>
+    <plot x="760" y="330" width="445" height="230" display="Kiosks below low-balance threshold" xAxis="completed ticks" yAxis="kiosks" xMin="0" xMax="100" yMin="0" yMax="20" autoPlotX="true" autoPlotY="true" legend="true">
+      <setup />
+      <update />
+      <pen display="Cash low" color="-955883" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot count kiosks with [low-balance? true]</update>
+      </pen>
+      <pen display="E-float low" color="-13345367" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot count kiosks with [low-balance? false]</update>
+      </pen>
+    </plot>
+    <plot x="760" y="570" width="445" height="270" display="Trade pipeline (cumulative)" xAxis="completed ticks" yAxis="bilateral trades" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="true" legend="true">
+      <setup />
+      <update />
+      <pen display="Started" color="-955883" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot initiated-count</update>
+      </pen>
+      <pen display="Settled" color="-10899396" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot settled-count</update>
+      </pen>
+    </plot>
+    <plot x="270" y="765" width="466" height="140" display="Customer demand this tick" xAxis="completed ticks" yAxis="money units" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="true" legend="true">
+      <setup />
+      <update />
+      <pen display="Served" color="-10899396" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot tick-served</update>
+      </pen>
+      <pen display="Failed" color="-2674135" interval="1.0" mode="0" legend="true">
+        <setup />
+        <update>plot tick-failed</update>
+      </pen>
+    </plot>
+    <monitor x="760" y="850" width="445" height="55" display="Network loaded at Setup" precision="0" fontSize="11">network-description</monitor>
+    <chooser x="10" y="90" width="240" height="55" display="ui-network-source" variable="ui-network-source" current="0"><choice type="string" value="Synthetic random" /><choice type="string" value="Observed mutual willingness" /><choice type="string" value="Imported synthetic" /><choice type="string" value="GitHub synthetic" /></chooser>
+    <button x="270" y="90" width="170" height="55" display="Choose local network" kind="Observer" forever="false" disableUntilTicks="false">interface-choose-local-network</button>
+    <monitor x="450" y="90" width="286" height="55" display="Selected local ID (runtime only)" precision="0" fontSize="11">selected-market</monitor>
+    <input x="10" y="920" width="725" height="60" variable="ui-github-base-url" type="string" multiline="false">https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/synthetic-networks</input>
+    <input x="760" y="920" width="280" height="60" variable="ui-github-network-id" type="string" multiline="false">pooled-n20-r01</input>
+    <button x="1045" y="920" width="160" height="60" display="Load GitHub library" kind="Observer" forever="false" disableUntilTicks="false">interface-load-github</button>
+    <monitor x="10" y="990" width="725" height="60" display="Library download / cache status" precision="0" fontSize="11">network-library-status</monitor>
+    <button x="760" y="990" width="280" height="60" display="Use random networks" kind="Observer" forever="false" disableUntilTicks="false">interface-use-random</button>
+    <button x="1045" y="990" width="160" height="60" display="Cancel download" kind="Observer" forever="false" disableUntilTicks="false">cancel-network-load</button>
+
+    <note x="10" y="1080" width="1200" height="35" fontSize="19" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">V2 | External access, heterogeneous demand and service interruption</note>
+    <chooser x="10" y="1120" width="240" height="55" display="ui-external-mode" variable="ui-external-mode" current="2"><choice type="string" value="Disabled" /><choice type="string" value="External only" /><choice type="string" value="Peers then external" /></chooser>
+    <slider x="270" y="1120" width="240" height="55" display="ui-external-access-percent" variable="ui-external-access-percent" min="0" max="100" default="100" step="10" direction="Horizontal" />
+    <slider x="510" y="1120" width="240" height="55" display="ui-external-travel-ticks" variable="ui-external-travel-ticks" min="0" max="12" default="3" step="1" direction="Horizontal" />
+    <slider x="10" y="1190" width="240" height="55" display="ui-external-service-delay" variable="ui-external-service-delay" min="0" max="6" default="1" step="1" direction="Horizontal" />
+    <slider x="270" y="1190" width="240" height="55" display="ui-external-max-amount" variable="ui-external-max-amount" min="50" max="2000" default="500" step="50" direction="Horizontal" />
+    <slider x="510" y="1190" width="240" height="55" display="ui-external-open-ticks" variable="ui-external-open-ticks" min="0" max="24" default="8" step="1" direction="Horizontal" />
+    <slider x="10" y="1260" width="240" height="55" display="ui-external-cycle-ticks" variable="ui-external-cycle-ticks" min="1" max="24" default="12" step="1" direction="Horizontal" />
+    <slider x="270" y="1260" width="240" height="55" display="ui-grid-cell-size" variable="ui-grid-cell-size" min="1" max="33" default="5" step="1" direction="Horizontal" />
+    <switch x="510" y="1260" width="240" height="55" display="ui-travel-closes-shop?" variable="ui-travel-closes-shop?" on="true" />
+    <slider x="10" y="1330" width="240" height="55" display="ui-demand-heterogeneity" variable="ui-demand-heterogeneity" min="0" max="2" default="1" step="0.1" direction="Horizontal" />
+    <slider x="270" y="1330" width="240" height="55" display="ui-size-heterogeneity" variable="ui-size-heterogeneity" min="0" max="2" default="0.5" step="0.1" direction="Horizontal" />
+    <note x="10" y="1400" width="725" height="80" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Peer travel = Manhattan grid distance. Same-square trades are instantaneous.
+Open ticks must not exceed cycle ticks. Delays are abstract customer batches.
+Demand heterogeneity 0 gives equal traffic; size heterogeneity 0 gives equal size distributions.
+Closure failures are lost original requests, with no retry or rerouting.</note>
+    <monitor x="10" y="1495" width="235" height="55" display="External exchanges settled" precision="1" fontSize="11">external-settled</monitor>
+    <monitor x="255" y="1495" width="235" height="55" display="External value exchanged" precision="1" fontSize="11">external-value</monitor>
+    <monitor x="500" y="1495" width="235" height="55" display="Net external cash (+ in)" precision="1" fontSize="11">net-external-cash</monitor>
+    <monitor x="10" y="1560" width="235" height="55" display="Requests lost: shop closed" precision="1" fontSize="11">closure-failed-count</monitor>
+    <monitor x="255" y="1560" width="235" height="55" display="Requests lost: cash short" precision="1" fontSize="11">cash-failed-count</monitor>
+    <monitor x="500" y="1560" width="235" height="55" display="Requests lost: e-float short" precision="1" fontSize="11">efloat-failed-count</monitor>
+    <plot x="760" y="1120" width="445" height="230" display="External exchange pipeline" xAxis="completed ticks" yAxis="exchanges" xMin="0" xMax="100" yMin="0" yMax="20" autoPlotX="true" autoPlotY="true" legend="true">
+  <setup /><update />
+  <pen display="Started" color="-8630108" interval="1" mode="0" legend="true"><setup /><update>plot external-started</update></pen>
+  <pen display="Settled" color="-10899396" interval="1" mode="0" legend="true"><setup /><update>plot external-settled</update></pen>
+</plot>
+    <plot x="760" y="1370" width="445" height="240" display="Service interruption" xAxis="completed ticks" yAxis="closed kiosks" xMin="0" xMax="100" yMin="0" yMax="20" autoPlotX="true" autoPlotY="true" legend="false">
+  <setup /><update />
+  <pen display="Closed during batch" color="-7500403" interval="1" mode="0" legend="true"><setup /><update>if ticks > 0 [plot closed-kiosk-ticks / ticks]</update></pen>
+</plot>
+    <note x="10" y="1640" width="1200" height="35" fontSize="19" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">V2 | Supplier commissions and external fee subsidy</note>
+    <chooser x="10" y="1680" width="240" height="55" display="ui-commission-mode" variable="ui-commission-mode" current="0"><choice type="string" value="Uniform" /><choice type="string" value="Varied" /></chooser>
+    <slider x="270" y="1680" width="240" height="55" display="ui-commission-percent" variable="ui-commission-percent" min="0" max="50" default="1" step="0.5" direction="Horizontal" />
+    <slider x="510" y="1680" width="240" height="55" display="ui-commission-subsidy-percent" variable="ui-commission-subsidy-percent" min="0" max="100" default="0" step="0.5" direction="Horizontal" />
+    <slider x="10" y="1750" width="240" height="55" display="ui-commission-min-percent" variable="ui-commission-min-percent" min="0" max="50" default="0.5" step="0.5" direction="Horizontal" />
+    <slider x="270" y="1750" width="240" height="55" display="ui-commission-max-percent" variable="ui-commission-max-percent" min="0" max="50" default="1.5" step="0.5" direction="Horizontal" />
+    <monitor x="10" y="1830" width="235" height="55" display="Supplier fee income" precision="2" fontSize="11">commissions-earned</monitor>
+    <monitor x="255" y="1830" width="235" height="55" display="Requester fees paid" precision="2" fontSize="11">commissions-paid</monitor>
+    <monitor x="500" y="1830" width="235" height="55" display="External subsidy spent" precision="2" fontSize="11">subsidy-spent</monitor>
+    <monitor x="10" y="1895" width="235" height="55" display="Mean peer grid distance" precision="2" fontSize="11">ifelse-value (initiated-count > 0) [peer-distance-total / initiated-count] [0]</monitor>
+    <monitor x="255" y="1895" width="235" height="55" display="Subsidy committed (pending)" precision="2" fontSize="11">sum [subsidized-fee] of transfers</monitor>
+    <plot x="760" y="1650" width="445" height="270" display="Who pays peer commissions?" xAxis="completed ticks" yAxis="cash units (cumulative)" xMin="0" xMax="100" yMin="0" yMax="100" autoPlotX="true" autoPlotY="true" legend="true">
+ <setup /><update />
+ <pen display="Requester" color="-955883" interval="1" mode="0" legend="true"><setup /><update>plot commissions-paid</update></pen>
+ <pen display="Subsidy" color="-8630108" interval="1" mode="0" legend="true"><setup /><update>plot subsidy-spent</update></pen>
+ <pen display="Supplier income" color="-10899396" interval="1" mode="0" legend="true"><setup /><update>plot commissions-earned</update></pen>
+</plot>
+    <note x="10" y="1970" width="1195" height="55" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Spring positions are synthetic geography, not measured locations. Geometry is fixed after Setup.
+Connected feasible partners are ranked by grid distance, then fee rate; remaining ties are random. Commissions are quoted at booking and paid at settlement.</note>
+  </widgets>
+  <info><![CDATA[## V2: SPATIAL LIQUIDITY AND COMMISSIONS
+
+V1 (MobileBankMarkets_v1.nlogox) is preserved unchanged as the abstract model.
+V2 adds external rebalancing, unequal demand, travel-related closure, spring/grid
+geography, supplier commissions and an optional external commission subsidy.
+This is an uncalibrated mechanism model, not a numerical policy forecast.
+
+## SYNTHETIC GEOGRAPHY AND GRID DISTANCE
+
+At Setup, layout-spring runs for 200 iterations using every relationship link,
+after a circular initialization, then centers and uniformly scales the result
+to leave a two-patch display margin. Spring strength 0.2, length 4 and repulsion 1
+are fixed layout assumptions. A separate seeded stream isolates layout from
+financial policy, demand and commission draws. Positions remain fixed during Go.
+Tightly linked groups tend to cluster; isolates and disconnected components remain.
+These positions are NOT measured geography or estimated travel distances.
+
+grid-cell-size is a whole number of patch widths (default 5, range 1–33).
+Cells are anchored at the southwest world boundary (-16.5, -16.5), with boundaries
+included in the cell to their north/east. The checkerboard and lines show them.
+Distance is Manhattan distance between cell indices: abs(dx) + abs(dy).
+Same cell = 0 ticks, one horizontal/vertical cell = 1, one diagonal cell = 2.
+There is no wrapping. Size 33 puts the whole world in one cell.
+
+A peer trade's entire booking-to-settlement duration is this distance. It settles
+immediately at distance zero. The old v2 settlement-delay and peer-travel-ticks
+controls are removed. V1 retains its own fixed 0–2 tick settlement control.
+Grid time is an abstract round-trip convention, not a calibrated walking speed;
+there is no additional return-trip multiplier. A tick is one customer-demand batch.
+
+Changing grid size keeps coordinates fixed but changes the partition and times.
+Changing topology can change spring positions, so comparisons between networks
+jointly change connectivity and assumed geography. Compare commission/subsidy
+policies on the same graph, seed and grid size to hold geography fixed.
+
+## PARTNER SELECTION
+
+At the rebalancing phase, an uncommitted participating kiosk with a resource below
+low-balance-percent tries to refill toward target-balance-percent. Both percentages
+use current booked cash + e-float. Network sharing permits connected participants;
+All-to-all sharing relaxes the tie requirement. No sharing disables peer swaps.
+
+First exclude unavailable suppliers and trades that cannot fund a positive refill
+while protecting outgoing minimum-reserve and requester-paid fees. Partial refills
+remain valid: successful does not require reaching the full target. Rank remaining
+suppliers by grid distance, then commission rate; choose randomly among exact ties
+across equally near cells. Distance precedes price even when a farther agent is
+cheaper. Under Uniform commissions, all equally near feasible suppliers tie.
+
+Balance knowledge is perfect. Neither search nor strategic bargaining is modeled.
+There is at most one pending exchange per kiosk and one new booking per kiosk per
+tick. Instant trades still count toward that limit. Peer suppliers remain open;
+the requester closes during travel when travel-closes-shop? is true. With it false,
+staff can handle the trip while unreserved resources continue serving customers.
+
+## COMMISSIONS, QUOTES AND SUBSIDY
+
+Each supplier charges a percentage of gross liquidity exchanged, in cash:
+Uniform uses commission-percent for all agents (default 1%). Varied draws one
+fixed rate per agent from Uniform[commission-min-percent, commission-max-percent)
+(defaults 0.5–1.5%). Equal bounds give one rate. All rates must be >=0 and <100%.
+The distribution is a scenario assumption, not estimated from survey responses.
+Rates use a separate seeded stream and do not change with grid size or subsidy.
+
+commission-subsidy-percent (0–100, default 0) is the share paid by an external
+sponsor. The requester pays the remainder; the supplier receives the full fee.
+For gross amount q, fee = supplier-rate * q. A cash buyer pays its share from
+incoming cash, receiving q minus that fee. Its desired gross refill accounts for
+this deduction. An e-float buyer pays q plus its own fee in cash, so both are
+included in the cash budget and reserved before departure. The supplier's gross
+outgoing resource is also reserved. Incoming funds are unavailable until settlement.
+
+Amount, fee and subsidy are fixed at booking and paid exactly once at settlement.
+Supplier income = requester payments + sponsor spending. Pending fees/subsidies
+are commitments, not already spent. There is no subsidy budget cap in this model.
+Fees redistribute capital between kiosks. Subsidies inject cash into the market;
+cash accounting explicitly includes subsidy-spent. Therefore the subsidy effect
+includes both relief of requester costs and additional market working capital.
+No fees apply to the separate external rebalancing provider in this increment.
+
+## EXTERNAL REBALANCING
+
+Disabled: only peer policy operates. External only: peers are disabled. Peers then
+external: book a feasible peer refill first; otherwise try the external service.
+A partial peer refill does not also trigger an external order in that tick.
+The rule does not compare the external service's delay/price with a feasible peer.
+
+External access is a fixed random assignment independent of peer participation.
+The provider has ample cash/e-float, but each kiosk must exchange an equal value
+of its opposite resource while keeping minimum-reserve. It supplies no loan or
+grant through rebalancing. external-max-amount caps one swap. Opening condition:
+(ticks mod external-cycle-ticks) < external-open-ticks. Booked orders settle even
+after closing. Opening ticks cannot exceed the positive cycle length; zero means
+always closed and equal open/cycle ticks means always open. There is no shared
+capacity limit or endogenous queue. External completion/closure duration remains
+external-travel-ticks + external-service-delay, independent of grid positions.
+
+## CUSTOMER DEMAND AND EXACT TICK ORDER
+
+Cash and e-float are separate resources. Deposits increase cash and spend e-float;
+withdrawals do the reverse. The fixed requests-per-tick total is MARKET demand.
+demand-heterogeneity controls lognormal kiosk traffic weights; size-heterogeneity
+controls independent lognormal size multipliers. Zero gives uniform traffic or
+equal size distributions. Size multipliers are traffic-weight normalized so expected
+market transaction size remains the base uniform 1..maximum-request expectation.
+Individual requests can exceed maximum-request when size heterogeneity is positive.
+withdrawal-share plus/minus demand-polarization sets alternating kiosk tendencies,
+clipped to [0,1]; it is not a guaranteed aggregate share with unequal traffic.
+
+Profiles are fixed for a run. Original requests are independent of trading policy,
+subsidy, grid size and commissions, holding demand settings, population and seed
+fixed. There are no correlated shocks, customer retries, rerouting or households.
+Customer requests are all-or-nothing. A closed shop loses the request before a
+balance check; other failures are classified as cash shortage or e-float shortage.
+
+At t: (1) settle orders due at or before t; (2) assess low balances/book exchanges
+in random kiosk order; (3) serve exogenous customer requests; (4) check accounting,
+record shortages/closures, update visuals and advance time. A duration d booked
+at t settles at t+d before that demand batch, affecting d batches when closed.
+All controls require Setup after changes; Go only reads the live balance-label switch.
+
+## NETWORKS AND PORTABILITY
+
+Synthetic random uses data-free undirected Erdos-Renyi graphs. Observed mutual
+willingness uses private data/ CSVs with ties requiring mutual stated willingness,
+not acquaintance or actual trades. Retain supplied isolates. Imported synthetic
+uses synthetic-networks/ (pooled primary and corrected_hub sensitivity graphs,
+20 draws per size 2–24 per generator). Both imported sources use the desktop
+Choose local network button. Missing/invalid imports never silently become random.
+
+GitHub synthetic: Load GitHub library, wait for Ready: 920 GitHub graphs, enter
+ui-github-network-id (e.g. pooled-n20-r01), then Setup. URL changes require reload;
+replace main with a commit SHA for reproducibility. All three CSVs must validate
+before use. Cancel invalidates partial/stale responses. Missing replies expire
+after 30 seconds when the monitor, Setup or Go checks status. Web HTTP failures
+may also show the standard Web dialog. Use random networks returns to data-free
+operation. Random/local modes make no HTTP requests. Desktop/headless needs
+python scripts/install_netlogo_fetch.py once (official Fetch 1.0.5, Java 11).
+Web supplies Fetch. Code-owned globals and ui- widgets remain separate.
+
+## OUTPUTS AND LIMITS
+
+Service metrics separate deposits and withdrawals. Peer trade counts are separate
+from external counts; the Pending trades monitor counts both, while harness
+pending_trades remains peer-only with external_pending alongside it. Fees and
+subsidies are excluded from gross settled liquidity value and tracked separately.
+The fee plot reconciles requester payments + subsidy = supplier fee income.
+Mean peer grid distance concerns initiated trades; pending subsidy is separate
+from subsidy spent. Agent-level earned-commissions and paid-commissions record
+distributional outcomes. Reservations include cash fees owed by e-float buyers.
+
+Gray squares show closed shops, purple shows other external-pending kiosks, and
+amber arrows show peer commitments. The closure plot is the mean closed kiosks
+per completed batch. The grid and spring layout are model assumptions, not map data.
+The model has no operating expenses, endogenous participation, credit, repayment,
+default, bank congestion, reputation, learning or changing network ties. It tests
+conditional mechanisms rather than exact Tanzanian policy effects. V1 remains
+the unchanged abstract benchmark; v2's spatial matching intentionally differs
+even with zero commissions. See experiments/VERSIONS.md for controls, experiments
+and accounting. Real surveys, exports and fitted objects remain private/ignored.
+]]></info>
+  <turtleShapes>
+    <shape name="default" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="5" />
+        <point x="40" y="250" />
+        <point x="150" y="205" />
+        <point x="260" y="250" />
+      </polygon>
+    </shape>
+    <shape name="airplane" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="0" />
+        <point x="135" y="15" />
+        <point x="120" y="60" />
+        <point x="120" y="105" />
+        <point x="15" y="165" />
+        <point x="15" y="195" />
+        <point x="120" y="180" />
+        <point x="135" y="240" />
+        <point x="105" y="270" />
+        <point x="120" y="285" />
+        <point x="150" y="270" />
+        <point x="180" y="285" />
+        <point x="210" y="270" />
+        <point x="165" y="240" />
+        <point x="180" y="180" />
+        <point x="285" y="195" />
+        <point x="285" y="165" />
+        <point x="180" y="105" />
+        <point x="180" y="60" />
+        <point x="165" y="15" />
+      </polygon>
+    </shape>
+    <shape name="arrow" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="0" />
+        <point x="0" y="150" />
+        <point x="105" y="150" />
+        <point x="105" y="293" />
+        <point x="195" y="293" />
+        <point x="195" y="150" />
+        <point x="300" y="150" />
+      </polygon>
+    </shape>
+    <shape name="box" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="285" />
+        <point x="285" y="225" />
+        <point x="285" y="75" />
+        <point x="150" y="135" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="135" />
+        <point x="15" y="75" />
+        <point x="150" y="15" />
+        <point x="285" y="75" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="15" y="75" />
+        <point x="15" y="225" />
+        <point x="150" y="285" />
+        <point x="150" y="135" />
+      </polygon>
+      <line endX="150" startY="285" marked="false" color="255" endY="135" startX="150" />
+      <line endX="15" startY="135" marked="false" color="255" endY="75" startX="150" />
+      <line endX="285" startY="135" marked="false" color="255" endY="75" startX="150" />
+    </shape>
+    <shape name="bug" rotatable="true" editableColorIndex="0">
+      <circle x="96" y="182" marked="true" color="-1920102913" diameter="108" filled="true" />
+      <circle x="110" y="127" marked="true" color="-1920102913" diameter="80" filled="true" />
+      <circle x="110" y="75" marked="true" color="-1920102913" diameter="80" filled="true" />
+      <line endX="80" startY="100" marked="true" color="-1920102913" endY="30" startX="150" />
+      <line endX="220" startY="100" marked="true" color="-1920102913" endY="30" startX="150" />
+    </shape>
+    <shape name="butterfly" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="165" />
+        <point x="209" y="199" />
+        <point x="225" y="225" />
+        <point x="225" y="255" />
+        <point x="195" y="270" />
+        <point x="165" y="255" />
+        <point x="150" y="240" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="165" />
+        <point x="89" y="198" />
+        <point x="75" y="225" />
+        <point x="75" y="255" />
+        <point x="105" y="270" />
+        <point x="135" y="255" />
+        <point x="150" y="240" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="139" y="148" />
+        <point x="100" y="105" />
+        <point x="55" y="90" />
+        <point x="25" y="90" />
+        <point x="10" y="105" />
+        <point x="10" y="135" />
+        <point x="25" y="180" />
+        <point x="40" y="195" />
+        <point x="85" y="194" />
+        <point x="139" y="163" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="162" y="150" />
+        <point x="200" y="105" />
+        <point x="245" y="90" />
+        <point x="275" y="90" />
+        <point x="290" y="105" />
+        <point x="290" y="135" />
+        <point x="275" y="180" />
+        <point x="260" y="195" />
+        <point x="215" y="195" />
+        <point x="162" y="165" />
+      </polygon>
+      <polygon color="255" filled="true" marked="false">
+        <point x="150" y="255" />
+        <point x="135" y="225" />
+        <point x="120" y="150" />
+        <point x="135" y="120" />
+        <point x="150" y="105" />
+        <point x="165" y="120" />
+        <point x="180" y="150" />
+        <point x="165" y="225" />
+      </polygon>
+      <circle x="135" y="90" marked="false" color="255" diameter="30" filled="true" />
+      <line endX="195" startY="105" marked="false" color="255" endY="60" startX="150" />
+      <line endX="105" startY="105" marked="false" color="255" endY="60" startX="150" />
+    </shape>
+    <shape name="car" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="300" y="180" />
+        <point x="279" y="164" />
+        <point x="261" y="144" />
+        <point x="240" y="135" />
+        <point x="226" y="132" />
+        <point x="213" y="106" />
+        <point x="203" y="84" />
+        <point x="185" y="63" />
+        <point x="159" y="50" />
+        <point x="135" y="50" />
+        <point x="75" y="60" />
+        <point x="0" y="150" />
+        <point x="0" y="165" />
+        <point x="0" y="225" />
+        <point x="300" y="225" />
+        <point x="300" y="180" />
+      </polygon>
+      <circle x="180" y="180" marked="false" color="255" diameter="90" filled="true" />
+      <circle x="30" y="180" marked="false" color="255" diameter="90" filled="true" />
+      <polygon color="255" filled="true" marked="false">
+        <point x="162" y="80" />
+        <point x="132" y="78" />
+        <point x="134" y="135" />
+        <point x="209" y="135" />
+        <point x="194" y="105" />
+        <point x="189" y="96" />
+        <point x="180" y="89" />
+      </polygon>
+      <circle x="47" y="195" marked="true" color="-1920102913" diameter="58" filled="true" />
+      <circle x="195" y="195" marked="true" color="-1920102913" diameter="58" filled="true" />
+    </shape>
+    <shape name="circle" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true" />
+    </shape>
+    <shape name="circle 2" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true" />
+      <circle x="30" y="30" marked="false" color="255" diameter="240" filled="true" />
+    </shape>
+    <shape name="cow" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="200" y="193" />
+        <point x="197" y="249" />
+        <point x="179" y="249" />
+        <point x="177" y="196" />
+        <point x="166" y="187" />
+        <point x="140" y="189" />
+        <point x="93" y="191" />
+        <point x="78" y="179" />
+        <point x="72" y="211" />
+        <point x="49" y="209" />
+        <point x="48" y="181" />
+        <point x="37" y="149" />
+        <point x="25" y="120" />
+        <point x="25" y="89" />
+        <point x="45" y="72" />
+        <point x="103" y="84" />
+        <point x="179" y="75" />
+        <point x="198" y="76" />
+        <point x="252" y="64" />
+        <point x="272" y="81" />
+        <point x="293" y="103" />
+        <point x="285" y="121" />
+        <point x="255" y="121" />
+        <point x="242" y="118" />
+        <point x="224" y="167" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="73" y="210" />
+        <point x="86" y="251" />
+        <point x="62" y="249" />
+        <point x="48" y="208" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="25" y="114" />
+        <point x="16" y="195" />
+        <point x="9" y="204" />
+        <point x="23" y="213" />
+        <point x="25" y="200" />
+        <point x="39" y="123" />
+      </polygon>
+    </shape>
+    <shape name="cylinder" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true" />
+    </shape>
+    <shape name="dot" rotatable="false" editableColorIndex="0">
+      <circle x="90" y="90" marked="true" color="-1920102913" diameter="120" filled="true" />
+    </shape>
+    <shape name="face happy" rotatable="false" editableColorIndex="0">
+      <circle x="8" y="8" marked="true" color="-1920102913" diameter="285" filled="true" />
+      <circle x="60" y="75" marked="false" color="255" diameter="60" filled="true" />
+      <circle x="180" y="75" marked="false" color="255" diameter="60" filled="true" />
+      <polygon color="255" filled="true" marked="false">
+        <point x="150" y="255" />
+        <point x="90" y="239" />
+        <point x="62" y="213" />
+        <point x="47" y="191" />
+        <point x="67" y="179" />
+        <point x="90" y="203" />
+        <point x="109" y="218" />
+        <point x="150" y="225" />
+        <point x="192" y="218" />
+        <point x="210" y="203" />
+        <point x="227" y="181" />
+        <point x="251" y="194" />
+        <point x="236" y="217" />
+        <point x="212" y="240" />
+      </polygon>
+    </shape>
+    <shape name="face neutral" rotatable="false" editableColorIndex="0">
+      <circle x="8" y="7" marked="true" color="-1920102913" diameter="285" filled="true" />
+      <circle x="60" y="75" marked="false" color="255" diameter="60" filled="true" />
+      <circle x="180" y="75" marked="false" color="255" diameter="60" filled="true" />
+      <rectangle endX="240" startY="195" marked="false" color="255" endY="225" startX="60" filled="true" />
+    </shape>
+    <shape name="face sad" rotatable="false" editableColorIndex="0">
+      <circle x="8" y="8" marked="true" color="-1920102913" diameter="285" filled="true" />
+      <circle x="60" y="75" marked="false" color="255" diameter="60" filled="true" />
+      <circle x="180" y="75" marked="false" color="255" diameter="60" filled="true" />
+      <polygon color="255" filled="true" marked="false">
+        <point x="150" y="168" />
+        <point x="90" y="184" />
+        <point x="62" y="210" />
+        <point x="47" y="232" />
+        <point x="67" y="244" />
+        <point x="90" y="220" />
+        <point x="109" y="205" />
+        <point x="150" y="198" />
+        <point x="192" y="205" />
+        <point x="210" y="220" />
+        <point x="227" y="242" />
+        <point x="251" y="229" />
+        <point x="236" y="206" />
+        <point x="212" y="183" />
+      </polygon>
+    </shape>
+    <shape name="fish" rotatable="false" editableColorIndex="0">
+      <polygon color="-1" filled="true" marked="false">
+        <point x="44" y="131" />
+        <point x="21" y="87" />
+        <point x="15" y="86" />
+        <point x="0" y="120" />
+        <point x="15" y="150" />
+        <point x="0" y="180" />
+        <point x="13" y="214" />
+        <point x="20" y="212" />
+        <point x="45" y="166" />
+      </polygon>
+      <polygon color="-1" filled="true" marked="false">
+        <point x="135" y="195" />
+        <point x="119" y="235" />
+        <point x="95" y="218" />
+        <point x="76" y="210" />
+        <point x="46" y="204" />
+        <point x="60" y="165" />
+      </polygon>
+      <polygon color="-1" filled="true" marked="false">
+        <point x="75" y="45" />
+        <point x="83" y="77" />
+        <point x="71" y="103" />
+        <point x="86" y="114" />
+        <point x="166" y="78" />
+        <point x="135" y="60" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="30" y="136" />
+        <point x="151" y="77" />
+        <point x="226" y="81" />
+        <point x="280" y="119" />
+        <point x="292" y="146" />
+        <point x="292" y="160" />
+        <point x="287" y="170" />
+        <point x="270" y="195" />
+        <point x="195" y="210" />
+        <point x="151" y="212" />
+        <point x="30" y="166" />
+      </polygon>
+      <circle x="215" y="106" marked="false" color="255" diameter="30" filled="true" />
+    </shape>
+    <shape name="flag" rotatable="false" editableColorIndex="0">
+      <rectangle endX="75" startY="15" marked="true" color="-1920102913" endY="300" startX="60" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="90" y="150" />
+        <point x="270" y="90" />
+        <point x="90" y="30" />
+      </polygon>
+      <line endX="90" startY="135" marked="true" color="-1920102913" endY="135" startX="75" />
+      <line endX="90" startY="45" marked="true" color="-1920102913" endY="45" startX="75" />
+    </shape>
+    <shape name="flower" rotatable="false" editableColorIndex="0">
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="135" y="120" />
+        <point x="165" y="165" />
+        <point x="180" y="210" />
+        <point x="180" y="240" />
+        <point x="150" y="300" />
+        <point x="165" y="300" />
+        <point x="195" y="240" />
+        <point x="195" y="195" />
+        <point x="165" y="135" />
+      </polygon>
+      <circle x="85" y="132" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="130" y="147" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="192" y="85" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="85" y="40" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="177" y="40" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="177" y="132" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="70" y="85" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="130" y="25" marked="true" color="-1920102913" diameter="38" filled="true" />
+      <circle x="96" y="51" marked="true" color="-1920102913" diameter="108" filled="true" />
+      <circle x="113" y="68" marked="false" color="255" diameter="74" filled="true" />
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="189" y="233" />
+        <point x="219" y="188" />
+        <point x="249" y="173" />
+        <point x="279" y="188" />
+        <point x="234" y="218" />
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="180" y="255" />
+        <point x="150" y="210" />
+        <point x="105" y="210" />
+        <point x="75" y="240" />
+        <point x="135" y="240" />
+      </polygon>
+    </shape>
+    <shape name="house" rotatable="false" editableColorIndex="0">
+      <rectangle endX="255" startY="120" marked="true" color="-1920102913" endY="285" startX="45" filled="true" />
+      <rectangle endX="180" startY="210" marked="false" color="255" endY="285" startX="120" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="15" y="120" />
+        <point x="150" y="15" />
+        <point x="285" y="120" />
+      </polygon>
+      <line endX="270" startY="120" marked="false" color="255" endY="120" startX="30" />
+    </shape>
+    <shape name="leaf" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="210" />
+        <point x="135" y="195" />
+        <point x="120" y="210" />
+        <point x="60" y="210" />
+        <point x="30" y="195" />
+        <point x="60" y="180" />
+        <point x="60" y="165" />
+        <point x="15" y="135" />
+        <point x="30" y="120" />
+        <point x="15" y="105" />
+        <point x="40" y="104" />
+        <point x="45" y="90" />
+        <point x="60" y="90" />
+        <point x="90" y="105" />
+        <point x="105" y="120" />
+        <point x="120" y="120" />
+        <point x="105" y="60" />
+        <point x="120" y="60" />
+        <point x="135" y="30" />
+        <point x="150" y="15" />
+        <point x="165" y="30" />
+        <point x="180" y="60" />
+        <point x="195" y="60" />
+        <point x="180" y="120" />
+        <point x="195" y="120" />
+        <point x="210" y="105" />
+        <point x="240" y="90" />
+        <point x="255" y="90" />
+        <point x="263" y="104" />
+        <point x="285" y="105" />
+        <point x="270" y="120" />
+        <point x="285" y="135" />
+        <point x="240" y="165" />
+        <point x="240" y="180" />
+        <point x="270" y="195" />
+        <point x="240" y="210" />
+        <point x="180" y="210" />
+        <point x="165" y="195" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="195" />
+        <point x="135" y="240" />
+        <point x="120" y="255" />
+        <point x="105" y="255" />
+        <point x="105" y="285" />
+        <point x="135" y="285" />
+        <point x="165" y="240" />
+        <point x="165" y="195" />
+      </polygon>
+    </shape>
+    <shape name="line" rotatable="true" editableColorIndex="0">
+      <line endX="150" startY="0" marked="true" color="-1920102913" endY="300" startX="150" />
+    </shape>
+    <shape name="line half" rotatable="true" editableColorIndex="0">
+      <line endX="150" startY="0" marked="true" color="-1920102913" endY="150" startX="150" />
+    </shape>
+    <shape name="pentagon" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="15" />
+        <point x="15" y="120" />
+        <point x="60" y="285" />
+        <point x="240" y="285" />
+        <point x="285" y="120" />
+      </polygon>
+    </shape>
+    <shape name="person" rotatable="false" editableColorIndex="0">
+      <circle x="110" y="5" marked="true" color="-1920102913" diameter="80" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="105" y="90" />
+        <point x="120" y="195" />
+        <point x="90" y="285" />
+        <point x="105" y="300" />
+        <point x="135" y="300" />
+        <point x="150" y="225" />
+        <point x="165" y="300" />
+        <point x="195" y="300" />
+        <point x="210" y="285" />
+        <point x="180" y="195" />
+        <point x="195" y="90" />
+      </polygon>
+      <rectangle endX="172" startY="79" marked="true" color="-1920102913" endY="94" startX="127" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="195" y="90" />
+        <point x="240" y="150" />
+        <point x="225" y="180" />
+        <point x="165" y="105" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="105" y="90" />
+        <point x="60" y="150" />
+        <point x="75" y="180" />
+        <point x="135" y="105" />
+      </polygon>
+    </shape>
+    <shape name="plant" rotatable="false" editableColorIndex="0">
+      <rectangle endX="165" startY="90" marked="true" color="-1920102913" endY="300" startX="135" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="255" />
+        <point x="90" y="210" />
+        <point x="45" y="195" />
+        <point x="75" y="255" />
+        <point x="135" y="285" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="165" y="255" />
+        <point x="210" y="210" />
+        <point x="255" y="195" />
+        <point x="225" y="255" />
+        <point x="165" y="285" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="180" />
+        <point x="90" y="135" />
+        <point x="45" y="120" />
+        <point x="75" y="180" />
+        <point x="135" y="210" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="165" y="180" />
+        <point x="165" y="210" />
+        <point x="225" y="180" />
+        <point x="255" y="120" />
+        <point x="210" y="135" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="105" />
+        <point x="90" y="60" />
+        <point x="45" y="45" />
+        <point x="75" y="105" />
+        <point x="135" y="135" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="165" y="105" />
+        <point x="165" y="135" />
+        <point x="225" y="105" />
+        <point x="255" y="45" />
+        <point x="210" y="60" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="90" />
+        <point x="120" y="45" />
+        <point x="150" y="15" />
+        <point x="180" y="45" />
+        <point x="165" y="90" />
+      </polygon>
+    </shape>
+    <shape name="sheep" rotatable="false" editableColorIndex="15">
+      <circle x="203" y="65" marked="true" color="-1" diameter="88" filled="true" />
+      <circle x="70" y="65" marked="true" color="-1" diameter="162" filled="true" />
+      <circle x="150" y="105" marked="true" color="-1" diameter="120" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="false">
+        <point x="218" y="120" />
+        <point x="240" y="165" />
+        <point x="255" y="165" />
+        <point x="278" y="120" />
+      </polygon>
+      <circle x="214" y="72" marked="false" color="-1920102913" diameter="67" filled="true" />
+      <rectangle endX="179" startY="223" marked="true" color="-1" endY="298" startX="164" filled="true" />
+      <polygon color="-1" filled="true" marked="true">
+        <point x="45" y="285" />
+        <point x="30" y="285" />
+        <point x="30" y="240" />
+        <point x="15" y="195" />
+        <point x="45" y="210" />
+      </polygon>
+      <circle x="3" y="83" marked="true" color="-1" diameter="150" filled="true" />
+      <rectangle endX="80" startY="221" marked="true" color="-1" endY="296" startX="65" filled="true" />
+      <polygon color="-1" filled="true" marked="true">
+        <point x="195" y="285" />
+        <point x="210" y="285" />
+        <point x="210" y="240" />
+        <point x="240" y="210" />
+        <point x="195" y="210" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="false">
+        <point x="276" y="85" />
+        <point x="285" y="105" />
+        <point x="302" y="99" />
+        <point x="294" y="83" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="false">
+        <point x="219" y="85" />
+        <point x="210" y="105" />
+        <point x="193" y="99" />
+        <point x="201" y="83" />
+      </polygon>
+    </shape>
+    <shape name="square" rotatable="false" editableColorIndex="0">
+      <rectangle endX="270" startY="30" marked="true" color="-1920102913" endY="270" startX="30" filled="true" />
+    </shape>
+    <shape name="square 2" rotatable="false" editableColorIndex="0">
+      <rectangle endX="270" startY="30" marked="true" color="-1920102913" endY="270" startX="30" filled="true" />
+      <rectangle endX="240" startY="60" marked="false" color="255" endY="240" startX="60" filled="true" />
+    </shape>
+    <shape name="star" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="151" y="1" />
+        <point x="185" y="108" />
+        <point x="298" y="108" />
+        <point x="207" y="175" />
+        <point x="242" y="282" />
+        <point x="151" y="216" />
+        <point x="59" y="282" />
+        <point x="94" y="175" />
+        <point x="3" y="108" />
+        <point x="116" y="108" />
+      </polygon>
+    </shape>
+    <shape name="target" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true" />
+      <circle x="30" y="30" marked="false" color="255" diameter="240" filled="true" />
+      <circle x="60" y="60" marked="true" color="-1920102913" diameter="180" filled="true" />
+      <circle x="90" y="90" marked="false" color="255" diameter="120" filled="true" />
+      <circle x="120" y="120" marked="true" color="-1920102913" diameter="60" filled="true" />
+    </shape>
+    <shape name="tree" rotatable="false" editableColorIndex="0">
+      <circle x="118" y="3" marked="true" color="-1920102913" diameter="94" filled="true" />
+      <rectangle endX="180" startY="195" marked="false" color="-1653716737" endY="300" startX="120" filled="true" />
+      <circle x="65" y="21" marked="true" color="-1920102913" diameter="108" filled="true" />
+      <circle x="116" y="41" marked="true" color="-1920102913" diameter="127" filled="true" />
+      <circle x="45" y="90" marked="true" color="-1920102913" diameter="120" filled="true" />
+      <circle x="104" y="74" marked="true" color="-1920102913" diameter="152" filled="true" />
+    </shape>
+    <shape name="triangle" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="30" />
+        <point x="15" y="255" />
+        <point x="285" y="255" />
+      </polygon>
+    </shape>
+    <shape name="triangle 2" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="30" />
+        <point x="15" y="255" />
+        <point x="285" y="255" />
+      </polygon>
+      <polygon color="255" filled="true" marked="false">
+        <point x="151" y="99" />
+        <point x="225" y="223" />
+        <point x="75" y="224" />
+      </polygon>
+    </shape>
+    <shape name="truck" rotatable="false" editableColorIndex="0">
+      <rectangle endX="195" startY="45" marked="true" color="-1920102913" endY="187" startX="4" filled="true" />
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="296" y="193" />
+        <point x="296" y="150" />
+        <point x="259" y="134" />
+        <point x="244" y="104" />
+        <point x="208" y="104" />
+        <point x="207" y="194" />
+      </polygon>
+      <rectangle endX="195" startY="60" marked="false" color="-1" endY="105" startX="195" filled="true" />
+      <polygon color="255" filled="true" marked="false">
+        <point x="238" y="112" />
+        <point x="252" y="141" />
+        <point x="219" y="141" />
+        <point x="218" y="112" />
+      </polygon>
+      <circle x="234" y="174" marked="false" color="255" diameter="42" filled="true" />
+      <rectangle endX="214" startY="185" marked="true" color="-1920102913" endY="194" startX="181" filled="true" />
+      <circle x="144" y="174" marked="false" color="255" diameter="42" filled="true" />
+      <circle x="24" y="174" marked="false" color="255" diameter="42" filled="true" />
+      <circle x="24" y="174" marked="true" color="-1920102913" diameter="42" filled="false" />
+      <circle x="144" y="174" marked="true" color="-1920102913" diameter="42" filled="false" />
+      <circle x="234" y="174" marked="true" color="-1920102913" diameter="42" filled="false" />
+    </shape>
+    <shape name="turtle" rotatable="true" editableColorIndex="0">
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="215" y="204" />
+        <point x="240" y="233" />
+        <point x="246" y="254" />
+        <point x="228" y="266" />
+        <point x="215" y="252" />
+        <point x="193" y="210" />
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="195" y="90" />
+        <point x="225" y="75" />
+        <point x="245" y="75" />
+        <point x="260" y="89" />
+        <point x="269" y="108" />
+        <point x="261" y="124" />
+        <point x="240" y="105" />
+        <point x="225" y="105" />
+        <point x="210" y="105" />
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="105" y="90" />
+        <point x="75" y="75" />
+        <point x="55" y="75" />
+        <point x="40" y="89" />
+        <point x="31" y="108" />
+        <point x="39" y="124" />
+        <point x="60" y="105" />
+        <point x="75" y="105" />
+        <point x="90" y="105" />
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="132" y="85" />
+        <point x="134" y="64" />
+        <point x="107" y="51" />
+        <point x="108" y="17" />
+        <point x="150" y="2" />
+        <point x="192" y="18" />
+        <point x="192" y="52" />
+        <point x="169" y="65" />
+        <point x="172" y="87" />
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="85" y="204" />
+        <point x="60" y="233" />
+        <point x="54" y="254" />
+        <point x="72" y="266" />
+        <point x="85" y="252" />
+        <point x="107" y="210" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="119" y="75" />
+        <point x="179" y="75" />
+        <point x="209" y="101" />
+        <point x="224" y="135" />
+        <point x="220" y="225" />
+        <point x="175" y="261" />
+        <point x="128" y="261" />
+        <point x="81" y="224" />
+        <point x="74" y="135" />
+        <point x="88" y="99" />
+      </polygon>
+    </shape>
+    <shape name="wheel" rotatable="false" editableColorIndex="0">
+      <circle x="3" y="3" marked="true" color="-1920102913" diameter="294" filled="true" />
+      <circle x="30" y="30" marked="false" color="255" diameter="240" filled="true" />
+      <line endX="150" startY="285" marked="true" color="-1920102913" endY="15" startX="150" />
+      <line endX="285" startY="150" marked="true" color="-1920102913" endY="150" startX="15" />
+      <circle x="120" y="120" marked="true" color="-1920102913" diameter="60" filled="true" />
+      <line endX="79" startY="40" marked="true" color="-1920102913" endY="269" startX="216" />
+      <line endX="269" startY="84" marked="true" color="-1920102913" endY="221" startX="40" />
+      <line endX="269" startY="216" marked="true" color="-1920102913" endY="79" startX="40" />
+      <line endX="221" startY="40" marked="true" color="-1920102913" endY="269" startX="84" />
+    </shape>
+    <shape name="wolf" rotatable="false" editableColorIndex="0">
+      <polygon color="255" filled="true" marked="false">
+        <point x="253" y="133" />
+        <point x="245" y="131" />
+        <point x="245" y="133" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="2" y="194" />
+        <point x="13" y="197" />
+        <point x="30" y="191" />
+        <point x="38" y="193" />
+        <point x="38" y="205" />
+        <point x="20" y="226" />
+        <point x="20" y="257" />
+        <point x="27" y="265" />
+        <point x="38" y="266" />
+        <point x="40" y="260" />
+        <point x="31" y="253" />
+        <point x="31" y="230" />
+        <point x="60" y="206" />
+        <point x="68" y="198" />
+        <point x="75" y="209" />
+        <point x="66" y="228" />
+        <point x="65" y="243" />
+        <point x="82" y="261" />
+        <point x="84" y="268" />
+        <point x="100" y="267" />
+        <point x="103" y="261" />
+        <point x="77" y="239" />
+        <point x="79" y="231" />
+        <point x="100" y="207" />
+        <point x="98" y="196" />
+        <point x="119" y="201" />
+        <point x="143" y="202" />
+        <point x="160" y="195" />
+        <point x="166" y="210" />
+        <point x="172" y="213" />
+        <point x="173" y="238" />
+        <point x="167" y="251" />
+        <point x="160" y="248" />
+        <point x="154" y="265" />
+        <point x="169" y="264" />
+        <point x="178" y="247" />
+        <point x="186" y="240" />
+        <point x="198" y="260" />
+        <point x="200" y="271" />
+        <point x="217" y="271" />
+        <point x="219" y="262" />
+        <point x="207" y="258" />
+        <point x="195" y="230" />
+        <point x="192" y="198" />
+        <point x="210" y="184" />
+        <point x="227" y="164" />
+        <point x="242" y="144" />
+        <point x="259" y="145" />
+        <point x="284" y="151" />
+        <point x="277" y="141" />
+        <point x="293" y="140" />
+        <point x="299" y="134" />
+        <point x="297" y="127" />
+        <point x="273" y="119" />
+        <point x="270" y="105" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="-1" y="195" />
+        <point x="14" y="180" />
+        <point x="36" y="166" />
+        <point x="40" y="153" />
+        <point x="53" y="140" />
+        <point x="82" y="131" />
+        <point x="134" y="133" />
+        <point x="159" y="126" />
+        <point x="188" y="115" />
+        <point x="227" y="108" />
+        <point x="236" y="102" />
+        <point x="238" y="98" />
+        <point x="268" y="86" />
+        <point x="269" y="92" />
+        <point x="281" y="87" />
+        <point x="269" y="103" />
+        <point x="269" y="113" />
+      </polygon>
+    </shape>
+    <shape name="x" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="270" y="75" />
+        <point x="225" y="30" />
+        <point x="30" y="225" />
+        <point x="75" y="270" />
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="30" y="75" />
+        <point x="75" y="30" />
+        <point x="270" y="225" />
+        <point x="225" y="270" />
+      </polygon>
+    </shape>
+  </turtleShapes>
+  <linkShapes>
+    <shape name="default" curviness="0.0">
+      <lines>
+        <line x="-0.2" visible="false">
+          <dash value="0.0" />
+          <dash value="1.0" />
+        </line>
+        <line x="0.0" visible="true">
+          <dash value="1.0" />
+          <dash value="0.0" />
+        </line>
+        <line x="0.2" visible="false">
+          <dash value="0.0" />
+          <dash value="1.0" />
+        </line>
+      </lines>
+      <indicator>
+        <shape name="link direction" rotatable="true" editableColorIndex="0">
+          <line endX="90" startY="150" marked="true" color="-1920102913" endY="180" startX="150" />
+          <line endX="210" startY="150" marked="true" color="-1920102913" endY="180" startX="150" />
+        </shape>
+      </indicator>
+    </shape>
+  </linkShapes>
+  <previewCommands>setup repeat 100 [ go ]</previewCommands>
+</model>

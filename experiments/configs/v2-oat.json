@@ -1,0 +1,63 @@
+{
+  "model_version": "v2",
+  "base": {
+    "network-source": "Imported synthetic",
+    "selected-market": "pooled-n12-r01",
+    "external-mode": "Peers then external",
+    "sharing-mode": "Network sharing"
+  },
+  "mode": "oat",
+  "ticks": 200,
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55
+  ],
+  "parameters": {
+    "external-travel-ticks": [
+      0,
+      1,
+      3,
+      6
+    ],
+    "low-balance-percent": [
+      15,
+      25,
+      35
+    ],
+    "external-access-percent": [
+      25,
+      50,
+      100
+    ],
+    "demand-heterogeneity": [
+      0,
+      1,
+      2
+    ],
+    "size-heterogeneity": [
+      0,
+      0.5,
+      1
+    ],
+    "grid-cell-size": [
+      2,
+      5,
+      11,
+      33
+    ],
+    "commission-percent": [
+      0,
+      1,
+      3,
+      5
+    ],
+    "commission-subsidy-percent": [
+      0,
+      50,
+      100
+    ]
+  }
+}

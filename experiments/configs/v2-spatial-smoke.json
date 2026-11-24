@@ -1,0 +1,29 @@
+{
+  "model_version": "v2",
+  "mode": "grid",
+  "ticks": 24,
+  "seeds": [
+    11,
+    22
+  ],
+  "base": {
+    "network-source": "Imported synthetic",
+    "selected-market": "pooled-n12-r01",
+    "sharing-mode": "Network sharing",
+    "external-mode": "Peers then external"
+  },
+  "parameters": {
+    "grid-cell-size": [
+      2,
+      33
+    ],
+    "commission-mode": [
+      "Uniform",
+      "Varied"
+    ],
+    "commission-subsidy-percent": [
+      0,
+      100
+    ]
+  }
+}

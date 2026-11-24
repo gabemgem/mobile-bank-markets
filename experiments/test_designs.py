@@ -10,6 +10,33 @@ spec.loader.exec_module(h)
 
 
 class Designs(unittest.TestCase):
+    def setUp(self):
+        h.select_model('v1')
+
+    def tearDown(self):
+        h.select_model('v1')
+
+    def test_explicit_versions_and_v2_constraints(self):
+        cfg={'model_version':'v2','mode':'grid','seeds':[11,22],
+             'parameters':{'external-mode':['Disabled','External only'],
+                           'external-travel-ticks':[0,3]}}
+        rows,_=h.build_design(cfg)
+        self.assertEqual(len(rows),8)
+        self.assertEqual(h.MODEL.name,'MobileBankMarkets_v2.nlogox')
+        self.assertIn('closure_failed_count',h.METRICS)
+        with self.assertRaises(ValueError):
+            h.build_design({'model_version':'v2','base':{'external-open-ticks':20},
+                            'parameters':{'grid-cell-size':[2,5]}})
+        with self.assertRaises(ValueError):
+            h.build_design({'model_version':'v2','base':{'commission-min-percent':3,'commission-max-percent':1},
+                            'parameters':{'grid-cell-size':[2,5]}})
+        self.assertNotIn('settlement-delay',h.controls()[1])
+        with self.assertRaises(ValueError):
+            h.build_design({'model_version':'v3','parameters':{'settlement-delay':[0]}})
+        h.build_design({'parameters':{'settlement-delay':[0,1]}})
+        self.assertEqual(h.MODEL.name,'MobileBankMarkets_v1.nlogox')
+        self.assertNotIn('closure_failed_count',h.METRICS)
+
     def test_oat_and_seed_pairing(self):
         cfg = {'mode':'oat','seeds':[11,22], 'parameters':{'settlement-delay':[0,1,2],
                                                         'low-balance-percent':[15,25,35]}}

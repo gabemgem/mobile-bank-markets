@@ -25,6 +25,25 @@ public class BatchRunner {
         "cash-low-ticks / (count kiosks * ticks)", "efloat-low-ticks / (count kiosks * ticks)",
         "sum [cash] of kiosks", "sum [efloat] of kiosks"
     };
+    static final String[] V2_NAMES = {
+        "external_started", "external_settled", "external_value", "external_pending",
+        "external_pending_value", "net_external_cash", "closed_share", "closure_failed_count",
+        "closure_failed_value", "cash_failed_count", "efloat_failed_count", "commissions_earned",
+        "commissions_paid", "subsidy_spent", "pending_commissions", "pending_subsidy", "mean_peer_distance"
+    };
+    static final String[] V2_REPORTERS = {
+        "external-started", "external-settled", "external-value", "count transfers with [external?]",
+        "sum [quantity] of transfers with [external?]", "net-external-cash",
+        "closed-kiosk-ticks / (count kiosks * ticks)", "closure-failed-count", "closure-failed-value",
+        "cash-failed-count", "efloat-failed-count", "commissions-earned", "commissions-paid",
+        "subsidy-spent", "sum [commission-fee] of transfers", "sum [subsidized-fee] of transfers",
+        "ifelse-value (initiated-count > 0) [peer-distance-total / initiated-count] [0]"
+    };
+    static String[] concat(String[] a, String[] b) {
+        String[] result = Arrays.copyOf(a, a.length+b.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
     static String csv(Object value) {
         return "\"" + String.valueOf(value).replace("\r", " ").replace("\n", " ")
             .replace("\"", "\"\"") + "\"";
@@ -41,12 +60,23 @@ public class BatchRunner {
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             model.open(args[0]);
             model.command("initialize-controls");
+            boolean v2;
+            try { v2 = "v2".equals(model.report("model-version")); }
+            catch (org.nlogo.core.CompilerException ex) { v2 = false; }
+            String[] names = v2 ? concat(NAMES, V2_NAMES) : NAMES;
+            String[] reporters = REPORTERS.clone();
+            if (v2) {
+                // Existing peer metrics retain their meaning when external transfers are present.
+                reporters[15] = "count transfers with [not external?]";
+                reporters[17] = "sum [quantity] of transfers with [not external?]";
+                reporters = concat(reporters, V2_REPORTERS);
+            }
             if (header) {
-                out.write("run_id,status,error,seconds,setup_seconds,simulation_seconds,metrics_seconds," + String.join(",", NAMES));
+                out.write("run_id,status,error,seconds,setup_seconds,simulation_seconds,metrics_seconds," + String.join(",", names));
                 out.newLine(); out.flush();
             }
             List<String> lines = Files.readAllLines(Paths.get(args[1]), StandardCharsets.UTF_8);
-            String metrics = "(list " + String.join(" ", Arrays.stream(REPORTERS)
+            String metrics = "(list " + String.join(" ", Arrays.stream(reporters)
                 .map(s -> "(" + s + ")").toArray(String[]::new)) + ")";
             if (!lines.isEmpty()) {
                 String[] first = lines.get(0).split("\t", -1);
@@ -66,7 +96,7 @@ public class BatchRunner {
                 long start = System.nanoTime();
                 String status = "ok", error = "";
                 double setupSeconds = 0, simulationSeconds = 0, metricsSeconds = 0;
-                List<Object> values = new ArrayList<>(Collections.nCopies(NAMES.length, ""));
+                List<Object> values = new ArrayList<>(Collections.nCopies(names.length, ""));
                 try {
                     long phase = System.nanoTime();
                     model.command(commands + " setup");
