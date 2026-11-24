@@ -1,6 +1,6 @@
 # Mobile Bank Markets
 
-[Open the published model in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets.nlogox)
+[Open v2 in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets_v2.nlogox) · [Open v1 in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets_v1.nlogox)
 
 Mobile Bank Markets is an agent-based model of liquidity sharing among mobile-money kiosk operators. It explores how trading cash and electronic balances through a network affects customers' ability to deposit and withdraw money.
 
@@ -8,17 +8,32 @@ Mobile-money kiosks connect cash-based local economies to electronic accounts. A
 
 [Explore experiment results](docs/results/) · [Synthetic network generation](docs/synthetic-networks/) · [Run experiments](experiments/RUNNING.md) · [Network data guide](experiments/NETWORKS.md)
 
+## Model versions
+
+| Version | What it contains |
+| --- | --- |
+| [V1 — abstract model](MobileBankMarkets_v1.nlogox) | Preserved peer-sharing model: equal initial balances, uniform customer traffic, alternating deposit/withdrawal tendencies, reserved balances, and a 0–2 tick settlement delay. No external rebalancing or shop closure. |
+| [V2 — policy model](MobileBankMarkets_v2.nlogox) | Adds external rebalancing, unequal demand, spring-layout grid travel, and optional shop closure. Agents choose feasible partners by distance, then commission. Uniform or varied supplier fees and external fee subsidies track who pays. |
+
+V1 is the simple sandbox for exploring network liquidity sharing. V2 extends that
+foundation for policy comparisons, with explicit geography and commission assumptions. Both accept the same synthetic libraries and retain data-free random
+networks. Neither version predicts exact effects in surveyed markets. The
+[version and assumptions guide](experiments/VERSIONS.md) explains the controls
+and experiment settings.
+
 ## The model
 
 Each agent represents a kiosk operator holding cash and e-float. Customer deposits increase the operator's cash and reduce its e-float; withdrawals do the reverse. A request fails when the operator lacks the available balance needed to complete it.
 
-Operators initiate peer trades when a balance falls below a configurable threshold. Trades exchange cash for e-float, aiming to restore a target balance while respecting reserve requirements. Committed balances are reserved until settlement, with a configurable delay of zero to two ticks.
+Operators initiate peer trades when a balance falls below a configurable threshold. Trades exchange cash for e-float, aiming to restore a target balance while respecting reserve requirements. Committed balances are reserved until settlement, after a configurable 0–2 tick delay in v1. In v2, peer travel follows Manhattan grid distance on a fixed spring layout: same-square trades settle immediately, and each horizontal or vertical square adds one tick.
 
-Three sharing policies provide a comparison:
+Both versions retain three peer-sharing policies:
 
-- **No sharing:** operators serve customers using their own balances.
+- **No sharing:** peer exchanges are disabled.
 - **Network sharing:** participating operators trade with eligible network neighbors.
 - **All-to-all sharing:** participating operators can trade regardless of network ties.
+
+V2 can disable external rebalancing, use it alone, or try peers before falling back to it. External exchanges change the cash/e-float mix without adding working capital. Travel can interrupt service; a staffing switch lets the shop remain open. Customer requests lost during closure remain part of demand. Peer suppliers charge a cash commission, drawn once per agent from a uniform range or set equally for all. V2 prioritizes feasible connected partners by grid distance, then lowest commission, with random tie-breaking. An external sponsor can cover a configurable share of commission costs; its cash spending is recorded separately.
 
 The model tracks deposit and withdrawal success, requested and served transaction values, low-balance exposure, and pending and completed peer trades. These measure access to mobile-money services; the model does not simulate a complete economy of household spending.
 
@@ -49,12 +64,12 @@ The experiment harness supports three complementary designs:
 
 Repeated simulation seeds capture variation in synthetic networks and customer demand. The [results dashboard](docs/results/) displays numerical response curves, scatter plots, and heatmaps, together with parameter settings and variation across seeds. Performance benchmarks help estimate study runtime before larger experiments.
 
-The [experiment guide](experiments/RUNNING.md) explains benchmarking, configuring studies, running and resuming batches, and exporting aggregate results. Bundled experiment configurations use synthetic random networks and require no survey data.
+The [experiment guide](experiments/RUNNING.md) explains benchmarking, configuring studies, running and resuming batches, and exporting aggregate results. The original OAT/LHS/grid configurations use v1 and synthetic random networks. The `v2-*` configurations select v2 explicitly and use the public synthetic library. No survey data are required.
 
 ## Run the model
 
-1. For desktop **NetLogo 7.0.3**, run `python scripts/install_netlogo_fetch.py` once to install the official Fetch extension, then open [MobileBankMarkets.nlogox](MobileBankMarkets.nlogox).
-2. Choose **Synthetic random** to run without data, or select an imported network source and use **Choose local network**.
+1. For desktop **NetLogo 7.0.3**, run `python scripts/install_netlogo_fetch.py` once to install the official Fetch extension, then open [MobileBankMarkets_v2.nlogox](MobileBankMarkets_v2.nlogox).
+2. Choose **Synthetic random** to run without data, or select **Imported synthetic** / **Observed mutual willingness** and use **Choose local network**. For **GitHub synthetic**, use **Load GitHub library**.
 3. Set the controls, click **Setup**, and use **Step**, **Go / stop**, or **+100 ticks**.
 
 Press **Setup** after changing controls to start a new run. The model's Info tab documents transaction accounting, trade timing, parameters, and assumptions. Local imports and the experiment harness use desktop NetLogo.
@@ -63,6 +78,6 @@ In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wa
 
 ## Interpretation
 
-The model is an abstract policy experiment. Initial balances, customer demand, and trading behavior are illustrative rather than calibrated estimates of surveyed markets. Loading an observed network changes the topology; it does not make the financial behavior empirical. Network positions are illustrative, rather than geographic.
+The model is an abstract policy experiment. Initial balances, customer demand, and trading behavior are illustrative rather than calibrated estimates of surveyed markets. Loading an observed network changes the topology; it does not make the financial behavior empirical. V2 uses network-derived spring positions as synthetic geography, rather than measured locations. Changing topology can therefore change both connectivity and assumed travel distances.
 
-Comparisons examine when liquidity sharing improves service and how participation, topology, reserve requirements, and settlement delays limit its benefits. Demand is specified per market per tick, so comparisons across market sizes should also consider demand per kiosk.
+Comparisons examine when liquidity sharing improves service and how participation, topology, reserve requirements, and settlement delays limit its benefits. Demand is specified per market per tick, so comparisons across market sizes should also consider demand per kiosk. In v2, traffic and transaction-size distributions can differ across kiosks. Travel and opening cycles are scenario inputs in abstract ticks, without a calibrated mapping to minutes or days.

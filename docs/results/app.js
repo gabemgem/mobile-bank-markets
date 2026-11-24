@@ -11,11 +11,16 @@ function text(x,y,s,extra=''){return `<text x="${x}" y="${y}" class="axis" ${ext
 function showStudy(r){
   if(r.version!==1||r.network_source!=='Synthetic random'||!r.points.length)throw Error('Unsupported report');
   report=r;$('empty').hidden=true;$('experiment').hidden=false;
+  const labels={commissions_earned:'Supplier commission income',commissions_paid:'Requester commissions paid',subsidy_spent:'Commission subsidy spent',pending_commissions:'Pending commissions',pending_subsidy:'Pending subsidy commitments',mean_peer_distance:'Mean peer grid distance',external_settled:'External exchanges settled',external_value:'External value exchanged',net_external_cash:'Net external cash (+ into market)',closed_share:'Closed kiosk-tick share',closure_failed_count:'Requests lost: shop closed',closure_failed_value:'Value lost: shop closed',cash_failed_count:'Requests lost: cash shortage',efloat_failed_count:'Requests lost: e-float shortage'};
+  const preferred=['service_pct','deposit_service_pct','withdrawal_service_pct','cash_low_share','efloat_low_share','unmet_attempts','trades_settled'];
+  const existing=Object.fromEntries([...$('metric').options].map(o=>[o.value,o.textContent]));
+  options($('metric'),[...preferred,...Object.keys(labels)].filter(k=>k in r.points[0].metrics).map(k=>[k,labels[k]||existing[k]||k]),'service_pct');
   $('stats').innerHTML=`<article><strong>${r.completed_runs}</strong><span>Completed runs</span></article><article><strong>${r.replicates}</strong><span>Seeds per setting</span></article><article><strong>${r.ticks}</strong><span>Ticks per run</span></article>`;
   const params=r.mode==='oat'?[...new Set(r.points.map(p=>p.varied).filter(v=>v!=='baseline'))]:numParameters(r);
-  options($('parameter'),(r.mode==='grid'?['network-density']:params).map(k=>[k,k]),params.includes('network-density')?'network-density':params[0]);
+  options($('parameter'),params.map(k=>[k,k]),params.includes('network-density')?'network-density':params[0]);
+  options($('grid-y'),params.map(k=>[k,k]),params.includes('settlement-delay')?'settlement-delay':params[1]||params[0]);
   options($('policy'),[...(r.mode==='grid'?[]:[['all','All policies']]),...[...new Set(r.points.map(p=>p.parameters['sharing-mode']))].map(k=>[k,k])],r.mode==='grid'?'Network sharing':'all');
-  $('policy-wrap').hidden=r.mode!=='grid';$('participation-wrap').hidden=r.mode!=='grid';
+  $('policy-wrap').hidden=true;$('participation-wrap').hidden=r.mode!=='grid';$('grid-y-wrap').hidden=r.mode!=='grid';
   $('oat-view-wrap').hidden=r.mode!=='oat';
   options($('participation'),[...new Set(r.points.map(p=>p.parameters['participation-percent']))].sort((a,b)=>a-b).map(v=>[String(v),`${v}%`]),'100');
   $('caveat').textContent=r.caveat;render();
@@ -23,12 +28,21 @@ function showStudy(r){
 function render(){
   if(!report)return;
   const metric=$('metric').value,param=$('parameter').value;
-  visible=report.points.filter(p=>$('policy').value==='all'||p.parameters['sharing-mode']===$('policy').value);
+  visible=report.mode==='grid'?report.points:report.points.filter(p=>$('policy').value==='all'||p.parameters['sharing-mode']===$('policy').value);
   if(report.mode==='oat')visible=visible.filter(p=>p.varied==='baseline'||p.varied===param);
-  if(report.mode==='grid')visible=visible.filter(p=>String(p.parameters['participation-percent'])===$('participation').value);
+  if(report.mode==='grid'){
+    const y=$('grid-y').value;
+    const keys=Object.keys(report.points[0].parameters).filter(k=>k!==param&&k!==y&&new Set(report.points.map(p=>JSON.stringify(p.parameters[k]))).size>1);
+    const slice=p=>JSON.stringify(keys.map(k=>[k,p.parameters[k]]));
+    const slices=[...new Set(report.points.map(slice))],old=$('participation').value;
+    const preferred=slices.find(v=>{const p=Object.fromEntries(JSON.parse(v));return (!p['sharing-mode']||p['sharing-mode']==='Network sharing')&&(!p['participation-percent']||p['participation-percent']===100);})||slices[0];
+    options($('participation'),slices.map(v=>[v,JSON.parse(v).map(([k,value])=>`${k}: ${value}`).join(' · ')||'All fixed settings']),slices.includes(old)?old:preferred);
+    visible=visible.filter(p=>slice(p)===$('participation').value);
+  }
   if(report.mode==='oat')oat(metric,param);else if(report.mode==='grid')heatmap(metric);else scatter(metric,param);
-  const columns=['Setting',param,'Mean','SD','Seeds'];
-  $('points').innerHTML='<thead><tr>'+columns.map(x=>`<th>${esc(x)}</th>`).join('')+'</tr></thead><tbody>'+visible.map(p=>`<tr><td>${esc(p.id)}</td><td>${esc(p.parameters[param])}</td><td>${fmt(p.metrics[metric].mean)}</td><td>${fmt(p.metrics[metric].sd)}</td><td>${p.replicates}</td></tr>`).join('')+'</tbody>';
+  const axes=report.mode==='grid'?[param,$('grid-y').value]:[param];
+  const columns=['Setting',...axes,'Mean','SD','Seeds'];
+  $('points').innerHTML='<thead><tr>'+columns.map(x=>`<th>${esc(x)}</th>`).join('')+'</tr></thead><tbody>'+visible.map(p=>`<tr><td>${esc(p.id)}</td>${axes.map(axis=>`<td>${esc(p.parameters[axis])}</td>`).join('')}<td>${fmt(p.metrics[metric].mean)}</td><td>${fmt(p.metrics[metric].sd)}</td><td>${p.replicates}</td></tr>`).join('')+'</tbody>';
   $('table-count').textContent=`(${visible.length} settings)`;
   parameterSettings(param);
 }
@@ -40,7 +54,7 @@ function parameterSettings(param){
   $('settings-note').textContent=baseline?
     'These are the actual study baseline values, not assumed UI defaults. For this curve, only the highlighted parameter changes; every other value stays at baseline.':
     'Fixed values are shared by every setting. Varied parameters show their tested range or levels; joint designs do not have a single executed baseline.';
-  $('run-settings').textContent=`${report.ticks} ticks per run · ${report.replicates} simulation seeds`+
+  $('run-settings').textContent=`${(report.model_version||'v1').toUpperCase()} · ${report.ticks} ticks per run · ${report.replicates} simulation seeds`+
     (report.seeds?` (${report.seeds.join(', ')})`:'')+
     (report.warmup_runs!==undefined?` · ${report.warmup_runs} discarded warm-ups per batch`:'');
   const rows=keys.map(key=>{
@@ -98,23 +112,25 @@ function scatter(metric,param){
   $('chart-note').textContent='Each dot is one joint parameter setting, averaged across seeds; whiskers show between-seed SD. '+(correlation?`Marginal Spearman ρ = ${fmt(correlation.spearman_rho)}; this does not isolate a causal effect.`:'');
 }
 function heatmap(metric){
-  const densities=[...new Set(visible.map(p=>p.parameters['network-density']))].sort((a,b)=>a-b),delays=[...new Set(visible.map(p=>p.parameters['settlement-delay']))].sort((a,b)=>a-b);
-  const means=visible.map(p=>p.metrics[metric].mean),min=Math.min(...means),max=Math.max(...means),cellW=760/densities.length,cellH=280/delays.length;
-  let s='';visible.forEach(p=>{const i=densities.indexOf(p.parameters['network-density']),j=delays.indexOf(p.parameters['settlement-delay']),v=p.metrics[metric].mean,t=max===min?.5:(v-min)/(max-min);
+  const xName=$('parameter').value,yName=$('grid-y').value;
+  if(!xName||!yName||xName===yName){$('chart').textContent='Choose two different numerical parameters for the grid axes.';return;}
+  const xs=[...new Set(visible.map(p=>p.parameters[xName]))].sort((a,b)=>a-b),ys=[...new Set(visible.map(p=>p.parameters[yName]))].sort((a,b)=>a-b);
+  const means=visible.map(p=>p.metrics[metric].mean),min=Math.min(...means),max=Math.max(...means),cellW=760/xs.length,cellH=280/ys.length;
+  let s='';visible.forEach(p=>{const i=xs.indexOf(p.parameters[xName]),j=ys.indexOf(p.parameters[yName]),v=p.metrics[metric].mean,t=max===min?.5:(v-min)/(max-min);
     const fill=`hsl(176 46% ${92-t*57}%)`,xx=140+i*cellW,yy=55+j*cellH;
     s+=`<rect x="${xx+2}" y="${yy+2}" width="${cellW-4}" height="${cellH-4}" fill="${fill}"><title>${esc(p.id+': mean '+fmt(v)+' ± '+fmt(p.metrics[metric].sd)+' SD')}</title></rect><text x="${xx+cellW/2}" y="${yy+cellH/2+5}" font-size="20" text-anchor="middle" fill="${t>.65?'white':'#172d38'}">${fmt(v)}</text>`;});
-  densities.forEach((v,i)=>s+=text(140+(i+.5)*cellW,365,v,'text-anchor="middle"'));
-  delays.forEach((v,i)=>s+=text(120,55+(i+.5)*cellH+4,`Delay ${v}`,'text-anchor="end"'));
-  s+=text(520,410,'Network density','text-anchor="middle"');$('chart').innerHTML=svg(s,'Grid parameter response heatmap');
-  $('chart-note').textContent='Cells show seed-mean responses for the selected policy and participation level. Color scale is local to this selection; higher means darker, not necessarily better.';
+  xs.forEach((v,i)=>s+=text(140+(i+.5)*cellW,365,v,'text-anchor="middle"'));
+  ys.forEach((v,i)=>s+=text(120,55+(i+.5)*cellH+4,v,'text-anchor="end"'));
+  s+=text(520,410,xName,'text-anchor="middle"')+text(30,195,yName,'transform="rotate(-90 30 195)" text-anchor="middle"');$('chart').innerHTML=svg(s,'Grid parameter response heatmap');
+  $('chart-note').textContent='Cells show seed means at the selected axes and other parameter settings. Color scale is local to this selection; higher means darker, not necessarily better.';
 }
 async function performance(){
   try{const p=await (await fetch('studies/performance.json')).json();if(p.kind!=='performance-benchmark')return;
     const estimates=Object.entries(p.estimates||{}).map(([name,e])=>`<article><b>${esc(name.toUpperCase())}</b><strong>${duration(e.estimated_seconds)}</strong><span>${e.planned_runs} runs · budget ${duration(e.planning_seconds)}</span></article>`).join('');
-    $('performance').innerHTML=`<p>${p.measured_runs} measured runs + ${p.warmup_runs} warm-ups · ${esc(p.environment.os)} · serial runner · benchmark wall time ${duration(p.measured_wall_seconds)}</p><div class="runtime">${estimates}</div><p class="muted">${esc(p.caveat)} The planning allowance uses at least 1.5× measured run costs and is not a confidence bound.</p><details><summary>Inspect measured workloads</summary><div class="table-scroll"><table><thead><tr><th>Workload</th><th>Kiosks</th><th>Density</th><th>Setup (ms)</th><th>Tick (ms)</th></tr></thead><tbody>${p.cases.map(c=>`<tr><td>${esc(c.case)}</td><td>${c['number-of-kiosks']}</td><td>${c['network-density']}</td><td>${fmt(1000*c.setup_seconds)}</td><td>${fmt(1000*c.seconds_per_tick,3)}</td></tr>`).join('')}</tbody></table></div></details>`;
+    $('performance').innerHTML=`<p>${(p.model_version||'v1').toUpperCase()} · ${p.measured_runs} measured runs + ${p.warmup_runs} warm-ups · ${esc(p.environment.os)} · serial runner · benchmark wall time ${duration(p.measured_wall_seconds)}</p><div class="runtime">${estimates}</div><p class="muted">${esc(p.caveat)} The planning allowance uses at least 1.5× measured run costs and is not a confidence bound.</p><details><summary>Inspect measured workloads</summary><div class="table-scroll"><table><thead><tr><th>Workload</th><th>Kiosks</th><th>Density</th><th>Setup (ms)</th><th>Tick (ms)</th></tr></thead><tbody>${p.cases.map(c=>`<tr><td>${esc(c.case)}</td><td>${c['number-of-kiosks']}</td><td>${c['network-density']}</td><td>${fmt(1000*c.setup_seconds)}</td><td>${fmt(1000*c.seconds_per_tick,3)}</td></tr>`).join('')}</tbody></table></div></details>`;
   }catch{/* The page remains usable before any benchmark exists. */}
 }
-['metric','parameter','policy','participation','oat-view'].forEach(id=>$(id).addEventListener('change',render));
-$('download').addEventListener('click',()=>{const metric=$('metric').value,param=$('parameter').value;const rows=[['setting',param,'mean','sd','seeds'],...visible.map(p=>[p.id,p.parameters[param],p.metrics[metric].mean,p.metrics[metric].sd,p.replicates])];const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${report.id}-${metric}.csv`;a.click();URL.revokeObjectURL(a.href);});
+['metric','parameter','grid-y','policy','participation','oat-view'].forEach(id=>$(id).addEventListener('change',render));
+$('download').addEventListener('click',()=>{const metric=$('metric').value,param=$('parameter').value;const keys=Object.keys(report.points[0].parameters);const rows=[['setting',...keys,'mean','sd','seeds'],...visible.map(p=>[p.id,...keys.map(k=>p.parameters[k]),p.metrics[metric].mean,p.metrics[metric].sd,p.replicates])];const csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${report.id}-${metric}.csv`;a.click();URL.revokeObjectURL(a.href);});
 async function init(){await performance();try{const catalog=await (await fetch('studies/index.json')).json();if(!catalog.studies.length)return;options($('study'),catalog.studies.map(s=>[s.file,s.title]));$('study').addEventListener('change',async()=>{try{showStudy(await (await fetch('studies/'+$('study').value)).json());}catch(e){$('chart').textContent='Could not load this report: '+e.message;}});showStudy(await (await fetch('studies/'+$('study').value)).json());}catch(e){$('empty').querySelector('p').textContent='Serve this folder over HTTP to load study files. '+e.message;}}
 init();

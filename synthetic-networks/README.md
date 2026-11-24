@@ -16,8 +16,9 @@ Keep networks.csv, nodes.csv, and edges.csv together. All nodes, including
 isolates, are supplied; each undirected edge appears once. Repeated graph shapes,
 empty graphs, and complete graphs are retained as valid random outcomes.
 
-In desktop NetLogo 7.0.3, open ../MobileBankMarkets.nlogox, choose **Imported
+In desktop NetLogo 7.0.3, open ../MobileBankMarkets_v1.nlogox, choose **Imported
 synthetic**, then use **Choose local network** to select generator, size, and ID.
+The policy model, ../MobileBankMarkets_v2.nlogox, uses the same library.
 Reopen the chooser after replacing files to refresh the in-memory cache.
 In NetLogo Web, click **Load GitHub library**, wait for **Ready: 920 GitHub
 graphs**, enter an ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`,

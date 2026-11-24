@@ -95,7 +95,7 @@ The repository's `synthetic-networks/` library uses three CSV files:
 
 In desktop NetLogo 7.0.3:
 
-1. Open `MobileBankMarkets.nlogox` with the library in its neighboring
+1. Open `MobileBankMarkets_v1.nlogox` (abstract) or `MobileBankMarkets_v2.nlogox` (policy model) with the library in its neighboring
    `synthetic-networks/` directory.
 2. Use **Network source → Imported synthetic**.
 3. Use **Choose local network**, select a generator, kiosk count, and graph ID.
@@ -123,7 +123,7 @@ NetLogo documents this distinction in its [Web extension
 notes](https://netlogoweb.org/whats-new) and [Fetch extension
 reference](https://github.com/NetLogo/Fetch-Extension).
 
-1. [Open the model in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets.nlogox).
+1. Open [v1 in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets_v1.nlogox) or [v2 in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets_v2.nlogox). Both use this library; v2 adds external rebalancing, unequal demand and travel-related service interruption.
 2. Near the bottom of the interface, leave `ui-github-base-url` at its default and click **Load GitHub library**. This selects **GitHub synthetic** automatically.
 3. Wait for **Ready: 920 GitHub graphs** in the status monitor.
 4. Enter a graph ID in `ui-github-network-id`, for example `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup** and run.

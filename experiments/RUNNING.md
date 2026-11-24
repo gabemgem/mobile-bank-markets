@@ -1,5 +1,12 @@
 # Running synthetic experiments
 
+The original configurations select **v1**, the preserved abstract model.
+Configurations named `v2-*` select **v2**, which adds external rebalancing,
+heterogeneous demand and travel-related closure. See the
+[version and assumptions guide](VERSIONS.md) for v2 controls, smoke tests and
+library experiments. Use `--model-version v2` when benchmarking v2; v1 is the
+benchmark default. A profile cannot be reused across different model hashes.
+
 Run commands in PowerShell from the `ABM` directory. Python 3.10+, a JDK
 (`java` and `javac`), and NetLogo 7.0.3 are required. No survey files are needed.
 If Java is not on PATH, append `--java 'C:/path/to/java.exe' --javac 'C:/path/to/javac.exe'`.

@@ -97,7 +97,7 @@ policies at sizes 2, 13, and 24 for both families. Compile with the NetLogo jars
 
 ```powershell
 javac -cp "C:/Program Files/NetLogo 7.0.3/app/*" -d local-abm-network-generation/checks/classes tests/SyntheticLibraryChecks.java
-java "-Dnetlogo.extensions.dir=C:/Program Files/NetLogo 7.0.3/extensions" -cp "local-abm-network-generation/checks/classes;C:/Program Files/NetLogo 7.0.3/app/*" SyntheticLibraryChecks "ABSOLUTE_PATH_TO/MobileBankMarkets.nlogox"
+java "-Dnetlogo.extensions.dir=C:/Program Files/NetLogo 7.0.3/extensions" -cp "local-abm-network-generation/checks/classes;C:/Program Files/NetLogo 7.0.3/app/*" SyntheticLibraryChecks "ABSOLUTE_PATH_TO/MobileBankMarkets_v1.nlogox"
 ```
 
 `tests/PortableChecks.java` separately verifies abstract-mode startup without

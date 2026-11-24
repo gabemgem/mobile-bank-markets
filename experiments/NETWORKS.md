@@ -94,6 +94,10 @@ remain available through the local harness outputs.
 
 ## NetLogo Web
 
+Both `MobileBankMarkets_v1.nlogox` (abstract) and `MobileBankMarkets_v2.nlogox`
+(policy model) support the same local and GitHub libraries. The
+[version guide](VERSIONS.md) documents v2's additional mechanisms and parameters.
+
 Select **GitHub synthetic**, or click **Load GitHub library**, in the shared model.
 The URL input defaults to the public root-level `synthetic-networks/` directory
 on raw.githubusercontent.com. Wait for **Ready: 920 GitHub graphs**, enter an ID
