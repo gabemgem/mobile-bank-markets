@@ -27,7 +27,7 @@ From `ABM/`, with private observed network exports in `data/`:
 Rscript tests/abm_network_generation_checks.R
 Rscript scripts/generate_abm_networks.R --phase prepare
 Rscript scripts/generate_abm_networks.R
-python scripts/document_synthetic_library.py
+python scripts/document_synthetic_library.py --update-model-choices
 ```
 
 The sequential command fits the full-data pair, then four matched bootstrap
@@ -48,7 +48,7 @@ Rscript scripts/generate_abm_networks.R --phase fit --fit 3
 Rscript scripts/generate_abm_networks.R --phase fit --fit 4
 # After all five finish:
 Rscript scripts/generate_abm_networks.R --phase generate
-python scripts/document_synthetic_library.py
+python scripts/document_synthetic_library.py --update-model-choices
 ```
 
 Never edit active runner/helper files. Each fit writes a separate checkpoint
@@ -112,7 +112,7 @@ descriptive; it does not contain fit objects or copies of the generated library.
 
 The shared model supports **GitHub synthetic** through Fetch and CSV string
 parsing. Click **Load GitHub library**, wait for **Ready: 920 GitHub graphs**,
-enter a graph ID and click **Setup**. The default raw GitHub URLs were tested in
+select a graph ID from the dropdown in v2 (or type it in v1) and click **Setup**. The default raw GitHub URLs were tested in
 NetLogo Web: the full library loaded and both generators completed 100 ticks.
 The site page documents version pinning, retries, cancellation, and timeouts.
 Local imports and data-free random generation remain available on desktop.

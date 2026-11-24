@@ -71,6 +71,10 @@ The experiment harness supports three complementary designs:
 
 Repeated simulation seeds capture variation in synthetic networks and customer demand. The [results dashboard](results/) displays numerical response curves, scatter plots, and heatmaps, together with parameter settings and variation across seeds. Performance benchmarks help estimate study runtime before larger experiments.
 
+The [liquidity policy pilot](results/policy-pilot/) compares network sharing,
+external rebalancing and commission subsidies, with paired outcomes across synthetic
+networks and measured runtime estimates for larger studies.
+
 The [experiment guide](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/RUNNING.md) explains benchmarking, configuring studies, running and resuming batches, and exporting aggregate results. The original OAT/LHS/grid configurations use v1 and synthetic random networks. The `v2-*` configurations select v2 explicitly and use the public synthetic library. No survey data are required.
 
 ## Run the model
@@ -81,7 +85,7 @@ The [experiment guide](https://github.com/gabemgem/mobile-bank-markets/blob/main
 
 Press **Setup** after changing controls to start a new run. The model's Info tab documents transaction accounting, trade timing, parameters, and assumptions. Local imports and the experiment harness use desktop NetLogo.
 
-In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wait for **Ready: 920 GitHub graphs**, enter a graph ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup**. The **Use random networks** button returns to data-free simulation. The [generation guide](synthetic-networks/) explains URL pinning and download handling.
+In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wait for **Ready: 920 GitHub graphs**, select a **GitHub network ID** from the dropdown in v2, then click **Setup**. IDs are ordered by generator, kiosk count and replicate; `pooled-n20-r01` means pooled generator, 20 kiosks, replicate 1. V1 uses a text field for the ID. The **Use random networks** button returns to data-free simulation. The [generation guide](synthetic-networks/) explains URL pinning and download handling.
 
 ## Interpretation
 

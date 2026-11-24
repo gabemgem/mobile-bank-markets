@@ -54,7 +54,7 @@ def controls():
               'selected-market': {'kind':'text'}}
     for w in ET.parse(MODEL).find('widgets'):
         name = w.get('variable')
-        if not name:
+        if not name or name == 'ui-github-network-id':
             continue
         if name.startswith('ui-'):
             name = name[3:]

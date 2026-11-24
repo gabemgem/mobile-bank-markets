@@ -126,7 +126,13 @@ reference](https://github.com/NetLogo/Fetch-Extension).
 1. Open [v1 in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets_v1.nlogox) or [v2 in NetLogo Web](https://netlogoweb.org/launch#https://raw.githubusercontent.com/gabemgem/mobile-bank-markets/main/MobileBankMarkets_v2.nlogox). Both use this library; v2 adds external rebalancing, unequal demand and travel-related service interruption.
 2. Near the bottom of the interface, leave `ui-github-base-url` at its default and click **Load GitHub library**. This selects **GitHub synthetic** automatically.
 3. Wait for **Ready: 920 GitHub graphs** in the status monitor.
-4. Enter a graph ID in `ui-github-network-id`, for example `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup** and run.
+4. In v2, select a graph from the `ui-github-network-id` dropdown, then click **Setup** and run. IDs are ordered by generator, kiosk count and replicate. For example, `pooled-n20-r01` means pooled generator, 20 kiosks, replicate 1. V1 uses a text field for the ID.
+
+The v2 dropdown contains all 920 IDs in the distributed synthetic library. If the
+catalog changes, run `python scripts/document_synthetic_library.py --update-model-choices`
+from `ABM/` to refresh the model's list. A custom library URL must serve an ID
+included in that list; the loader still validates the selected ID against the
+downloaded catalog before Setup. Changing the selection requires Setup again.
 
 The base URL identifies the directory, without a CSV filename. For reproducible
 runs, replace `main` with a full commit SHA, for example:

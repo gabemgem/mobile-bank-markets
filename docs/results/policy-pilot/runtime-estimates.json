@@ -1,0 +1,46 @@
+{
+  "model_version": "v2",
+  "model_sha256": "b41a5457f6d4e7176dfbbbef8d3b2557210974358d73a9ae3300d09b5e6ca7d3",
+  "timing_runs": 72,
+  "estimates": [
+    {
+      "runs": 324,
+      "ticks": 200,
+      "estimated_seconds": 51.8625623000074,
+      "planning_seconds": 113.78879750000739,
+      "extrapolated_horizon": false
+    },
+    {
+      "runs": 1000,
+      "ticks": 200,
+      "estimated_seconds": 142.09324714445185,
+      "planning_seconds": 333.2236027000074,
+      "extrapolated_horizon": false
+    },
+    {
+      "runs": 1000,
+      "ticks": 1000,
+      "estimated_seconds": 470.41151101111853,
+      "planning_seconds": 1141.3697499000073,
+      "extrapolated_horizon": true
+    },
+    {
+      "runs": 10000,
+      "ticks": 200,
+      "estimated_seconds": 1343.389347144452,
+      "planning_seconds": 3254.6929027000074,
+      "extrapolated_horizon": false
+    },
+    {
+      "runs": 10000,
+      "ticks": 1000,
+      "estimated_seconds": 4573.690261011118,
+      "planning_seconds": 11283.272649900007,
+      "extrapolated_horizon": true
+    }
+  ],
+  "caveat": "Serial, machine-specific planning estimates. Based on two synthetic graphs and two seeds at 200 ticks. Planning uses the larger of 1.5 times mean cost and the slowest measured run cost. Longer horizons scale simulation time linearly; different graph structures or workloads need new timing. No statistical confidence bounds or parallel speedup are implied.",
+  "completed_pilot_runs": 324,
+  "equivalent_policy_checks": 180,
+  "pilot_wall_seconds": 38.78226040001027
+}

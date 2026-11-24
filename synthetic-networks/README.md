@@ -21,8 +21,8 @@ synthetic**, then use **Choose local network** to select generator, size, and ID
 The policy model, ../MobileBankMarkets_v2.nlogox, uses the same library.
 Reopen the chooser after replacing files to refresh the in-memory cache.
 In NetLogo Web, click **Load GitHub library**, wait for **Ready: 920 GitHub
-graphs**, enter an ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`,
-and click **Setup**. The default URL downloads this published library directly.
+graphs**, select a **GitHub network ID** from the dropdown in v2, and click
+**Setup**. V1 uses a text field for the ID. The default URL downloads this library.
 For desktop/headless use, first run `python scripts/install_netlogo_fetch.py`
 from the repository directory to install the official Fetch extension.
 

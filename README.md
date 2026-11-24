@@ -8,6 +8,10 @@ Mobile-money kiosks connect cash-based local economies to electronic accounts. A
 
 [Explore experiment results](docs/results/) · [Synthetic network generation](docs/synthetic-networks/) · [Run experiments](experiments/RUNNING.md) · [Network data guide](experiments/NETWORKS.md)
 
+The [liquidity policy pilot](docs/results/policy-pilot/) compares network sharing,
+external rebalancing and commission subsidies, with paired outcomes across synthetic
+networks and measured runtime estimates for larger studies.
+
 ## Model versions
 
 | Version | What it contains |
@@ -74,7 +78,7 @@ The [experiment guide](experiments/RUNNING.md) explains benchmarking, configurin
 
 Press **Setup** after changing controls to start a new run. The model's Info tab documents transaction accounting, trade timing, parameters, and assumptions. Local imports and the experiment harness use desktop NetLogo.
 
-In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wait for **Ready: 920 GitHub graphs**, enter a graph ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`, then click **Setup**. The **Use random networks** button returns to data-free simulation. The [generation guide](docs/synthetic-networks/) explains URL pinning and download handling.
+In NetLogo Web, use **Load GitHub library** near the bottom of the interface. Wait for **Ready: 920 GitHub graphs**, select a **GitHub network ID** from the dropdown in v2, then click **Setup**. IDs are ordered by generator, kiosk count and replicate; `pooled-n20-r01` means pooled generator, 20 kiosks, replicate 1. V1 uses a text field for the ID. The **Use random networks** button returns to data-free simulation. The [generation guide](docs/synthetic-networks/) explains URL pinning and download handling.
 
 ## Interpretation
 

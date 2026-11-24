@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 import run_experiments as h
 import performance as perf
 import export_report as export
@@ -10,6 +11,20 @@ import export_report as export
 
 class Reports(unittest.TestCase):
     def setUp(self): h.select_model('v1')
+
+    def test_github_dropdown_matches_public_catalog(self):
+        h.select_model('v2')
+        widget = ET.parse(h.MODEL).find("widgets/chooser[@variable='ui-github-network-id']")
+        self.assertIsNotNone(widget)
+        with (h.ABM/'synthetic-networks/networks.csv').open(newline='', encoding='utf-8') as source:
+            ids = {row['network_id'] for row in csv.DictReader(source)}
+        choices = [choice.get('value') for choice in widget]
+        self.assertEqual(set(choices), ids)
+        self.assertEqual(len(choices), len(ids))
+        self.assertEqual(widget[int(widget.get('current'))].get('value'), 'pooled-n20-r01')
+        self.assertEqual(widget.get('display'), widget.get('variable'))
+        self.assertNotIn('github-network-id', h.controls()[0])
+        h.select_model('v1')
 
     def fixture(self,folder,version='v1'):
         config={'model_version':version,'mode':'oat','ticks':5,'seeds':[11,22],
@@ -76,7 +91,7 @@ class Reports(unittest.TestCase):
             self.assertTrue(all(r['network-source']=='Synthetic random' for r in rows))
 
     def test_v2_prepared_designs(self):
-        for name,count in [('smoke',12),('oat',100),('grid',90),('lhs',120),('commission-grid',90),('spatial-smoke',16)]:
+        for name,count in [('smoke',12),('oat',100),('grid',90),('lhs',120),('commission-grid',90),('spatial-smoke',16),('policy-pilot',324),('policy-timing',72)]:
             cfg=json.loads((h.ABM/f'experiments/configs/v2-{name}.json').read_text())
             rows,rejected=h.build_design(cfg)
             self.assertEqual(len(rows),count)

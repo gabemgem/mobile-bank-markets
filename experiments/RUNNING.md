@@ -1,5 +1,9 @@
 # Running synthetic experiments
 
+For the small v2 comparison of network sharing, external rebalancing and commission
+subsidies, use the [policy pilot guide](POLICY_PILOT.md). It includes a benchmark at
+the actual imported-synthetic settings, runtime estimates and paired-result checks.
+
 The original configurations select **v1**, the preserved abstract model.
 Configurations named `v2-*` select **v2**, which adds external rebalancing,
 heterogeneous demand and travel-related closure. See the

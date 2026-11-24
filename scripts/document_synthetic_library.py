@@ -3,8 +3,33 @@ import argparse
 import csv
 import hashlib
 import json
+import re
 from collections import Counter
 from pathlib import Path
+import xml.etree.ElementTree as ET
+
+
+def update_github_choices(rows, model):
+    ordered = sorted(rows, key=lambda r: (r['generator'] != 'pooled', r['generator'],
+                                         int(r['n_nodes']), int(r['replicate'])))
+    ids = [row['network_id'] for row in ordered]
+    if not ids or any(not network_id for network_id in ids) or len(set(ids)) != len(ids):
+        raise ValueError('Network choices require unique, nonempty IDs')
+    content = model.read_bytes()
+    pattern = rb'<(?:input|chooser)\b[^>]*variable="ui-github-network-id"[^>]*>.*?</(?:input|chooser)>'
+    match = re.search(pattern, content, re.S)
+    if not match:
+        raise ValueError('GitHub network selector widget not found')
+    old = ET.fromstring(match[0])
+    selected = old.text if old.tag == 'input' else old[int(old.get('current'))].get('value')
+    chooser = ET.Element('chooser', {key: old.get(key) for key in ['x', 'y', 'width', 'height']})
+    chooser.attrib.update(display='ui-github-network-id', variable='ui-github-network-id',
+                          current=str(ids.index(selected) if selected in ids else 0))
+    for network_id in ids:
+        ET.SubElement(chooser, 'choice', type='string', value=network_id)
+    replacement = ET.tostring(chooser, encoding='utf-8')
+    model.write_bytes(content[:match.start()] + replacement + content[match.end():])
+    print(f'Updated {len(ids)} GitHub network choices in {model}')
 
 
 def canonical_hash(path):
@@ -14,6 +39,8 @@ def canonical_hash(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--library', type=Path, default=Path('synthetic-networks'))
+    parser.add_argument('--update-model-choices', action='store_true',
+                        help='Refresh the v2 GitHub ID dropdown from this synthetic catalog')
     args = parser.parse_args()
     folder = args.library
     with (folder / 'networks.csv').open(newline='', encoding='utf-8') as stream:
@@ -62,8 +89,8 @@ synthetic**, then use **Choose local network** to select generator, size, and ID
 The policy model, ../MobileBankMarkets_v2.nlogox, uses the same library.
 Reopen the chooser after replacing files to refresh the in-memory cache.
 In NetLogo Web, click **Load GitHub library**, wait for **Ready: 920 GitHub
-graphs**, enter an ID such as `pooled-n20-r01` or `corrected-hub-n20-r01`,
-and click **Setup**. The default URL downloads this published library directly.
+graphs**, select a **GitHub network ID** from the dropdown in v2, and click
+**Setup**. V1 uses a text field for the ID. The default URL downloads this library.
 For desktop/headless use, first run `python scripts/install_netlogo_fetch.py`
 from the repository directory to install the official Fetch extension.
 
@@ -78,6 +105,8 @@ See [generation instructions](../experiments/GENERATE_ABM_NETWORKS.md) and the
 [site explanation](../docs/synthetic-networks/index.md).
 '''
     (folder / 'README.md').write_text(text, encoding='utf-8', newline='\n')
+    if args.update_model_choices:
+        update_github_choices(rows, Path('MobileBankMarkets_v2.nlogox'))
     print(f'Documented {len(rows)} networks and canonical file checksums in {folder}.')
 
 

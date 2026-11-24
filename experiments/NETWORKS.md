@@ -100,9 +100,10 @@ Both `MobileBankMarkets_v1.nlogox` (abstract) and `MobileBankMarkets_v2.nlogox`
 
 Select **GitHub synthetic**, or click **Load GitHub library**, in the shared model.
 The URL input defaults to the public root-level `synthetic-networks/` directory
-on raw.githubusercontent.com. Wait for **Ready: 920 GitHub graphs**, enter an ID
-such as `pooled-n20-r01` or `corrected-hub-n20-r01`, and click **Setup**. The
-source chooser and URL/ID inputs work in both Web and desktop NetLogo; **Choose
+on raw.githubusercontent.com. Wait for **Ready: 920 GitHub graphs**, select an ID
+from the v2 dropdown (or type it in v1), and click **Setup**. For example,
+`pooled-n20-r01` is pooled generator, 20 kiosks, replicate 1. The source chooser
+and URL/ID controls work in both Web and desktop NetLogo; **Choose
 local network** remains a desktop-only path for the local import modes.
 
 All three CSVs must pass validation before any remote graph is available. Cancel

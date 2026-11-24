@@ -1,0 +1,42 @@
+{
+  "model_version": "v2",
+  "mode": "grid",
+  "ticks": 200,
+  "seeds": [11, 22, 33],
+  "warmup_runs": 2,
+  "base": {
+    "network-source": "Imported synthetic",
+    "starting-balance": 500,
+    "participation-percent": 100,
+    "requests-per-tick": 40,
+    "maximum-request": 100,
+    "withdrawal-share": 0.5,
+    "demand-polarization": 0.35,
+    "demand-heterogeneity": 1,
+    "size-heterogeneity": 0.5,
+    "low-balance-percent": 25,
+    "target-balance-percent": 50,
+    "minimum-reserve": 100,
+    "grid-cell-size": 5,
+    "travel-closes-shop?": true,
+    "commission-mode": "Uniform",
+    "commission-percent": 1,
+    "external-access-percent": 50,
+    "external-travel-ticks": 3,
+    "external-service-delay": 1,
+    "external-max-amount": 500,
+    "external-open-ticks": 8,
+    "external-cycle-ticks": 12,
+    "show-balances?": false
+  },
+  "parameters": {
+    "selected-market": [
+      "pooled-n08-r01", "pooled-n08-r02",
+      "pooled-n16-r01", "pooled-n16-r02",
+      "pooled-n24-r01", "pooled-n24-r02"
+    ],
+    "sharing-mode": ["No sharing", "Network sharing"],
+    "external-mode": ["Disabled", "External only", "Peers then external"],
+    "commission-subsidy-percent": [0, 50, 100]
+  }
+}
