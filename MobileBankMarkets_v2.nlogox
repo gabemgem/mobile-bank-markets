@@ -1150,10 +1150,12 @@ Closure failures are lost original requests, with no retry or rerouting.</note>
     <note x="10" y="1970" width="1195" height="55" fontSize="12" markdown="false" textColorLight="-16777216" textColorDark="-1" backgroundLight="0" backgroundDark="0">Spring positions are synthetic geography, not measured locations. Geometry is fixed after Setup.
 Connected feasible partners are ranked by grid distance, then fee rate; remaining ties are random. Commissions are quoted at booking and paid at settlement.</note>
   </widgets>
-  <info><![CDATA[## V2: SPATIAL LIQUIDITY AND COMMISSIONS
+  <info><![CDATA[## MOBILE-MONEY KIOSKS AND LIQUIDITY
 
-V1 (MobileBankMarkets_v1.nlogox) is preserved unchanged as the abstract model.
-V2 adds external rebalancing, unequal demand, travel-related closure, spring/grid
+Mobile-money kiosks serve customer deposits and withdrawals using separate cash
+and digital balances (e-float). When a balance runs low, a kiosk can exchange
+cash for e-float, or the reverse, with another kiosk or an external provider.
+The model represents unequal customer demand, travel-related closure, spring/grid
 geography, supplier commissions and an optional external commission subsidy.
 This is an uncalibrated mechanism model, not a numerical policy forecast.
 
@@ -1175,8 +1177,7 @@ Same cell = 0 ticks, one horizontal/vertical cell = 1, one diagonal cell = 2.
 There is no wrapping. Size 33 puts the whole world in one cell.
 
 A peer trade's entire booking-to-settlement duration is this distance. It settles
-immediately at distance zero. The old v2 settlement-delay and peer-travel-ticks
-controls are removed. V1 retains its own fixed 0–2 tick settlement control.
+immediately at distance zero.
 Grid time is an abstract round-trip convention, not a calibrated walking speed;
 there is no additional return-trip multiplier. A tick is one customer-demand batch.
 
@@ -1228,7 +1229,7 @@ are commitments, not already spent. There is no subsidy budget cap in this model
 Fees redistribute capital between kiosks. Subsidies inject cash into the market;
 cash accounting explicitly includes subsidy-spent. Therefore the subsidy effect
 includes both relief of requester costs and additional market working capital.
-No fees apply to the separate external rebalancing provider in this increment.
+No fees apply to the separate external rebalancing provider.
 
 ## EXTERNAL REBALANCING
 
@@ -1286,9 +1287,7 @@ replace main with a commit SHA for reproducibility. All three CSVs must validate
 before use. Cancel invalidates partial/stale responses. Missing replies expire
 after 30 seconds when the monitor, Setup or Go checks status. Web HTTP failures
 may also show the standard Web dialog. Use random networks returns to data-free
-operation. Random/local modes make no HTTP requests. Desktop/headless needs
-python scripts/install_netlogo_fetch.py once (official Fetch 1.0.5, Java 11).
-Web supplies Fetch. Code-owned globals and ui- widgets remain separate.
+operation. Random/local modes make no HTTP requests.
 
 ## OUTPUTS AND LIMITS
 
@@ -1306,10 +1305,7 @@ amber arrows show peer commitments. The closure plot is the mean closed kiosks
 per completed batch. The grid and spring layout are model assumptions, not map data.
 The model has no operating expenses, endogenous participation, credit, repayment,
 default, bank congestion, reputation, learning or changing network ties. It tests
-conditional mechanisms rather than exact Tanzanian policy effects. V1 remains
-the unchanged abstract benchmark; v2's spatial matching intentionally differs
-even with zero commissions. See experiments/VERSIONS.md for controls, experiments
-and accounting. Real surveys, exports and fitted objects remain private/ignored.
+conditional mechanisms rather than exact numerical policy effects.
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
