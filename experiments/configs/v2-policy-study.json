@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "ticks": 1000,
+  "checkpoints": [100, 250, 500, 1000],
+  "seeds": [11, 22, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176, 187, 198, 209, 220],
+  "warmup_runs": 2,
+  "sizes": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+  "generators": ["pooled", "corrected_hub"],
+  "graphs_per_size": 20,
+  "requests_per_kiosk": 2,
+  "base": {
+    "network-source": "Imported synthetic",
+    "starting-balance": 500,
+    "participation-percent": 100,
+    "maximum-request": 100,
+    "withdrawal-share": 0.5,
+    "demand-polarization": 0.35,
+    "demand-heterogeneity": 1,
+    "size-heterogeneity": 0.5,
+    "low-balance-percent": 25,
+    "target-balance-percent": 50,
+    "minimum-reserve": 100,
+    "grid-cell-size": 5,
+    "travel-closes-shop?": true,
+    "commission-mode": "Uniform",
+    "commission-percent": 1,
+    "external-access-percent": 50,
+    "external-travel-ticks": 3,
+    "external-service-delay": 1,
+    "external-max-amount": 500,
+    "external-open-ticks": 8,
+    "external-cycle-ticks": 12,
+    "show-balances?": false
+  },
+  "policies": [
+    {"id": "isolated", "sharing-mode": "No sharing", "external-mode": "Disabled", "commission-subsidy-percent": 0},
+    {"id": "external", "sharing-mode": "No sharing", "external-mode": "External only", "commission-subsidy-percent": 0},
+    {"id": "network-s0", "sharing-mode": "Network sharing", "external-mode": "Disabled", "commission-subsidy-percent": 0},
+    {"id": "network-s50", "sharing-mode": "Network sharing", "external-mode": "Disabled", "commission-subsidy-percent": 50},
+    {"id": "network-s100", "sharing-mode": "Network sharing", "external-mode": "Disabled", "commission-subsidy-percent": 100},
+    {"id": "fallback-s0", "sharing-mode": "Network sharing", "external-mode": "Peers then external", "commission-subsidy-percent": 0},
+    {"id": "fallback-s50", "sharing-mode": "Network sharing", "external-mode": "Peers then external", "commission-subsidy-percent": 50},
+    {"id": "fallback-s100", "sharing-mode": "Network sharing", "external-mode": "Peers then external", "commission-subsidy-percent": 100}
+  ],
+  "benchmark": {
+    "sizes": [2, 12, 24],
+    "ticks": [200, 1000, 3000],
+    "seeds": [11, 22],
+    "order_seed": 2401126
+  }
+}

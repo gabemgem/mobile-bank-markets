@@ -97,7 +97,7 @@ def build_design(config):
         raise ValueError('Configuration must be a JSON object')
     select_model(config.get('model_version', 'v1'))
     defaults, schema = controls()
-    allowed = {'model_version', 'mode', 'ticks', 'seeds', 'base', 'parameters', 'samples', 'design_seed', 'invalid_combinations', 'warmup_runs'}
+    allowed = {'model_version', 'mode', 'ticks', 'seeds', 'base', 'parameters', 'samples', 'design_seed', 'invalid_combinations', 'warmup_runs', 'checkpoints'}
     if set(config) - allowed:
         raise ValueError(f'Unknown configuration fields: {set(config) - allowed}')
     mode = config.get('mode', 'oat')
@@ -108,6 +108,10 @@ def build_design(config):
     ticks = config.get('ticks', 100)
     if type(ticks) is not int or ticks < 1:
         raise ValueError('ticks must be a positive integer')
+    checkpoints = config.get('checkpoints', [])
+    if (not isinstance(checkpoints, list) or any(type(t) is not int or not 1 <= t <= ticks for t in checkpoints)
+            or checkpoints != sorted(set(checkpoints))):
+        raise ValueError('checkpoints must be sorted, distinct positive integers no greater than ticks')
     seeds = config.get('seeds', [11, 22, 33])
     if not isinstance(seeds, list) or not seeds:
         raise ValueError('seeds must be a nonempty list of distinct integers')
@@ -406,17 +410,21 @@ def execute_design(config, design, rejected, args):
                 f.write(f"{row['run_id']}\t{row['ticks']}\t{base64.b64encode(commands.encode()).decode()}\n")
         import os
         attempts = out/'attempts.csv'
-        if attempts.exists():
-            data = attempts.read_bytes()
+        for checkpoint_path in [attempts, out/'trajectories.csv']:
+            if not checkpoint_path.exists():
+                continue
+            data = checkpoint_path.read_bytes()
             if data and not data.endswith(b'\n'):
                 # Each Java checkpoint occupies one physical line. Discard only a torn tail.
                 boundary = data.rfind(b'\n')+1
-                (out/'incomplete_checkpoint.bin').write_bytes(data[boundary:])
-                attempts.write_bytes(data[:boundary])
+                (out/(checkpoint_path.stem+'_incomplete.bin')).write_bytes(data[boundary:])
+                checkpoint_path.write_bytes(data[:boundary])
         cmd = [java, f'-Dnetlogo.extensions.dir={home / "extensions"}', '-cp',
                str(build)+os.pathsep+str(home/'app/*'), 'BatchRunner', str(MODEL),
                str(out/'work.tsv'), str(out/'attempts.csv'), str(out/'engine_timing.json'),
                str(config.get('warmup_runs',0))]
+        if config.get('checkpoints'):
+            cmd.append(','.join(map(str, config['checkpoints'])))
         engine_start = time.perf_counter()
         with (out/'run.log').open('a',encoding='utf-8') as log:
             process = subprocess.Popen(cmd,cwd=ABM,stdout=log,stderr=subprocess.STDOUT)

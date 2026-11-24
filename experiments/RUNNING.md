@@ -1,5 +1,10 @@
 # Running synthetic experiments
 
+For the large v2 comparison across all 920 synthetic graphs, see the
+[large policy study guide](POLICY_STUDY.md). Preparation, benchmarking and runtime
+estimation are separate from explicit batch execution; the core design has
+147,200 runs and records intermediate outcomes without changing trading randomness.
+
 For the small v2 comparison of network sharing, external rebalancing and commission
 subsidies, use the [policy pilot guide](POLICY_PILOT.md). It includes a benchmark at
 the actual imported-synthetic settings, runtime estimates and paired-result checks.

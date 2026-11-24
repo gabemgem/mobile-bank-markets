@@ -49,15 +49,24 @@ public class BatchRunner {
             .replace("\"", "\"\"") + "\"";
     }
     public static void main(String[] args) throws Exception {
-        if (args.length != 5) throw new IllegalArgumentException("model, work.tsv, attempts.csv, timing.json, warmup count required");
+        if (args.length != 5 && args.length != 6) throw new IllegalArgumentException("model, work.tsv, attempts.csv, timing.json, warmup count, optional checkpoints required");
+        TreeSet<Integer> checkpoints = new TreeSet<>();
+        if (args.length == 6) for (String tick : args[5].split(",")) {
+            int step = Integer.parseInt(tick);
+            if (step < 1 || !checkpoints.add(step)) throw new IllegalArgumentException("Invalid checkpoints");
+        }
         Path results = Paths.get(args[2]);
         boolean header = !Files.exists(results) || Files.size(results) == 0;
+        Path trajectories = results.resolveSibling("trajectories.csv");
+        boolean trajectoryHeader = !Files.exists(trajectories) || Files.size(trajectories) == 0;
         HeadlessWorkspace model = HeadlessWorkspace.newInstance();
         int failed = 0;
         long engineStart = System.nanoTime();
         double warmupSeconds = 0;
         try (BufferedWriter out = Files.newBufferedWriter(results, StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+             BufferedWriter historyOut = checkpoints.isEmpty() ? null : Files.newBufferedWriter(trajectories,
+                StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             model.open(args[0]);
             model.command("initialize-controls");
             boolean v2;
@@ -74,6 +83,9 @@ public class BatchRunner {
             if (header) {
                 out.write("run_id,status,error,seconds,setup_seconds,simulation_seconds,metrics_seconds," + String.join(",", names));
                 out.newLine(); out.flush();
+            }
+            if (historyOut != null && trajectoryHeader) {
+                historyOut.write("run_id,tick," + String.join(",", names)); historyOut.newLine(); historyOut.flush();
             }
             List<String> lines = Files.readAllLines(Paths.get(args[1]), StandardCharsets.UTF_8);
             String metrics = "(list " + String.join(" ", Arrays.stream(reporters)
@@ -101,12 +113,27 @@ public class BatchRunner {
                     long phase = System.nanoTime();
                     model.command(commands + " setup");
                     setupSeconds = (System.nanoTime()-phase)/1e9;
-                    phase = System.nanoTime();
-                    model.command("repeat " + steps + " [go] check-accounting");
-                    simulationSeconds = (System.nanoTime()-phase)/1e9;
-                    phase = System.nanoTime();
-                    values = ((LogoList) model.report(metrics)).toJava();
-                    metricsSeconds = (System.nanoTime()-phase)/1e9;
+                    TreeSet<Integer> stops = new TreeSet<>(checkpoints.headSet(steps, true));
+                    stops.add(steps);
+                    StringBuilder history = new StringBuilder();
+                    int previous = 0;
+                    for (int stop : stops) {
+                        phase = System.nanoTime();
+                        model.command("repeat " + (stop - previous) + " [go] check-accounting");
+                        simulationSeconds += (System.nanoTime()-phase)/1e9;
+                        phase = System.nanoTime();
+                        // Agentset reporters can consume randomness; observations must not alter trades.
+                        String randomState = model.world().mainRNG().save();
+                        try { values = ((LogoList) model.report(metrics)).toJava(); }
+                        finally { model.world().mainRNG().load(randomState); }
+                        if (historyOut != null) {
+                            history.append(csv(runId)).append(',').append(stop).append(',')
+                                .append(String.join(",", values.stream().map(BatchRunner::csv).toArray(String[]::new))).append('\n');
+                        }
+                        metricsSeconds += (System.nanoTime()-phase)/1e9;
+                        previous = stop;
+                    }
+                    if (historyOut != null) { historyOut.write(history.toString()); historyOut.flush(); }
                 } catch (Exception ex) {
                     status = "error"; error = ex.toString(); failed++;
                 }

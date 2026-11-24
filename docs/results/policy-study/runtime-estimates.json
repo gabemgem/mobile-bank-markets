@@ -1,0 +1,496 @@
+{
+  "model_version": "v2",
+  "study_fingerprint": "02264da6d7a965cdad52ef00711c2a1f5b9abf2a201f03812287d55c837f8ae9",
+  "model_sha256": "341c8bde41cd8685fbbf9ef8c5580325caddff763d564ca24fdab3b1ec003ac9",
+  "measured_runs": 576,
+  "benchmark_wall_seconds": 228.2403944999678,
+  "verified_snapshots": 2112,
+  "horizons": [
+    {
+      "ticks": 200,
+      "runs": 192,
+      "mean_run_seconds": 0.106983225,
+      "max_run_seconds": 0.4666299
+    },
+    {
+      "ticks": 1000,
+      "runs": 192,
+      "mean_run_seconds": 0.2979293,
+      "max_run_seconds": 0.696921
+    },
+    {
+      "ticks": 3000,
+      "runs": 192,
+      "mean_run_seconds": 0.73524775625,
+      "max_run_seconds": 1.7769302
+    }
+  ],
+  "planned_runs": 147200,
+  "batches": [
+    {
+      "batch": "pooled-n02",
+      "generator": "pooled",
+      "size": 2,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 4,
+      "estimated_seconds": 404.01925849996763,
+      "planning_seconds": 605.5986244999679
+    },
+    {
+      "batch": "pooled-n03",
+      "generator": "pooled",
+      "size": 3,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 6,
+      "estimated_seconds": 458.10106023330087,
+      "planning_seconds": 1078.925860499969
+    },
+    {
+      "batch": "pooled-n04",
+      "generator": "pooled",
+      "size": 4,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 8,
+      "estimated_seconds": 512.1548170999677,
+      "planning_seconds": 1078.925860499969
+    },
+    {
+      "batch": "pooled-n05",
+      "generator": "pooled",
+      "size": 5,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 10,
+      "estimated_seconds": 564.439837999968,
+      "planning_seconds": 1080.9378918749687
+    },
+    {
+      "batch": "pooled-n06",
+      "generator": "pooled",
+      "size": 6,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 12,
+      "estimated_seconds": 620.2541988599678,
+      "planning_seconds": 1088.8651016999684
+    },
+    {
+      "batch": "pooled-n07",
+      "generator": "pooled",
+      "size": 7,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 14,
+      "estimated_seconds": 674.0105012691984,
+      "planning_seconds": 1096.711242019199
+    },
+    {
+      "batch": "pooled-n08",
+      "generator": "pooled",
+      "size": 8,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 16,
+      "estimated_seconds": 723.6092580384291,
+      "planning_seconds": 1124.121120146122
+    },
+    {
+      "batch": "pooled-n09",
+      "generator": "pooled",
+      "size": 9,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 18,
+      "estimated_seconds": 778.84683800473,
+      "planning_seconds": 1171.7075416999678
+    },
+    {
+      "batch": "pooled-n10",
+      "generator": "pooled",
+      "size": 10,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 20,
+      "estimated_seconds": 832.0016777416345,
+      "planning_seconds": 1244.9330894249674
+    },
+    {
+      "batch": "pooled-n11",
+      "generator": "pooled",
+      "size": 11,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 22,
+      "estimated_seconds": 884.7132597869247,
+      "planning_seconds": 1322.507479580402
+    },
+    {
+      "batch": "pooled-n12",
+      "generator": "pooled",
+      "size": 12,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 24,
+      "estimated_seconds": 941.1191933888565,
+      "planning_seconds": 1407.0139798333005
+    },
+    {
+      "batch": "pooled-n13",
+      "generator": "pooled",
+      "size": 13,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 26,
+      "estimated_seconds": 988.409464261872,
+      "planning_seconds": 1743.501239749968
+    },
+    {
+      "batch": "pooled-n14",
+      "generator": "pooled",
+      "size": 14,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 28,
+      "estimated_seconds": 1043.471159697499,
+      "planning_seconds": 1744.6408579258937
+    },
+    {
+      "batch": "pooled-n15",
+      "generator": "pooled",
+      "size": 15,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 30,
+      "estimated_seconds": 1098.5578938703388,
+      "planning_seconds": 1750.5788029721894
+    },
+    {
+      "batch": "pooled-n16",
+      "generator": "pooled",
+      "size": 16,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 32,
+      "estimated_seconds": 1158.3938068636046,
+      "planning_seconds": 1783.7156412878467
+    },
+    {
+      "batch": "pooled-n17",
+      "generator": "pooled",
+      "size": 17,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 34,
+      "estimated_seconds": 1208.503966364165,
+      "planning_seconds": 1831.4364792082997
+    },
+    {
+      "batch": "pooled-n18",
+      "generator": "pooled",
+      "size": 18,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 36,
+      "estimated_seconds": 1260.6040770454235,
+      "planning_seconds": 1896.4615279317857
+    },
+    {
+      "batch": "pooled-n19",
+      "generator": "pooled",
+      "size": 19,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 38,
+      "estimated_seconds": 1313.7127278703383,
+      "planning_seconds": 1968.9554438610785
+    },
+    {
+      "batch": "pooled-n20",
+      "generator": "pooled",
+      "size": 20,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 40,
+      "estimated_seconds": 1366.5478341547296,
+      "planning_seconds": 2045.4117559821104
+    },
+    {
+      "batch": "pooled-n21",
+      "generator": "pooled",
+      "size": 21,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 42,
+      "estimated_seconds": 1419.3551143234981,
+      "planning_seconds": 2124.367861235261
+    },
+    {
+      "batch": "pooled-n22",
+      "generator": "pooled",
+      "size": 22,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 44,
+      "estimated_seconds": 1472.5266855666346,
+      "planning_seconds": 2204.125218099967
+    },
+    {
+      "batch": "pooled-n23",
+      "generator": "pooled",
+      "size": 23,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 46,
+      "estimated_seconds": 1525.70686441108,
+      "planning_seconds": 2283.895486366635
+    },
+    {
+      "batch": "pooled-n24",
+      "generator": "pooled",
+      "size": 24,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 48,
+      "estimated_seconds": 1578.657822156218,
+      "planning_seconds": 2363.321922984343
+    },
+    {
+      "batch": "corrected_hub-n02",
+      "generator": "corrected_hub",
+      "size": 2,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 4,
+      "estimated_seconds": 392.9320714999677,
+      "planning_seconds": 591.898459999968
+    },
+    {
+      "batch": "corrected_hub-n03",
+      "generator": "corrected_hub",
+      "size": 3,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 6,
+      "estimated_seconds": 442.1387184999673,
+      "planning_seconds": 1023.730518149968
+    },
+    {
+      "batch": "corrected_hub-n04",
+      "generator": "corrected_hub",
+      "size": 4,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 8,
+      "estimated_seconds": 489.49166683330105,
+      "planning_seconds": 1024.808919399968
+    },
+    {
+      "batch": "corrected_hub-n05",
+      "generator": "corrected_hub",
+      "size": 5,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 10,
+      "estimated_seconds": 537.3353162777457,
+      "planning_seconds": 1026.721141649968
+    },
+    {
+      "batch": "corrected_hub-n06",
+      "generator": "corrected_hub",
+      "size": 6,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 12,
+      "estimated_seconds": 585.4224423181499,
+      "planning_seconds": 1031.3100003636043
+    },
+    {
+      "batch": "corrected_hub-n07",
+      "generator": "corrected_hub",
+      "size": 7,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 14,
+      "estimated_seconds": 633.8500048636042,
+      "planning_seconds": 1037.9542839772407
+    },
+    {
+      "batch": "corrected_hub-n08",
+      "generator": "corrected_hub",
+      "size": 8,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 16,
+      "estimated_seconds": 682.0539709736527,
+      "planning_seconds": 1061.732150889442
+    },
+    {
+      "batch": "corrected_hub-n09",
+      "generator": "corrected_hub",
+      "size": 9,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 18,
+      "estimated_seconds": 731.5280767856814,
+      "planning_seconds": 1111.4409885928253
+    },
+    {
+      "batch": "corrected_hub-n10",
+      "generator": "corrected_hub",
+      "size": 10,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 20,
+      "estimated_seconds": 779.918113249968,
+      "planning_seconds": 1178.4539578149681
+    },
+    {
+      "batch": "corrected_hub-n11",
+      "generator": "corrected_hub",
+      "size": 11,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 22,
+      "estimated_seconds": 829.1132237940853,
+      "planning_seconds": 1245.461356544085
+    },
+    {
+      "batch": "corrected_hub-n12",
+      "generator": "corrected_hub",
+      "size": 12,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 24,
+      "estimated_seconds": 875.4872363799675,
+      "planning_seconds": 1318.8325757199675
+    },
+    {
+      "batch": "corrected_hub-n13",
+      "generator": "corrected_hub",
+      "size": 13,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 26,
+      "estimated_seconds": 934.3160095516914,
+      "planning_seconds": 1792.8043305085891
+    },
+    {
+      "batch": "corrected_hub-n14",
+      "generator": "corrected_hub",
+      "size": 14,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 28,
+      "estimated_seconds": 993.9569369300752,
+      "planning_seconds": 1798.8081381693235
+    },
+    {
+      "batch": "corrected_hub-n15",
+      "generator": "corrected_hub",
+      "size": 15,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 30,
+      "estimated_seconds": 1052.6154119772411,
+      "planning_seconds": 1799.179780616446
+    },
+    {
+      "batch": "corrected_hub-n16",
+      "generator": "corrected_hub",
+      "size": 16,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 32,
+      "estimated_seconds": 1111.0235191466343,
+      "planning_seconds": 1806.0569454499687
+    },
+    {
+      "batch": "corrected_hub-n17",
+      "generator": "corrected_hub",
+      "size": 17,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 34,
+      "estimated_seconds": 1169.132749666634,
+      "planning_seconds": 1817.8368801113807
+    },
+    {
+      "batch": "corrected_hub-n18",
+      "generator": "corrected_hub",
+      "size": 18,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 36,
+      "estimated_seconds": 1227.423256653814,
+      "planning_seconds": 1855.4747278893904
+    },
+    {
+      "batch": "corrected_hub-n19",
+      "generator": "corrected_hub",
+      "size": 19,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 38,
+      "estimated_seconds": 1285.735767577745,
+      "planning_seconds": 1926.1684706603853
+    },
+    {
+      "batch": "corrected_hub-n20",
+      "generator": "corrected_hub",
+      "size": 20,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 40,
+      "estimated_seconds": 1347.8665158888566,
+      "planning_seconds": 2017.6318408333022
+    },
+    {
+      "batch": "corrected_hub-n21",
+      "generator": "corrected_hub",
+      "size": 21,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 42,
+      "estimated_seconds": 1402.2913167777451,
+      "planning_seconds": 2098.7721649166347
+    },
+    {
+      "batch": "corrected_hub-n22",
+      "generator": "corrected_hub",
+      "size": 22,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 44,
+      "estimated_seconds": 1470.988351217917,
+      "planning_seconds": 2201.817716576892
+    },
+    {
+      "batch": "corrected_hub-n23",
+      "generator": "corrected_hub",
+      "size": 23,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 46,
+      "estimated_seconds": 1516.6726002680084,
+      "planning_seconds": 2270.3440901520303
+    },
+    {
+      "batch": "corrected_hub-n24",
+      "generator": "corrected_hub",
+      "size": 24,
+      "graphs": 20,
+      "runs": 3200,
+      "requests_per_tick": 48,
+      "estimated_seconds": 1585.045635230738,
+      "planning_seconds": 2372.9036425961212
+    }
+  ],
+  "estimated_seconds": 44904.05622987154,
+  "planning_seconds": 71450.80311096665,
+  "full_study_started": false,
+  "method": "Exact measured horizon and policy; interpolate size and within-size density position. Charge measured compilation/startup/warm-up overhead once per batch. Planning uses at least 1.5x interpolated run costs and the slowest relevant measured run.",
+  "caveat": "Serial, machine-specific planning estimates, not confidence bounds or a maximum. Only two seeds and density endpoints per benchmark size; intermediate graph structure and background load can change costs."
+}

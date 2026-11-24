@@ -12,6 +12,11 @@ The [liquidity policy pilot](docs/results/policy-pilot/) compares network sharin
 external rebalancing and commission subsidies, with paired outcomes across synthetic
 networks and measured runtime estimates for larger studies.
 
+The [large policy study guide](experiments/POLICY_STUDY.md) specifies the full
+synthetic-library comparison, intermediate outcomes and benchmarks for estimating
+its runtime before execution. The [runtime budget](docs/results/policy-study/)
+reports the measured benchmark and estimates for each study portion.
+
 ## Model versions
 
 | Version | What it contains |

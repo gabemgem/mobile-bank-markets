@@ -75,6 +75,11 @@ The [liquidity policy pilot](results/policy-pilot/) compares network sharing,
 external rebalancing and commission subsidies, with paired outcomes across synthetic
 networks and measured runtime estimates for larger studies.
 
+The [large policy study guide](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/POLICY_STUDY.md)
+specifies the full synthetic-library comparison, intermediate outcomes and
+benchmarks for estimating its runtime before execution. The [runtime budget](results/policy-study/)
+reports the measured benchmark and estimates for each study portion.
+
 The [experiment guide](https://github.com/gabemgem/mobile-bank-markets/blob/main/experiments/RUNNING.md) explains benchmarking, configuring studies, running and resuming batches, and exporting aggregate results. The original OAT/LHS/grid configurations use v1 and synthetic random networks. The `v2-*` configurations select v2 explicitly and use the public synthetic library. No survey data are required.
 
 ## Run the model
