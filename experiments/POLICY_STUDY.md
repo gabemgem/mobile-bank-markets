@@ -5,10 +5,10 @@ tests are separate from full-study execution. Both NetLogo model files remain
 unchanged. The runner observes intermediate outcomes while preserving NetLogo's
 random-number state, so measurement does not alter subsequent trades.
 
-The completed benchmark and [runtime budget](../docs/results/policy-study/index.md)
-estimate 12.5 hours for the core comparison, with roughly 20 hours of planning
-allowance on this computer. These files record the prelaunch timing budget,
-not a live execution status.
+The [completed results](../docs/results/policy-study/index.md) compare all 147,200
+runs and 588,800 snapshots. Execution took 13 hours 17 minutes, against the
+12.5-hour estimate and roughly 20-hour planning allowance. The published timing
+files remain historical prelaunch records, not live execution status.
 
 ## Core design
 
@@ -146,3 +146,45 @@ The dedicated observation regression check can be rerun in a new local folder:
 ```powershell
 python tests/study_measurement_checks.py --out results/measurement-check-new
 ```
+
+## Validate and analyze completed runs
+
+The analysis uses Python's standard library. Plots use R with `ggplot2`, already
+used by this project. Run from `ABM/`:
+
+```powershell
+python experiments/analyze_policy_study.py results/v2-policy-study-final --out results/v2-policy-study-final/analysis
+Rscript experiments/plot_policy_study.R results/v2-policy-study-final/analysis docs/results/policy-study/figures
+python -m unittest discover -s experiments -p 'test_*.py'
+```
+
+The analyzer verifies the frozen model/runner/network hashes, every design control,
+seed balance and synthetic provenance before accepting a batch. Every trajectory
+is checked for request counts, failure-count conservation, cash/e-float and fee
+ledgers, pending-trade counts and final-result agreement. Original requested
+counts and values must match across paired policies at all four checkpoints.
+It rejects missing/failed runs, unplanned records, non-finite values and incomplete
+trajectories. On a resumed run, the latest complete `(run_id, tick)` is used;
+duplicate counts are reported rather than silently treated as extra observations.
+
+For each graph, average the same 20 seeds before summarizing across graphs. The
+primary and alternative generators remain separate. All tested sizes and graph
+draws have equal weights, rather than empirical market-frequency or transaction-
+volume weights. Paired graph effects equal the mean of within-seed paired changes
+because all 20 seeds are present in every arm. Report 10th–90th graph percentiles
+as descriptive spread, not a confidence interval. `harm_pct` counts graph means
+below −0.1 pp; `large_harm_pct` counts losses greater than one pp.
+
+`analysis.json` contains family, size, time, paired-contrast and bootstrap-group
+summaries. The CSVs also provide seed-averaged graph outcomes and synthetic
+structure for further research. Ratios for intervals use changes in cumulative
+numerators and denominators; cumulative percentages are never simply differenced.
+Additional turnover per sponsor cash unit is the ratio of summed paired value
+changes to summed spending, not the average of run-level ratios or a welfare ROI.
+
+The report includes only aggregates from the public synthetic library. Review and
+copy the resulting JSON/CSVs to `docs/results/policy-study/` for the interactive
+tables and downloads; never copy raw attempts, trajectories, logs, surveys or fitted
+objects. The R command writes standalone SVG figures and a multipage PDF to the
+site, plus PNG previews under the ignored analysis folder. Generating the report
+does not commit, push or deploy it. Neither NetLogo file is edited.

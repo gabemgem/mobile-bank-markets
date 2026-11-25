@@ -12,10 +12,11 @@ The [liquidity policy pilot](docs/results/policy-pilot/) compares network sharin
 external rebalancing and commission subsidies, with paired outcomes across synthetic
 networks and measured runtime estimates for larger studies.
 
-The [large policy study guide](experiments/POLICY_STUDY.md) specifies the full
-synthetic-library comparison, intermediate outcomes and benchmarks for estimating
-its runtime before execution. The [runtime budget](docs/results/policy-study/)
-reports the measured benchmark and estimates for each study portion.
+The [full policy study results](docs/results/policy-study/) compare 147,200 runs
+across both synthetic network generators. Sharing with external fallback improves
+average service, while some networks lose service and subsidy gains are smaller.
+Response curves, paired comparisons and subsidy costs show how those findings vary.
+The [study guide](experiments/POLICY_STUDY.md) documents the design and reproducible analysis.
 
 ## Model versions
 
